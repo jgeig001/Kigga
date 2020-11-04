@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Kigga</string>
+    <string name="tab_text_1">Home</string>
+    <string name="tab_text_2">Liga</string>
+    <string name="tab_text_3">Settings</string>
+
+    <string name="point_cur_season">Points: %s</string>
+    <string name="points_alltime">Points(all time)</string>
+    <string name="username">Username</string>
+    <string name="favourite_club">Favourite Club</string>
+
+    <string name="Mon">Mo</string>
+    <string name="Tue">Di</string>
+    <string name="Wed">Mi</string>
+    <string name="Thr">Do</string>
+    <string name="Fri">Fr</string>
+    <string name="Sat">Sa</string>
+    <string name="Sun">So</string>
+</resources>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="ligaviewmodel"
+            type="com.jgeig001.kigga.viewmodel.LigaViewModel" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="7dp"
+        android:padding="4dp"
+        app:cardCornerRadius="8dp">
+
+
+        <LinearLayout
+            android:id="@+id/matchdayCardLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="vertical"
+            android:padding="4dp">
+
+            <TextView
+                android:id="@+id/matchday_x"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="X. Spieltag"
+                android:textStyle="bold" />
+
+            <!-- holds multiple matchday_days -->
+            <LinearLayout
+                android:id="@+id/matchday_day_layout_holder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="vertical"
+                android:padding="4dp">
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>
