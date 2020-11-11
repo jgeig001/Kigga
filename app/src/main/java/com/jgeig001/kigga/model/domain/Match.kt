@@ -1,8 +1,8 @@
 package com.jgeig001.kigga.model.domain
 
+import android.util.Log
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
-import androidx.databinding.library.baseAdapters.BR
 import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
@@ -12,29 +12,39 @@ class Match(
     val home_team: Club,
     val away_team: Club,
     private val kickoff: Long,
-    private var result: Result
+    private var matchResult: MatchResult
 ) : Serializable, BaseObservable() {
 
-    @Bindable
-    fun getResult(): Result {
-        return this.result
+    private var bet: Bet
+
+    init {
+        bet = Bet(this, 0, 0)
     }
 
-    fun setResult(result: Result) {
-        this.result = result
-        notifyPropertyChanged(BR.result)
+    @Bindable
+    fun getMatchResult(): MatchResult {
+        return this.matchResult
+    }
+
+    fun setResult(matchResult: MatchResult) {
+        this.matchResult = matchResult
+    }
+
+    fun hasNotStarted(): Boolean {
+        return !this.isFinished() && !this.isRunning()
+    }
+
+    fun hasStarted(): Boolean {
+        val now: Long = Calendar.getInstance().getTime().time
+        return if (now > this.kickoff) true else false
     }
 
     fun isFinished(): Boolean {
-        if (!this.result.isFinished()) {
-            return false
-        }
-        return true
+        return this.matchResult.isFinished()
     }
 
     fun isRunning(): Boolean {
-        val now:Long = Calendar.getInstance().getTime().time
-        return if (now > this.kickoff) true else false
+        return this.hasStarted() && !this.isFinished()
     }
 
     fun getKickoff(): Long {
@@ -59,6 +69,54 @@ class Match(
         return sdf.format(date)
     }
 
+    fun betHomeGoals(): String {
+        return bet.getHomeGoalsStr()
+    }
+
+    fun betAwayGoals(): String {
+        return bet.getAwayGoalsStr()
+    }
+
+    fun betRepr(): String {
+        Log.d("123", "Match.betRepr()")
+        return bet.repr()
+    }
+
+    /**
+     * returns the points user gets
+     * if there was no bet made, it returns 0
+     */
+    fun getPoints(): Int {
+        return this.bet?.let { it.points } ?: 0
+    }
+
+    fun getDrawableId(): Int {
+        return bet.getDrawableId()
+    }
+
+    /**
+     * initializes [this.bet] and returns it, but beacause of shitty optionals you can not 100% sure
+     */
+    fun getBet(): Bet {
+        return this.bet
+    }
+
+    fun addHomeGoal() {
+        this.getBet().incHomeGoal()
+    }
+
+    fun removeHomeGoal() {
+        this.getBet().decHomeGoal()
+    }
+
+    fun addAwayGoal() {
+        this.getBet().incAwayGoal()
+    }
+
+    fun removeAwayGoal() {
+        this.getBet().decAwayGoal()
+    }
+
     override fun toString(): String {
         return String.format(
             "[%d] %s : %s; [%s] => %s",
@@ -66,7 +124,9 @@ class Match(
             home_team.shortName,
             away_team.shortName,
             this.getKickoffClock(),
-            this.result.getRepr()
+            this.matchResult.getRepr()
         )
     }
+
+
 }

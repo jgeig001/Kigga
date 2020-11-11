@@ -1,32 +1,34 @@
 package com.jgeig001.kigga.model.domain
 
 import androidx.databinding.BaseObservable
-import androidx.databinding.Bindable
-import androidx.databinding.library.baseAdapters.BR
 import java.io.Serializable
-import java.util.ArrayList
+import javax.inject.Inject
 
-class History(private var listOfSeasons: ArrayList<Season>) : Serializable, BaseObservable() {
+class History @Inject constructor(
+    private var listOfSeasons: MutableList<Season>
+) : Serializable, BaseObservable() {
 
-    @Bindable
-    fun getListOfSeasons(): ArrayList<Season> {
+    companion object {
+        val SELECTED_SEASON_SP_KEY = "SELECTED_SEASON_SP_KEY"
+    }
+
+    fun getListOfSeasons(): MutableList<Season> {
         return this.listOfSeasons
     }
 
     fun addSeason(season: Season) {
         this.listOfSeasons.add(season)
-        notifyPropertyChanged(BR.listOfSeasons)
     }
 
-    fun get_nth_season(n: Int): Season {
+    fun get_nth_season(n: Int): Season? {
         try {
             return this.listOfSeasons[n]
         } catch (e: IndexOutOfBoundsException) {
-            return this.listOfSeasons[0]
+            return null
         }
     }
 
-    fun getCurSeason(): Season? {
+    fun getLatestSeason(): Season? {
         try {
             return this.listOfSeasons[this.listOfSeasons.size - 1]
         } catch (e: ArrayIndexOutOfBoundsException) {

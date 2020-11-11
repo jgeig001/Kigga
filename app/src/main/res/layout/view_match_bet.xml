@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="lololo"
+            type="String" />
+
+        <variable
+            name="viewModel"
+            type="com.jgeig001.kigga.ui.bet.BetViewModel" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/match_layout"
+        android:layout_width="312dp"
+        android:layout_height="44dp"
+        android:layout_margin="4dp"
+        android:orientation="horizontal"
+        android:padding="2dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp">
+
+        <LinearLayout
+            android:layout_width="58dp"
+            android:layout_height="40dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="58dp"
+                android:layout_height="20dp"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btn_plus_home"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/btn_plus_light" />
+
+                <TextView
+                    android:id="@+id/goals_bet_home"
+                    android:layout_width="18dp"
+                    android:layout_height="20dp"
+                    android:text="-"
+                    android:textAlignment="center" />
+
+                <ImageButton
+                    android:id="@+id/btn_minus_home"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/btn_minus_light" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="58dp"
+                android:layout_height="20dp"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btn_plus_away"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/btn_plus_light" />
+
+                <TextView
+                    android:id="@+id/goals_bet_away"
+                    android:layout_width="18dp"
+                    android:layout_height="20dp"
+                    android:text="-"
+                    android:textAlignment="center" />
+
+                <ImageButton
+                    android:id="@+id/btn_minus_away"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/btn_minus_light" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="110dp"
+            android:layout_height="40dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/home_team"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:hint="home team" />
+
+            <TextView
+                android:id="@+id/away_team"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:hint="away team" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="22dp"
+            android:layout_height="40dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/rank_home"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:hint="0."
+                android:textAlignment="textEnd" />
+
+            <TextView
+                android:id="@+id/rank_away"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:hint="0."
+                android:textAlignment="textEnd" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="26dp"
+            android:layout_height="40dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/trend_arrow_home"
+                android:layout_width="15dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:padding="2dp"
+                android:rotation="0"
+                android:src="@drawable/ic_asset_arrow" />
+
+            <ImageView
+                android:id="@+id/trend_arrow_away"
+                android:layout_width="15dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:padding="2dp"
+                android:rotation="0"
+                android:src="@drawable/ic_asset_arrow" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="26dp"
+            android:layout_height="40dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/trend_home"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:hint="0.99"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/trend_away"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:hint="0.99"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/kickoff"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:hint="15:30Uhr"
+                android:textAlignment="textEnd"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/twitter"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:hint="#ABCXYZ"
+                android:textColor="?attr/twitter"
+                android:textColorHint="?attr/twitter"
+                android:textAlignment="textEnd"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</layout>

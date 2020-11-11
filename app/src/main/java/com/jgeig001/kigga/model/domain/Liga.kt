@@ -3,13 +3,14 @@ package com.jgeig001.kigga.model.domain
 import androidx.databinding.BaseObservable
 import com.jgeig001.kigga.model.exceptions.ClubExistenceException
 import java.io.Serializable
+import javax.inject.Inject
 import kotlin.collections.HashMap
 
 interface Factory<T> {
     fun create(): T
 }
 
-class Liga() : Serializable, BaseObservable() {
+class Liga @Inject constructor() : Serializable, BaseObservable() {
     companion object : Factory<Liga> {
 
         // key: full clubName, value: club itself

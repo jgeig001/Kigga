@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="ds">
+        <attr name="colorPrimary" format="color" />
+        <attr name="colorPrimaryDark" format="color" />
+        <attr name="colorAccent" format="color" />
+        <attr name="light" format="color" />
+        <attr name="dark" format="color" />
+        <attr name="green" format="color" />
+        <attr name="blue" format="color" />
+        <attr name="no_color" format="color" />
+        <attr name="twitter" format="color" />
+    </declare-styleable>
+
+</resources>

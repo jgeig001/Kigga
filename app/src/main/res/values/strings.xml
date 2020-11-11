@@ -1,8 +1,11 @@
 <resources>
+
     <string name="app_name">Kigga</string>
-    <string name="tab_text_1">Home</string>
-    <string name="tab_text_2">Liga</string>
-    <string name="tab_text_3">Settings</string>
+
+    <string name="title_home">Home</string>
+    <string name="title_bet">Wetten</string>
+    <string name="title_table">Tabelle</string>
+    <string name="title_more">Mehr</string>
 
     <string name="point_cur_season">Points: %s</string>
     <string name="points_alltime">Points(all time)</string>
@@ -16,4 +19,7 @@
     <string name="Fri">Fr</string>
     <string name="Sat">Sa</string>
     <string name="Sun">So</string>
+
+    <string name="twitter_hashtag">https://twitter.com/hashtag/%s?src=hashtag_click</string>
+
 </resources>

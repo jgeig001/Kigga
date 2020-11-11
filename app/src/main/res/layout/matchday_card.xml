@@ -5,8 +5,8 @@
     <data>
 
         <variable
-            name="ligaviewmodel"
-            type="com.jgeig001.kigga.viewmodel.LigaViewModel" />
+            name="viewmodel"
+            type="com.jgeig001.kigga.ui.bet.BetViewModel" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -40,6 +40,18 @@
                 android:layout_margin="10dp"
                 android:orientation="vertical"
                 android:padding="4dp">
+
+                <LinearLayout
+                    android:id="@+id/match_lis"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+
+
+
+                </LinearLayout>
+
 
             </LinearLayout>
 

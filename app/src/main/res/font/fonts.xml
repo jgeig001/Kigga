@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <font-family xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <font-family xmlns:android="http://schemas.android.com/apk/res/android">
-        <font
-            android:font="@font/soccer_league"
-            android:fontStyle="normal"
-            android:fontWeight="400" />
-    </font-family>
+    <font
+        android:font="@font/comfortaa_light"
+        android:fontStyle="normal"
+        android:fontWeight="350" />
 
+    <font
+        android:font="@font/comfortaa_regular"
+        android:fontStyle="normal"
+        android:fontWeight="400" />
+
+    <font
+        android:font="@font/comfortaa_bold"
+        android:fontStyle="normal"
+        android:fontWeight="450" />
 
 </font-family>
+
+

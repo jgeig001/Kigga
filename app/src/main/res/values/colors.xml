@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#FAFAFA</color>
+    <color name="colorPrimaryDark">#1569FF</color>
+    <color name="colorAccent">#44EF1C</color>
+    <color name="light">#FAFAFA</color>
+    <color name="dark">#242222</color>
+    <color name="green">#44EF1C</color>
+    <color name="blue">#1569FF</color>
+    <color name="no_color">#FAFAFA</color>
+    <color name="twitter">#26A2E7</color>
 </resources>

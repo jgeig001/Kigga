@@ -1,50 +1,14 @@
 package com.jgeig001.kigga.model.domain
 
 import androidx.databinding.BaseObservable
-import androidx.databinding.Observable
-import com.jgeig001.kigga.callbackDispatchers.CallbackDispatcher
-import com.jgeig001.kigga.callbackDispatchers.ObservableModel
 import java.io.Serializable
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
+import javax.inject.Inject
 
-class ModelWrapper(
+class ModelWrapper @Inject constructor(
     private var user: User,
     private var liga: Liga,
     private var history: History
-) : Serializable, BaseObservable(), ObservableModel, ModelAPI {
-
-    /* notifyMap holds all callback functions
-     * key: the id saved in BR file which refers to one property in the model
-     * value: List with all callbackfunctions executed if property changes
-     */
-    private val notifyMap: HashMap<Int, ArrayList<(sender: Observable?, propertyId: Int) -> Unit>> =
-        HashMap()
-
-    private var callbackDispatcher: CallbackDispatcher
-
-    init {
-        callbackDispatcher = CallbackDispatcher(this.notifyMap)
-        this.user.addOnPropertyChangedCallback(callbackDispatcher)
-        this.history.addOnPropertyChangedCallback(callbackDispatcher)
-        this.liga.addOnPropertyChangedCallback(callbackDispatcher)
-    }
-
-    // --------------------------------------- Notifications ---------------------------------------
-    override fun getNotified(
-        BR_property_ID: Int,
-        callbackFunction: (sender: Observable?, propertyId: Int) -> Unit
-    ) {
-        print("size:" + this.notifyMap.size + "\n\n")
-        for ((k, v) in this.notifyMap) {
-            print(k)
-            print(" ::: ")
-            println(v)
-        }
-        this.callbackDispatcher.registerCallback(BR_property_ID, callbackFunction)
-    }
-    // ---------------------------------------------------------------------------------------------
-
+) : Serializable, BaseObservable(), ModelAPI {
 
     // -------------------------------------------- API --------------------------------------------
     override fun getUsername(): String {
@@ -57,26 +21,25 @@ class ModelWrapper(
     }
 
     override fun getPointsCurSeason(): Int {
+        history.getLatestSeason()?.let { curSeason ->
+            return getPointsOf(curSeason)
+        } ?: return 0
+    }
+
+    override fun getPointsAllTime(): Int {
         var sum = 0
-        var allMatches = ArrayList<Match>()
-        if (history.getCurSeason() == null) {
-            return 0
-        }
-        for (matchday in history.getCurSeason()!!.getMatchdays()) {
-            for (match in matchday.matches) {
-                allMatches.add(match)
-            }
-        }
-        for (bet in user.getBets().values) {
-            if (allMatches.contains(bet.match)) {
-                sum += bet.points
-            }
+        for (season in history.getListOfSeasons()) {
+            sum += this.getPointsOf(season)
         }
         return sum
     }
 
-    override fun getPointsAllTime(): Int {
-        return this.user.getPointsAllTime()
+    private fun getPointsOf(season: Season): Int {
+        var sum = 0
+        for (match in season.getAllMatches()) {
+            sum += match.getPoints()
+        }
+        return sum
     }
 
     override fun getFavouriteClub(): Club {
@@ -87,36 +50,36 @@ class ModelWrapper(
         this.user.setFavouriteClub(club)
     }
 
-    override fun getListOfSeasons(): ArrayList<Season> {
+    override fun getListOfSeasons(): MutableList<Season> {
         return this.history.getListOfSeasons()
     }
 
     override fun getCurSeason(): Season? {
-        return this.history.getCurSeason()
+        return this.history.getLatestSeason()
     }
 
-    override fun get_nth_season(n: Int): Season {
+    override fun get_nth_season(n: Int): Season? {
         return this.history.get_nth_season(n)
     }
 
-    override fun getBets(): HashMap<Match, Bet> {
-        return this.user.getBets()
+    override fun getBets(): MutableList<Bet> {
+        return mutableListOf()
     }
 
     override fun addHomeGoal(match: Match) {
-        this.user.addHomeGoal(match)
+
     }
 
     override fun removeHomeGoal(match: Match) {
-        this.user.removeHomeGoal(match)
+
     }
 
     override fun addAwayGoal(match: Match) {
-        this.user.addAwayGoal(match)
+
     }
 
     override fun removeAwayGoal(match: Match) {
-        this.user.removeAwayGoal(match)
+
     }
     // ---------------------------------------------------------------------------------------------
 
@@ -152,13 +115,13 @@ interface ModelAPI {
 
     fun setFavouriteClub(club: Club)
 
-    fun getListOfSeasons(): ArrayList<Season>
+    fun getListOfSeasons(): MutableList<Season>
 
     fun getCurSeason(): Season?
 
-    fun get_nth_season(n: Int): Season
+    fun get_nth_season(n: Int): Season?
 
-    fun getBets(): HashMap<Match, Bet>
+    fun getBets(): MutableList<Bet>
 
     fun addHomeGoal(match: Match)
 
