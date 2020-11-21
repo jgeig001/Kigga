@@ -1,30 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <data>
-
-        <variable
-            name="lololo"
-            type="String" />
-
-        <variable
-            name="viewModel"
-            type="com.jgeig001.kigga.ui.bet.BetViewModel" />
-    </data>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/match_layout"
-        android:layout_width="312dp"
-        android:layout_height="44dp"
+        android:layout_width="wrap_content"
+        android:layout_height="42dp"
         android:layout_margin="4dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="4dp"
+        android:gravity="center_horizontal"
         android:orientation="horizontal"
-        android:padding="2dp"
         android:paddingStart="4dp"
         android:paddingEnd="4dp">
 
         <LinearLayout
             android:layout_width="58dp"
             android:layout_height="40dp"
+            android:layout_marginTop="1dp"
             android:orientation="vertical">
 
             <LinearLayout
@@ -82,26 +78,32 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="110dp"
+            android:layout_width="92dp"
             android:layout_height="40dp"
+            android:layout_marginStart="7dp"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/home_team"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:hint="home team" />
+                android:fontFamily="@font/comfortaa_regular"
+                android:hint="home team"
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/away_team"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:hint="away team" />
+                android:fontFamily="@font/comfortaa_regular"
+                android:gravity="center_vertical"
+                android:hint="away team"
+                android:textSize="13sp" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="22dp"
+            android:layout_width="19dp"
             android:layout_height="40dp"
             android:orientation="vertical">
 
@@ -109,21 +111,25 @@
                 android:id="@+id/rank_home"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:hint="0."
-                android:textAlignment="textEnd" />
+                android:fontFamily="@font/comfortaa_light"
+                android:text="H3"
+                android:textAlignment="textEnd"
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/rank_away"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:hint="0."
-                android:textAlignment="textEnd" />
+                android:fontFamily="@font/comfortaa_light"
+                android:text="17."
+                android:textAlignment="textEnd"
+                android:textSize="13sp" />
 
         </LinearLayout>
 
 
         <LinearLayout
-            android:layout_width="26dp"
+            android:layout_width="29dp"
             android:layout_height="40dp"
             android:orientation="vertical">
 
@@ -134,7 +140,7 @@
                 android:layout_gravity="center"
                 android:padding="2dp"
                 android:rotation="0"
-                android:src="@drawable/ic_asset_arrow" />
+                android:src="@drawable/ic_asset_arrow_green" />
 
             <ImageView
                 android:id="@+id/trend_arrow_away"
@@ -143,13 +149,13 @@
                 android:layout_gravity="center"
                 android:padding="2dp"
                 android:rotation="0"
-                android:src="@drawable/ic_asset_arrow" />
+                android:src="@drawable/ic_asset_arrow_green" />
 
         </LinearLayout>
 
 
         <LinearLayout
-            android:layout_width="26dp"
+            android:layout_width="29dp"
             android:layout_height="40dp"
             android:orientation="vertical">
 
@@ -157,6 +163,7 @@
                 android:id="@+id/trend_home"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
+                android:fontFamily="@font/comfortaa_light"
                 android:hint="0.99"
                 android:textSize="13sp" />
 
@@ -164,6 +171,7 @@
                 android:id="@+id/trend_away"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
+                android:fontFamily="@font/comfortaa_light"
                 android:hint="0.99"
                 android:textSize="13sp" />
 
@@ -171,7 +179,7 @@
 
 
         <LinearLayout
-            android:layout_width="60dp"
+            android:layout_width="63dp"
             android:layout_height="40dp"
             android:orientation="vertical">
 
@@ -179,7 +187,8 @@
                 android:id="@+id/kickoff"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:hint="15:30Uhr"
+                android:fontFamily="@font/comfortaa_light"
+                android:hint="20:30Uhr"
                 android:textAlignment="textEnd"
                 android:textSize="13sp" />
 
@@ -187,10 +196,11 @@
                 android:id="@+id/twitter"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:hint="#ABCXYZ"
+                android:fontFamily="@font/comfortaa_light"
+                android:hint="#BVBS04"
+                android:textAlignment="textEnd"
                 android:textColor="?attr/twitter"
                 android:textColorHint="?attr/twitter"
-                android:textAlignment="textEnd"
                 android:textSize="13sp" />
 
         </LinearLayout>
@@ -198,4 +208,4 @@
     </LinearLayout>
 
 
-</layout>
+</LinearLayout>

@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Spinner
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,8 +16,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jgeig001.kigga.R
 import com.jgeig001.kigga.databinding.FragmentBetBinding
 import com.jgeig001.kigga.model.domain.*
+import com.jgeig001.kigga.utils.SharedPreferencesManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_bet.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -60,15 +63,71 @@ class BetFragment : Fragment(R.layout.fragment_bet) {
         super.onViewCreated(view, savedInstanceState)
 
         // bind spinner to lisOfSeasons
-        val spinner: Spinner = view.findViewById(R.id.season_spinner)
+        this.setupSpinner()
+
+        // setup
+        this.recyclerView = recyclerViewID
+        this.recyclerView.setHasFixedSize(true)
+        this.layoutManager = LinearLayoutManager(this.context)
+        this.betAdapter =
+            BetAdapter(this.viewModel.getMatchdayList(), model.getHistory(), requireContext())
+
+        this.recyclerView.layoutManager = this.layoutManager
+        this.recyclerView.adapter = this.betAdapter
+
+        this.scrollToCurMatchday()
+
+        model.getHistory().firstLoadFinishedCallback {
+            Log.d("123", "# -> callback {...}")
+            viewModel.updateLiveDataList(0)
+            betAdapter.afterFirstLoadDone(viewModel.getMatchdayList())
+            GlobalScope.launch(Dispatchers.Main) {
+                setupSpinner()
+                scrollToCurMatchday()
+            }
+        }
+
+        for (livedata in viewModel.liveDataList) {
+            livedata.observe(
+                viewLifecycleOwner,
+                Observer {
+                    if (it != null)
+                        betAdapter.refreshData(it)
+                }
+            )
+        }
+
+    }
+
+    /**
+     * scroll recyclerView to the current matchday
+     */
+    private fun scrollToCurMatchday() {
+        var i = 0
+        // TODO: latest season or cur selected season
+        this.model.getCurSeason()?.let { curSeason ->
+            for (matchday in curSeason.getMatchdays()) {
+                if (matchday == this.model.getHistory()
+                        .getFirstMatchdayWithMissingResults()!!.second
+                ) {
+                    Log.d("123", "scrollTo: $i")
+                    this.recyclerView.layoutManager!!.scrollToPosition(i)
+                    break
+                }
+                i += 1
+            }
+        }
+    }
+
+    private fun setupSpinner() {
         val seasonAdapter: ArrayAdapter<Season> = ArrayAdapter(
             this.requireActivity(),
             android.R.layout.simple_spinner_item,
             this.model.getListOfSeasons()
         )
         seasonAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
-        spinner.adapter = seasonAdapter
-        spinner.setSelection(this.viewModel.getSelectedSeasonIndex())
+        season_spinner.adapter = seasonAdapter
+        season_spinner.setSelection(this.viewModel.getSelectedSeasonIndex())
         season_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>,
@@ -77,45 +136,17 @@ class BetFragment : Fragment(R.layout.fragment_bet) {
                 id: Long
             ) {
                 viewModel.setSelectedSeasonIndex(position)
+                SharedPreferencesManager.writeInt(
+                    requireContext(),
+                    History.SELECTED_SEASON_SP_KEY,
+                    position
+                )
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
                 viewModel.setSelectedSeasonIndex(0)
             }
         }
-
-        // setup
-        this.recyclerView = recyclerViewID
-        this.recyclerView.setHasFixedSize(true)
-        this.layoutManager = LinearLayoutManager(this.context)
-        this.betAdapter =
-            BetAdapter(this.viewModel.getMatchdayList(), requireContext())
-
-        this.recyclerView.layoutManager = this.layoutManager
-        this.recyclerView.adapter = this.betAdapter
-
-
-        // scroll recyclerView to the current matchday
-        var i = 0
-        for (matchday in this.model.getCurSeason()!!.getMatchdays()) {
-            if (matchday == this.model.getHistory().getFirstMatchdayWithMissingResults()!!.second) {
-                this.recyclerView.layoutManager!!.scrollToPosition(i)
-                break
-            }
-            i += 1
-        }
-
-        // observe live data
-        for (livedata in viewModel.liveDataList) {
-            livedata.observe(
-                viewLifecycleOwner,
-                Observer {
-                    Log.d("123", "observer...")
-                    betAdapter.refreshData(it)
-                }
-            )
-        }
-
     }
 
 }

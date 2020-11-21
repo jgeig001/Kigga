@@ -17,13 +17,8 @@ class User @Inject constructor(
     }
 
     fun setUsername(username: String) {
-        println("User.setUsername()")
         this.username = username
         notifyPropertyChanged(BR.username)
-    }
-
-    fun usernameShouldChange() {
-        println("usernameShouldChange")
     }
 
     @Bindable

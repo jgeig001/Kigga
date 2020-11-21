@@ -12,14 +12,17 @@
     <string name="username">Username</string>
     <string name="favourite_club">Favourite Club</string>
 
-    <string name="Mon">Mo</string>
-    <string name="Tue">Di</string>
-    <string name="Wed">Mi</string>
-    <string name="Thr">Do</string>
-    <string name="Fri">Fr</string>
-    <string name="Sat">Sa</string>
-    <string name="Sun">So</string>
+    <string name="Mon">Montag</string>
+    <string name="Tue">Dienstag</string>
+    <string name="Wed">Mittwoch</string>
+    <string name="Thr">Donnerstag</string>
+    <string name="Fri">Freitag</string>
+    <string name="Sat">Samstag</string>
+    <string name="Sun">Sonntag</string>
 
     <string name="twitter_hashtag">https://twitter.com/hashtag/%s?src=hashtag_click</string>
+    <string name="matchdayString">%d. Spieltag</string>
+    <string name="spieltag">Spieltag</string>
+    <string name="clock">%sUhr</string>
 
 </resources>

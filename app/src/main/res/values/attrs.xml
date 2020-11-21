@@ -5,12 +5,17 @@
         <attr name="colorPrimary" format="color" />
         <attr name="colorPrimaryDark" format="color" />
         <attr name="colorAccent" format="color" />
+        <attr name="colorPrimaryDarkWhite" format="color" />
         <attr name="light" format="color" />
         <attr name="dark" format="color" />
+        <attr name="black" format="color" />
+        <attr name="colorPrimary_inverted" format="color" />
         <attr name="green" format="color" />
         <attr name="blue" format="color" />
         <attr name="no_color" format="color" />
         <attr name="twitter" format="color" />
+        <attr name="dark_stroke" format="color" />
+        <attr name="black_n_light" format="color" />
     </declare-styleable>
 
 </resources>

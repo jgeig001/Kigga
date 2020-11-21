@@ -2,56 +2,55 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-        <variable
-            name="viewmodel"
-            type="com.jgeig001.kigga.ui.bet.BetViewModel" />
-    </data>
-
     <androidx.cardview.widget.CardView
+        android:id="@+id/matchday_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="7dp"
-        android:padding="4dp"
-        app:cardCornerRadius="8dp">
-
+        android:layout_marginStart="9dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="9dp"
+        android:layout_marginBottom="12dp"
+        android:outlineAmbientShadowColor="#00062C"
+        android:outlineSpotShadowColor="#00062C"
+        android:paddingStart="6dp"
+        android:paddingEnd="6dp"
+        app:cardBackgroundColor="?attr/colorPrimary"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="10dp">
 
         <LinearLayout
             android:id="@+id/matchdayCardLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:orientation="vertical"
-            android:padding="4dp">
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="14dp"
+            android:layout_marginBottom="12dp"
+            android:elevation="10dp"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/matchday_x"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="X. Spieltag"
-                android:textStyle="bold" />
+                android:fontFamily="@font/comfortaa_bold"
+                android:text="@string/spieltag"
+                android:textColor="?attr/colorPrimary_inverted"
+                android:textSize="22sp" />
+
+            <ProgressBar
+                android:id="@+id/init_loader_progress_bar"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center" />
 
             <!-- holds multiple matchday_days -->
             <LinearLayout
                 android:id="@+id/matchday_day_layout_holder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
                 android:orientation="vertical"
-                android:padding="4dp">
-
-                <LinearLayout
-                    android:id="@+id/match_lis"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-
-
-
-                </LinearLayout>
-
+                android:paddingTop="10dp">
 
             </LinearLayout>
 

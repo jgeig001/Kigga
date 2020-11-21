@@ -6,7 +6,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class DataPoller(private var history: History) {
+class DataPoller(val history: History) {
 
     private val SEC = 10L
 
@@ -14,9 +14,14 @@ class DataPoller(private var history: History) {
 
     fun poll() {
         GlobalScope.launch {
-            Log.d("123", "poll")
-            dataLoader.updateData()
-            delay(SEC * 1000)
+            while (true) {
+                Log.d("123", "poll")
+                // TODO: check if new data available: siehe API
+                dataLoader.updateData()
+                if (!history.firstLoadDone)
+                    history.firstLoadDone()
+                delay(SEC * 1000)
+            }
         }
     }
 

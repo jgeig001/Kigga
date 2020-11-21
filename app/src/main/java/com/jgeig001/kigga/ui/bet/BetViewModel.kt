@@ -1,12 +1,11 @@
 package com.jgeig001.kigga.ui.bet
 
+import android.util.Log
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.jgeig001.kigga.model.domain.Match
-import com.jgeig001.kigga.model.domain.Matchday
-import com.jgeig001.kigga.model.domain.ModelWrapper
+import com.jgeig001.kigga.model.domain.*
 import com.jgeig001.kigga.ui.PropertyAwareMutableLiveData
 
 class BetViewModel @ViewModelInject constructor(
@@ -15,56 +14,54 @@ class BetViewModel @ViewModelInject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    var liveDataList: MutableList<PropertyAwareMutableLiveData<Matchday>>
+    var liveDataList: List<PropertyAwareMutableLiveData<Matchday?>>
 
     init {
-        this.liveDataList = generateLiveDataList(this.selectedSeasonIndex)
+        Log.d("123", "history in BetViewModel: ${model.getHistory().hashCode()}")
+        this.liveDataList = generateLiveDataList()
     }
 
-    fun generateLiveDataList(seasonIndex: Int): MutableList<PropertyAwareMutableLiveData<Matchday>> {
+    private fun generateLiveDataList(): List<PropertyAwareMutableLiveData<Matchday?>> {
         // create one LiveData object for each matchday
-        val lis = mutableListOf<PropertyAwareMutableLiveData<Matchday>>()
-        val season =
-            model.getHistory().get_nth_season(seasonIndex)?.getMatchdays() ?: mutableListOf()
-        for (md in season) {
-            val liveDataObject = PropertyAwareMutableLiveData<Matchday>()
-            liveDataObject.value = md
+        val lis = mutableListOf<PropertyAwareMutableLiveData<Matchday?>>()
+        val season: List<Matchday?> =
+            model.getHistory().get_nth_season(selectedSeasonIndex)?.getMatchdays()
+                ?: List(Matchday.MAX_MATCHDAYS) { null }
+        Log.d("123", "BetViewModel.generateLiveDataList().season: $season")
+        for (md: Matchday? in season) {
+            val liveDataObject = PropertyAwareMutableLiveData<Matchday?>(md)
             lis.add(liveDataObject)
         }
-        return lis
+        return lis.toList()
     }
 
-    fun getMatchdayList(): MutableList<Matchday> {
-        val lis = mutableListOf<Matchday>()
-        for (ld in liveDataList) {
-            ld.value?.let { lis.add(it) }
+    fun updateLiveDataList(index: Int) {
+        val season = model.getHistory().get_nth_season(index)?.getMatchdays() ?: listOf()
+        season.forEachIndexed { i, md ->
+            liveDataList[i].postValue(md)
+        }
+    }
+
+    /**
+     * return a list with [Matchday.MAX_MATCHDAYS] elements
+     * each representing one matchday
+     * if data is not available the will be null as placeholder
+     */
+    fun getMatchdayList(): MutableList<Matchday?> {
+        val lis = MutableList<Matchday?>(Matchday.MAX_MATCHDAYS) { null }
+        liveDataList.forEachIndexed { i, ld ->
+            ld.value?.let { it -> lis.set(i, it) }
         }
         return lis
     }
 
     fun setSelectedSeasonIndex(index: Int) {
         this.selectedSeasonIndex = index
-        liveDataList = this.generateLiveDataList(this.selectedSeasonIndex)
+        this.updateLiveDataList(index)
     }
 
     fun getSelectedSeasonIndex(): Int {
         return this.selectedSeasonIndex
-    }
-
-    fun addHomeGoal(match: Match) {
-        this.model.addHomeGoal(match)
-    }
-
-    fun removeHomeGoal(match: Match) {
-        this.model.removeHomeGoal(match)
-    }
-
-    fun addAwayGoal(match: Match) {
-        this.model.addAwayGoal(match)
-    }
-
-    fun removeAwayGoal(match: Match) {
-        this.model.removeAwayGoal(match)
     }
 
     fun getMatchday(i: Int): Matchday? {

@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.util.Log
 import com.jgeig001.kigga.model.domain.*
 import java.io.*
+import java.lang.reflect.Field
 import java.util.*
 import javax.inject.Inject
 
@@ -39,7 +40,6 @@ class PersistenceManager @Inject constructor(context: Context) {
         Log.d("123", "load data from web")
         val dataPoller = DataPoller(model.getHistory())
         dataPoller.poll()
-        Thread.sleep(4000)
         Log.d("123", "go on")
         // TODO: check: if loading takes too long. will view notice model change ?
     }
@@ -65,7 +65,6 @@ class PersistenceManager @Inject constructor(context: Context) {
      */
     @Throws(IOException::class, ClassNotFoundException::class)
     private fun loadSerializedModel(context: Context): ModelWrapper {
-        println("###loadSerializedModel()")
         var fis: FileInputStream? = null
         fis = context.openFileInput(SERIALIZE_FILE)
         val inputStream = ObjectInputStream(fis)
@@ -79,18 +78,18 @@ class PersistenceManager @Inject constructor(context: Context) {
     }
 
     /**
+     * Saves the data with java serialization.
      * @param context
      */
     fun saveData(context: Context) {
         println("###savedData()")
-        var fos: FileOutputStream? = null
         try {
-            fos = context.openFileOutput(SERIALIZE_FILE, Context.MODE_PRIVATE)
+            val fos: FileOutputStream = context.openFileOutput(SERIALIZE_FILE, Context.MODE_PRIVATE)
             val os = ObjectOutputStream(fos)
             val lis = mutableListOf<Any>()
-            lis.add(model!!.getUser())
-            lis.add(model!!.getLiga())
-            lis.add(model!!.getHistory())
+            lis.add(model.getUser())
+            lis.add(model.getLiga())
+            lis.add(model.getHistory())
             os.writeObject(lis)
             os.close()
             fos.close()
@@ -99,6 +98,7 @@ class PersistenceManager @Inject constructor(context: Context) {
         } catch (e: IOException) {
             e.printStackTrace()
         }
+
     }
 
 }

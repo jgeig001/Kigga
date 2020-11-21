@@ -10,13 +10,16 @@ interface Factory<T> {
     fun create(): T
 }
 
+// TODO: convert to kotlin object class ?!
+
 class Liga @Inject constructor() : Serializable, BaseObservable() {
+
     companion object : Factory<Liga> {
 
-        // key: full clubName, value: club itself
-        var listOfClubs: HashMap<String, Club> = HashMap()
-
         override fun create(): Liga = Liga()
+
+        // key: full clubName, value: club itself
+        var listOfClubs: HashMap<String, Club> = hashMapOf()
 
         @JvmStatic
         fun getAllClubs(): MutableCollection<Club> {
@@ -26,7 +29,7 @@ class Liga @Inject constructor() : Serializable, BaseObservable() {
         @JvmStatic
         @Throws(ClubExistenceException::class)
         fun getClubBy(name: String): Club {
-            var club:Club? = this.listOfClubs.get(name)
+            var club: Club? = this.listOfClubs.get(name)
             if (club != null) {
                 return club
             }
@@ -36,21 +39,17 @@ class Liga @Inject constructor() : Serializable, BaseObservable() {
         @JvmStatic
         fun addClub(club: Club) {
             this.listOfClubs.put(club.clubName!!, club)
-            //notifyPropertyChanged(BR.listOfClubs)
         }
 
         @JvmStatic
         fun removeClub(club: Club) {
             this.listOfClubs.remove(club.clubName)
-            //notifyPropertyChanged(BR.listOfClubs)
         }
 
         @JvmStatic
-        fun clubExists(name:String): Boolean {
+        fun clubExists(name: String): Boolean {
             return this.listOfClubs.containsKey(name)
         }
 
     }
 }
-
-//val f: Factory<Liga> = Liga ???

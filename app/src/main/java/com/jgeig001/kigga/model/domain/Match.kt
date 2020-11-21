@@ -15,11 +15,7 @@ class Match(
     private var matchResult: MatchResult
 ) : Serializable, BaseObservable() {
 
-    private var bet: Bet
-
-    init {
-        bet = Bet(this, 0, 0)
-    }
+    private var bet: Bet = Bet(this)
 
     @Bindable
     fun getMatchResult(): MatchResult {
@@ -30,13 +26,23 @@ class Match(
         this.matchResult = matchResult
     }
 
+    fun matchOf(club: Club): Boolean {
+        return home_team == club || away_team == club
+    }
+
     fun hasNotStarted(): Boolean {
         return !this.isFinished() && !this.isRunning()
     }
 
     fun hasStarted(): Boolean {
-        val now: Long = Calendar.getInstance().getTime().time
-        return if (now > this.kickoff) true else false
+        val cal = Calendar.getInstance()
+        cal.timeZone = TimeZone.getTimeZone("Europe/Berlin")
+        val now: Long = cal.time.time
+        if (now > this.kickoff) {
+            return true
+        } else {
+            return false
+        }
     }
 
     fun isFinished(): Boolean {
@@ -53,27 +59,27 @@ class Match(
 
     fun getKickoffClock(): String {
         val sdf = SimpleDateFormat("HH:mm")
-        val date = java.util.Date(this.kickoff)
+        val date = Date(this.kickoff)
         return sdf.format(date)
     }
 
     fun getMatchdayDate(): String {
         val sdf = SimpleDateFormat("dd.MM.")
-        val date = java.util.Date(this.kickoff)
+        val date = Date(this.kickoff)
         return sdf.format(date)
     }
 
     fun getMatchdayDay(): String {
         val sdf = SimpleDateFormat("EEE")
-        val date = java.util.Date(this.kickoff)
+        val date = Date(this.kickoff)
         return sdf.format(date)
     }
 
-    fun betHomeGoals(): String {
+    fun getBetHomeGoals(): String {
         return bet.getHomeGoalsStr()
     }
 
-    fun betAwayGoals(): String {
+    fun getBetAwayGoals(): String {
         return bet.getAwayGoalsStr()
     }
 
@@ -86,12 +92,12 @@ class Match(
      * returns the points user gets
      * if there was no bet made, it returns 0
      */
-    fun getPoints(): Int {
+    fun getBetPoints(): Int {
         return this.bet?.let { it.points } ?: 0
     }
 
-    fun getDrawableId(): Int {
-        return bet.getDrawableId()
+    fun getBetResultDrawableResId(): Int {
+        return bet.getDrawableResId()
     }
 
     /**
@@ -102,30 +108,57 @@ class Match(
     }
 
     fun addHomeGoal() {
+        Log.d("123", "Match.addHomeGoal()")
         this.getBet().incHomeGoal()
     }
 
     fun removeHomeGoal() {
+        Log.d("123", "Match.removeHomeGoal()")
         this.getBet().decHomeGoal()
     }
 
     fun addAwayGoal() {
+        Log.d("123", "Match.addAwayGoal()")
         this.getBet().incAwayGoal()
     }
 
     fun removeAwayGoal() {
+        Log.d("123", "Match.removeAwayGoal()")
         this.getBet().decAwayGoal()
     }
 
     override fun toString(): String {
+        if (matchID == 58650) {
+            bet.testy()
+        }
         return String.format(
-            "[%d] %s : %s; [%s] => %s",
+            "[%d] %s : %s; [%s] => %s, %d Uhr",
             matchID,
             home_team.shortName,
             away_team.shortName,
             this.getKickoffClock(),
-            this.matchResult.getRepr()
+            this.matchResult.getRepr(),
+            this.kickoff
         )
+    }
+
+    fun ligaPointsFor(club: Club): Int? {
+        if (!this.matchOf(club))
+            return null
+        if (matchResult.isDraw)
+            return 1
+        if (club == home_team) {
+            if (matchResult.isHomeWin) {
+                return 3
+            }
+            return 0
+        } else if (club == away_team) {
+            if (matchResult.isAwayWin) {
+                return 3
+            }
+            return 0
+        }
+        return null
     }
 
 

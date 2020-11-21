@@ -47,14 +47,10 @@ class HomeViewModel @ViewModelInject constructor(
         // register callbacks at model
         // more to come...
         this._username.value = this.model.getUsername()
-        println(this)
-        print("this._username.value:" + this._username.value)
     }
 
     fun setUsernameCallback(sender: Observable?, propertyId: Int) {
         val s: String = model.getUsername()
-        println("$$$" + this)
-        println("$$$ this._username.value" + this._username.value)
         this._username.value = s
     }
 

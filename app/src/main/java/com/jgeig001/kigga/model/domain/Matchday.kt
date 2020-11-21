@@ -90,7 +90,6 @@ class Matchday(var matches: MutableList<Match>, var matchdayIndex: Int) : Serial
         }
         return listOfLists
     }
-
     /*override fun toString(): String {
         return String.format("%d. Spieltag", this.number);
     }*/

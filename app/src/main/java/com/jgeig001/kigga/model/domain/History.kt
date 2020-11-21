@@ -8,6 +8,20 @@ class History @Inject constructor(
     private var listOfSeasons: MutableList<Season>
 ) : Serializable, BaseObservable() {
 
+    var firstLoadDone: Boolean = false
+
+    @Transient
+    private lateinit var callback: () -> Unit
+
+    fun firstLoadDone() {
+        firstLoadDone = true
+        this.callback()
+    }
+
+    fun firstLoadFinishedCallback(callback: () -> Unit) {
+        this.callback = callback
+    }
+
     companion object {
         val SELECTED_SEASON_SP_KEY = "SELECTED_SEASON_SP_KEY"
     }
@@ -29,10 +43,10 @@ class History @Inject constructor(
     }
 
     fun getLatestSeason(): Season? {
-        try {
-            return this.listOfSeasons[this.listOfSeasons.size - 1]
+        return try {
+            this.listOfSeasons[this.listOfSeasons.size - 1]
         } catch (e: ArrayIndexOutOfBoundsException) {
-            return null
+            null
         }
     }
 
@@ -84,6 +98,14 @@ class History @Inject constructor(
             }
         }
         return null
+    }
+
+    fun getPreviousSeason(): Season? {
+        return this.get_nth_season(listOfSeasons.size - 2)
+    }
+
+    fun getCurrentMatchday(selectedSeason: Int): Matchday? {
+        return this.get_nth_season(selectedSeason)?.getCurrentMatchday()
     }
 
 }

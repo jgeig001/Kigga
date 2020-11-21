@@ -6,7 +6,6 @@ import java.io.Serializable
 class Season(private var matchdays: List<Matchday>, private val year: Int) : Serializable,
     BaseObservable() {
 
-
     fun getMatchdays(): List<Matchday> {
         return this.matchdays
     }
@@ -37,5 +36,13 @@ class Season(private var matchdays: List<Matchday>, private val year: Int) : Ser
         return matchdays[i]
     }
 
+    fun getCurrentMatchday(): Matchday? {
+        for (matchday in matchdays) {
+            if (matchday.matches.any { m -> !m.isFinished() }) {
+                return matchday
+            }
+        }
+        return null
+    }
 
 }

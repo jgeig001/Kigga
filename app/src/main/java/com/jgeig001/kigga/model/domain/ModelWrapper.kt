@@ -16,7 +16,6 @@ class ModelWrapper @Inject constructor(
     }
 
     override fun setUsername(username: String) {
-        println("modelWrapper.setUsername()")
         this.user.setUsername(username)
     }
 
@@ -37,7 +36,7 @@ class ModelWrapper @Inject constructor(
     private fun getPointsOf(season: Season): Int {
         var sum = 0
         for (match in season.getAllMatches()) {
-            sum += match.getPoints()
+            sum += match.getBetPoints()
         }
         return sum
     }
@@ -66,21 +65,6 @@ class ModelWrapper @Inject constructor(
         return mutableListOf()
     }
 
-    override fun addHomeGoal(match: Match) {
-
-    }
-
-    override fun removeHomeGoal(match: Match) {
-
-    }
-
-    override fun addAwayGoal(match: Match) {
-
-    }
-
-    override fun removeAwayGoal(match: Match) {
-
-    }
     // ---------------------------------------------------------------------------------------------
 
     // get components
@@ -123,11 +107,4 @@ interface ModelAPI {
 
     fun getBets(): MutableList<Bet>
 
-    fun addHomeGoal(match: Match)
-
-    fun removeHomeGoal(match: Match)
-
-    fun addAwayGoal(match: Match)
-
-    fun removeAwayGoal(match: Match)
 }

@@ -80,13 +80,13 @@ class DataLoader(private var history: History) : Updater {
                 while (matchday_i <= MAX_MATCHDAYS) {
                     // load results of one matchday(matchday_i) of season in year: year_i
                     loadedResults = loadNewResults(year_i, matchday_i)
-                    if (loadedResults!!.isEmpty()) {
+                    if (loadedResults.isEmpty()) {
                         return
                     }
                     for ((matchID, matchResult) in loadedResults) {
                         for (match in curSeason!!.getAllMatches()) {
                             if (match.matchID == matchID) {
-                                match.setResult(matchResult!!)
+                                match.setResult(matchResult)
                                 break
                             }
                         }
@@ -101,7 +101,6 @@ class DataLoader(private var history: History) : Updater {
             }
         }
         // pass new results to model
-
         for ((key, value) in loadedResults) {
             history.getMatch(key)!!.setResult(value)
         }
@@ -208,7 +207,7 @@ class DataLoader(private var history: History) : Updater {
                 // kickoff...
                 var kickoff: Long
                 // 1
-                val kickoffString = json_match.getString("MatchDateTime").replace('T', ' ')
+                val kickoffString = json_match.getString("MatchDateTimeUTC").replace('T', ' ')
                 val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                 val date1 = formatter.parse(kickoffString)
                 kickoff = date1.time

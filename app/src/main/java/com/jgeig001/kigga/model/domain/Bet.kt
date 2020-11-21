@@ -1,5 +1,6 @@
 package com.jgeig001.kigga.model.domain
 
+import android.util.Log
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import com.jgeig001.kigga.R
@@ -9,9 +10,9 @@ import java.io.Serializable
  * represents the points the user can get when he/she places a bet
  */
 enum class BetPoints(val points: Int, val drawableId: Int) {
-    RIGHT_RESULT(5, R.drawable.ic_points_5_dark),
-    RIGHT_OUTCOME(2, R.drawable.ic_points_2_dark),
-    WRONG(0, R.drawable.ic_points_0_dark);
+    RIGHT_RESULT(5, R.drawable.ic_points_5),
+    RIGHT_OUTCOME(2, R.drawable.ic_points_2),
+    WRONG(0, R.drawable.ic_points_0);
 
     companion object {
         fun getDrawable(points: Int): Int {
@@ -19,19 +20,27 @@ enum class BetPoints(val points: Int, val drawableId: Int) {
                 RIGHT_RESULT.points -> RIGHT_RESULT.drawableId
                 RIGHT_OUTCOME.points -> RIGHT_OUTCOME.drawableId
                 WRONG.points -> WRONG.drawableId
-                else -> 0
+                else -> WRONG.drawableId
             }
         }
     }
 }
 
-class Bet(val match: Match, private var goals_home: Int, private var goals_away: Int) :
+class Bet(
+    val match: Match,
+    private var goals_home: Int = NO_BET,
+    private var goals_away: Int = NO_BET
+) :
     Serializable, BaseObservable() {
 
-    var set: Boolean = false
+    fun testy() {
+        goals_home = 0
+        goals_away = 2
+    }
 
     companion object {
-        val NULL_REPR = "x : x"
+        const val NULL_REPR = "[-:-]"
+        const val NO_BET = -1
     }
 
     @Bindable
@@ -39,62 +48,83 @@ class Bet(val match: Match, private var goals_home: Int, private var goals_away:
 
     val points: Int
         get() {
-            if (this.bet[0] == this.match.getMatchResult().home_fulltime && this.bet[1] == this.match.getMatchResult().away_fulltime) {
+            if (goals_home == NO_BET && goals_away == NO_BET)
+                return -1
+            if (goals_home == this.match.getMatchResult().home_fulltime && goals_away == this.match.getMatchResult().away_fulltime) {
                 return BetPoints.RIGHT_RESULT.points
             }
-            if (bet[0] > bet[1] && match.getMatchResult().isHomeWin) {
+            if (goals_home > goals_away && match.getMatchResult().isHomeWin) {
                 return BetPoints.RIGHT_OUTCOME.points
             }
-            if (bet[0] == bet[1] && match.getMatchResult().isDraw) {
+            if (goals_home == goals_away && match.getMatchResult().isDraw) {
                 return BetPoints.RIGHT_OUTCOME.points
             }
-            return if (bet[0] < bet[1] && match.getMatchResult().isAwayWin) {
+            return if (goals_home < goals_away && match.getMatchResult().isAwayWin) {
                 BetPoints.RIGHT_OUTCOME.points
             } else BetPoints.WRONG.points
         }
 
     fun getHomeGoalsStr(): String {
-        if (!set)
+        Log.d(
+            "123",
+            "##########$match ::: ${goals_home}, ${goals_away} --- ${goals_home.toString()}"
+        )
+        if (goals_home == NO_BET)
             return "-"
         return goals_home.toString()
     }
 
     fun getAwayGoalsStr(): String {
-        if (!set)
+        if (goals_away == NO_BET)
             return "-"
         return goals_away.toString()
     }
 
-    fun getDrawableId(): Int {
-        return BetPoints.getDrawable(this.points)
+    fun getDrawableResId(): Int {
+        val p = this.points
+        return BetPoints.getDrawable(p)
     }
 
     fun incHomeGoal() {
-        set = true
+        activateBet()
         this.goals_home += 1
     }
 
     fun decHomeGoal() {
         if (this.goals_home > 0) {
-            set = true
+            activateBet()
             this.goals_home -= 1
         }
     }
 
     fun incAwayGoal() {
-        set = true
+        activateBet()
         this.goals_away += 1
     }
 
     fun decAwayGoal() {
         if (this.goals_away > 0) {
-            set = true
+            activateBet()
             this.goals_away -= 1
         }
     }
 
+    fun activateBet() {
+        if (goals_home == NO_BET)
+            goals_home = 0
+        if (goals_away == NO_BET)
+            goals_away = 0
+    }
+
     fun repr(): String {
-        return if (set) String.format("%d:%d", this.goals_home, this.goals_away) else NULL_REPR
+        return if (goals_home == NO_BET && goals_away == NO_BET)
+            String.format(
+                "%d:%d",
+                this.goals_home,
+                this.goals_away
+            )
+        else
+            NULL_REPR
     }
 
 }
