@@ -8,20 +8,6 @@ class History @Inject constructor(
     private var listOfSeasons: MutableList<Season>
 ) : Serializable, BaseObservable() {
 
-    var firstLoadDone: Boolean = false
-
-    @Transient
-    private lateinit var callback: () -> Unit
-
-    fun firstLoadDone() {
-        firstLoadDone = true
-        this.callback()
-    }
-
-    fun firstLoadFinishedCallback(callback: () -> Unit) {
-        this.callback = callback
-    }
-
     companion object {
         val SELECTED_SEASON_SP_KEY = "SELECTED_SEASON_SP_KEY"
     }
@@ -50,13 +36,17 @@ class History @Inject constructor(
         }
     }
 
+
+    fun getMatchdayOf(year: Int, matchdayNumber: Int): Matchday? {
+        return this.getSeasonOf(year)?.getMatchdayAtNumber(matchdayNumber)
+    }
+
     fun getSeasonOf(year: Int): Season? {
-        for (season in this.listOfSeasons) {
-            if (season.getYear() == year) {
-                return season
-            }
+        return try {
+            listOfSeasons.first { it.getYear() == year }
+        } catch (e: NoSuchElementException) {
+            null
         }
-        return null
     }
 
     /**
@@ -78,13 +68,19 @@ class History @Inject constructor(
 
     fun getFirstMatchdayWithMissingResults(): Pair<Season, Matchday>? {
         for (season in this.listOfSeasons.reversed()) {
-            var prev: Matchday = season.getMatchdays().reversed()[0]
+            var prev: Matchday = season.getMatchdays().last()
             for (matchday in season.getMatchdays().reversed()) {
                 if (matchday.isFinished()) {
                     return Pair(season, prev)
                 }
                 prev = matchday
             }
+        }
+        if (listOfSeasons.size != 0) {
+            // return first matchday of first season
+            val s = listOfSeasons.first()
+            val md = s.getMatchdays().first()
+            return Pair(s, md)
         }
         return null
     }
@@ -106,6 +102,18 @@ class History @Inject constructor(
 
     fun getCurrentMatchday(selectedSeason: Int): Matchday? {
         return this.get_nth_season(selectedSeason)?.getCurrentMatchday()
+    }
+
+    fun getUnfinishedSeasons(): List<Season> {
+        val lis = listOfSeasons
+        return lis.filter { s -> !s.isFished() }
+    }
+
+    /**
+     * returns all seasons since [year]
+     */
+    fun getSeasonsSince(year: Int): List<Season> {
+        return listOfSeasons.filter { it.getYear() >= year }
     }
 
 }

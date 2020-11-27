@@ -80,12 +80,11 @@ class BetAdapter(
         holder.setMatchdayNumber(position, context)
 
         // check if this matchday ist the current matchday
-        val curMatchday = history.getCurrentMatchday(
-            SharedPreferencesManager.getInt(
-                context,
-                History.SELECTED_SEASON_SP_KEY
-            )
+        val selectedSeasonIndex = SharedPreferencesManager.getInt(
+            context,
+            History.SELECTED_SEASON_SP_KEY
         )
+        val curMatchday = history.getCurrentMatchday(selectedSeasonIndex)
         val isCurMatchday: Boolean = curMatchday == thisMatchday
         if (isCurMatchday)
             holder.thisMatchday()
@@ -94,6 +93,8 @@ class BetAdapter(
             matchdayList[position]?.matchday_day_iter()
         if (iter == null)
             return
+
+        val table = history.get_nth_season(selectedSeasonIndex)?.getTable()
 
         // iterate of single matchday_day
         for (matchdayDay in iter) {
@@ -169,7 +170,7 @@ class BetAdapter(
                         earnedPointsView.background =
                             ContextCompat.getDrawable(context, imageID)
                     } else {
-                        earnedPointsView.visibility = View.GONE
+                        earnedPointsView.visibility = View.INVISIBLE
                     }
 
                 } else {
@@ -181,6 +182,13 @@ class BetAdapter(
 
                     // ###
                     matchView.gravity = Gravity.CENTER_HORIZONTAL
+
+                    val x = match.home_team
+                    table?.getRankOf(match.home_team)
+                    matchView.findViewById<TextView>(R.id.rank_home).text =
+                        "${table?.getRankOf(match.home_team)}."
+                    matchView.findViewById<TextView>(R.id.rank_away).text =
+                        "${table?.getRankOf(match.away_team)}."
 
                     matchView.findViewById<TextView>(R.id.home_team).text =
                         match.home_team.shortName
@@ -223,6 +231,16 @@ class BetAdapter(
                     (matchView.findViewById<View>(R.id.goals_bet_away) as TextView).text =
                         match.getBetAwayGoals()
 
+                    matchView.findViewById<TextView>(R.id.twitter_hashtag).text =
+                        context.getString(
+                            R.string.twitter_hashtag_template,
+                            match.home_team.twitterHashtag,
+                            match.away_team.twitterHashtag
+                        )
+                    matchView.findViewById<TextView>(R.id.twitter_link).text = context.getString(
+                        R.string.twitter_hashtag_link,
+                        match.home_team.twitterHashtag + match.away_team.twitterHashtag
+                    )
                 }
 
                 // add matchView matchday_Day_View
@@ -252,7 +270,7 @@ class BetAdapter(
     }
 
     override fun getItemCount(): Int {
-        return this.matchdayList?.size ?: 0
+        return this.matchdayList.size
     }
 
     fun dpToPx(dp: Int): Int {

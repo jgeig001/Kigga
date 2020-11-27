@@ -38,7 +38,8 @@ class Liga @Inject constructor() : Serializable, BaseObservable() {
 
         @JvmStatic
         fun addClub(club: Club) {
-            this.listOfClubs.put(club.clubName!!, club)
+            if (listOfClubs.containsKey(club.clubName))
+                this.listOfClubs[club.clubName] = club
         }
 
         @JvmStatic

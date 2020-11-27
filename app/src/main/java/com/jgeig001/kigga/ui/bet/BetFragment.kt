@@ -16,11 +16,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jgeig001.kigga.R
 import com.jgeig001.kigga.databinding.FragmentBetBinding
 import com.jgeig001.kigga.model.domain.*
+import com.jgeig001.kigga.model.persitence.PersistenceManager
 import com.jgeig001.kigga.utils.SharedPreferencesManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_bet.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,6 +36,9 @@ class BetFragment : Fragment(R.layout.fragment_bet) {
 
     @Inject
     lateinit var model: ModelWrapper
+
+    @Inject
+    lateinit var persistenceManager: PersistenceManager
 
     private lateinit var betAdapter: BetAdapter
     private lateinit var layoutManager: RecyclerView.LayoutManager
@@ -77,16 +82,13 @@ class BetFragment : Fragment(R.layout.fragment_bet) {
 
         this.scrollToCurMatchday()
 
-        model.getHistory().firstLoadFinishedCallback {
-            Log.d("123", "# -> callback {...}")
-            viewModel.updateLiveDataList(0)
-            betAdapter.afterFirstLoadDone(viewModel.getMatchdayList())
-            GlobalScope.launch(Dispatchers.Main) {
-                setupSpinner()
-                scrollToCurMatchday()
-            }
-        }
+        setCallback()
 
+        observeLiveData()
+
+    }
+
+    private fun observeLiveData() {
         for (livedata in viewModel.liveDataList) {
             livedata.observe(
                 viewLifecycleOwner,
@@ -96,25 +98,30 @@ class BetFragment : Fragment(R.layout.fragment_bet) {
                 }
             )
         }
+    }
 
+    private fun setCallback() {
+        persistenceManager.firstLoadFinishedCallback {
+            Log.d("123", "# -> callback {...}")
+            viewModel.updateLiveDataList(0)
+            betAdapter.afterFirstLoadDone(viewModel.getMatchdayList())
+            GlobalScope.launch(Dispatchers.Main) {
+                setupSpinner()
+                scrollToCurMatchday()
+            }
+        }
     }
 
     /**
      * scroll recyclerView to the current matchday
      */
     private fun scrollToCurMatchday() {
-        var i = 0
         // TODO: latest season or cur selected season
         this.model.getCurSeason()?.let { curSeason ->
-            for (matchday in curSeason.getMatchdays()) {
-                if (matchday == this.model.getHistory()
-                        .getFirstMatchdayWithMissingResults()!!.second
-                ) {
-                    Log.d("123", "scrollTo: $i")
-                    this.recyclerView.layoutManager!!.scrollToPosition(i)
-                    break
-                }
-                i += 1
+            val i = curSeason.getCurrentMatchday()?.matchdayIndex ?: -1
+            if (i > -1) {
+                Log.d("123", "scrollTo: $i")
+                this.recyclerView.layoutManager!!.scrollToPosition(i)
             }
         }
     }

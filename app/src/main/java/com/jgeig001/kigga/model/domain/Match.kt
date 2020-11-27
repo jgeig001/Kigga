@@ -34,15 +34,19 @@ class Match(
         return !this.isFinished() && !this.isRunning()
     }
 
+    fun fulltimeHome(): Int {
+        return matchResult.getFulltimeHome()
+    }
+
+    fun fulltimeAway(): Int {
+        return matchResult.getFulltimeAway()
+    }
+
     fun hasStarted(): Boolean {
         val cal = Calendar.getInstance()
         cal.timeZone = TimeZone.getTimeZone("Europe/Berlin")
         val now: Long = cal.time.time
-        if (now > this.kickoff) {
-            return true
-        } else {
-            return false
-        }
+        return now > this.kickoff
     }
 
     fun isFinished(): Boolean {
@@ -128,9 +132,6 @@ class Match(
     }
 
     override fun toString(): String {
-        if (matchID == 58650) {
-            bet.testy()
-        }
         return String.format(
             "[%d] %s : %s; [%s] => %s, %d Uhr",
             matchID,

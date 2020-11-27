@@ -5,6 +5,7 @@
     <color name="colorAccent">#44EF1C</color>
     <color name="colorPrimaryDarkWhite">#EDECEC</color>
     <color name="light">#FAFAFA</color>
+    <color name="darker_light">#D2D2D2</color>
     <color name="dark">#1F1E1E</color>
     <color name="black">#050505</color>
     <color name="colorPrimary_inverted">#1F1E1E</color>

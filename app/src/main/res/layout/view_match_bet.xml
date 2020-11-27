@@ -80,7 +80,7 @@
         <LinearLayout
             android:layout_width="92dp"
             android:layout_height="40dp"
-            android:layout_marginStart="7dp"
+            android:layout_marginStart="5dp"
             android:orientation="vertical">
 
             <TextView
@@ -179,7 +179,7 @@
 
 
         <LinearLayout
-            android:layout_width="63dp"
+            android:layout_width="66dp"
             android:layout_height="40dp"
             android:orientation="vertical">
 
@@ -188,20 +188,38 @@
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
                 android:fontFamily="@font/comfortaa_light"
-                android:hint="20:30Uhr"
+                android:hint="20:30 Uhr"
                 android:textAlignment="textEnd"
                 android:textSize="13sp" />
 
-            <TextView
-                android:id="@+id/twitter"
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:fontFamily="@font/comfortaa_light"
-                android:hint="#BVBS04"
-                android:textAlignment="textEnd"
-                android:textColor="?attr/twitter"
-                android:textColorHint="?attr/twitter"
-                android:textSize="13sp" />
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/twitter_hashtag"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:autoSizeMaxTextSize="13sp"
+                    android:autoSizeMinTextSize="12sp"
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="@font/comfortaa_light"
+                    android:hint="#wobsvw"
+                    android:textAlignment="textEnd"
+                    android:textColor="?attr/twitter"
+                    android:textColorHint="?attr/twitter" />
+
+                <TextView
+                    android:id="@+id/twitter_link"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:autoLink="web"
+                    android:fontFamily="@font/comfortaa_light"
+                    android:textAlignment="textEnd"
+                    android:textColorLink="#00B11E1E"
+                    android:visibility="visible" />
+
+            </FrameLayout>
 
         </LinearLayout>
 

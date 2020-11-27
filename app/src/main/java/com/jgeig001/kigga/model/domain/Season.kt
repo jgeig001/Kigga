@@ -1,10 +1,19 @@
 package com.jgeig001.kigga.model.domain
 
+import android.util.Log
 import androidx.databinding.BaseObservable
 import java.io.Serializable
+import java.lang.IndexOutOfBoundsException
 
 class Season(private var matchdays: List<Matchday>, private val year: Int) : Serializable,
     BaseObservable() {
+
+    private var table: Table
+
+    init {
+        Log.d("123", "init Season.class")
+        table = Table()
+    }
 
     fun getMatchdays(): List<Matchday> {
         return this.matchdays
@@ -38,11 +47,91 @@ class Season(private var matchdays: List<Matchday>, private val year: Int) : Ser
 
     fun getCurrentMatchday(): Matchday? {
         for (matchday in matchdays) {
-            if (matchday.matches.any { m -> !m.isFinished() }) {
+            if (matchday.matches.any { !it.isFinished() }) {
                 return matchday
             }
         }
         return null
+        // TODO: safe delete
+        matchdays.forEachIndexed { i, matchday ->
+            if (matchday.matches.all { m -> m.isFinished() } && !matchdays[i + 1].matches.all { m -> m.isFinished() }) {
+                return try {
+                    matchdays[i + 1]
+                } catch (e: IndexOutOfBoundsException) {
+                    null
+                }
+            }
+        }
+        return null
     }
+
+    fun isFished(): Boolean {
+        // finished if the last matchday is finished
+        val last = matchdays.last()
+        return last.isFinished()
+    }
+
+    fun getTable(): Table {
+        return this.table
+    }
+
+    fun addTeamToTable(
+        club: Club,
+        points: Int,
+        goals: Int,
+        opponentGoals: Int,
+        won: Int,
+        draw: Int,
+        loss: Int,
+        matches: Int
+    ): Boolean {
+        return this.table.addTeam(club, points, goals, opponentGoals, won, draw, loss, matches)
+    }
+
+    fun printTable() {
+        table.printTable()
+    }
+
+    /**
+     * return map of matches which are not finished, the list size is max. [n] elements
+     */
+    fun get_n_unfinishedMatches(n: Int): Map<Int, Match> {
+        var counter = 0
+        val matchMap = mutableMapOf<Int, Match>()
+        for (match in this.getAllMatches()) {
+            if (match.isFinished())
+                continue
+            matchMap[match.matchID] = match
+            counter++
+            if (counter == n)
+                return matchMap
+        }
+        return matchMap
+    }
+
+    /**
+     * returns the matchday of matchday [matchdayNumber]
+     * parameter 1 will return the first matchday of the season
+     * if the param is out of bound it will return null
+     */
+    fun getMatchdayAtNumber(matchdayNumber: Int): Matchday? {
+        return try {
+            matchdays[matchdayNumber - 1]
+        } catch (e: IndexOutOfBoundsException) {
+            null
+        }
+    }
+
+    /**
+     * returns a list with all matchdays since index [i] (inclusive)
+     */
+    fun getMatchdaysSinceIndex(i: Int): List<Matchday> {
+        return matchdays.filter { it.matchdayIndex >= i }
+    }
+
+    fun getFirstMatchday(): Matchday {
+        return matchdays[0]
+    }
+
 
 }

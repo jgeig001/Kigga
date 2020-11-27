@@ -33,11 +33,6 @@ class Bet(
 ) :
     Serializable, BaseObservable() {
 
-    fun testy() {
-        goals_home = 0
-        goals_away = 2
-    }
-
     companion object {
         const val NULL_REPR = "[-:-]"
         const val NO_BET = -1
@@ -50,7 +45,7 @@ class Bet(
         get() {
             if (goals_home == NO_BET && goals_away == NO_BET)
                 return -1
-            if (goals_home == this.match.getMatchResult().home_fulltime && goals_away == this.match.getMatchResult().away_fulltime) {
+            if (goals_home == this.match.fulltimeHome() && goals_away == this.match.fulltimeAway()) {
                 return BetPoints.RIGHT_RESULT.points
             }
             if (goals_home > goals_away && match.getMatchResult().isHomeWin) {

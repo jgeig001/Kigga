@@ -13,7 +13,7 @@ object TrendCalculator {
     fun calcTrend(history: History, club: Club): Float {
         var sum = 0f
         val last5 = last5(history, club)
-        val multipliers = listOf(6f, 4f, 3f, 2f, 1f)
+        val multipliers = listOf(6f, 4f, 4f, 3f, 3f)
         for ((match, multiplicator) in last5.zip(multipliers)) {
             match.ligaPointsFor(club)?.let { ligaPoints ->
                 val pn = pointsNormalized[ligaPoints]

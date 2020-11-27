@@ -37,10 +37,8 @@ class Matchday(var matches: MutableList<Match>, var matchdayIndex: Int) : Serial
     }
 
     fun isFinished(): Boolean {
-        if (this.matches.reversed().get(0).isFinished()) {
-            return true
-        }
-        return false
+        // finished if last match is finished
+        return this.matches.all { it.isFinished() }
     }
 
     override fun addHomeGoal(match: Match) {
@@ -61,6 +59,11 @@ class Matchday(var matches: MutableList<Match>, var matchdayIndex: Int) : Serial
     override fun removeAwayGoal(match: Match) {
         super.removeAwayGoal(match)
         match.removeAwayGoal()
+    }
+
+    override fun setResult(matchID: Int, matchResult: MatchResult) {
+        super.setResult(matchID, matchResult)
+        matches.first { it.matchID == matchID }.setResult(matchResult)
     }
 
     /**

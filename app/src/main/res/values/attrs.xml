@@ -7,6 +7,7 @@
         <attr name="colorAccent" format="color" />
         <attr name="colorPrimaryDarkWhite" format="color" />
         <attr name="light" format="color" />
+        <attr name="darker_light" format="color" />
         <attr name="dark" format="color" />
         <attr name="black" format="color" />
         <attr name="colorPrimary_inverted" format="color" />

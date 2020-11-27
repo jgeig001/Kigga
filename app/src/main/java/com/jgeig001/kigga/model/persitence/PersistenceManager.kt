@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.util.Log
 import com.jgeig001.kigga.model.domain.*
+import kotlinx.coroutines.Job
 import java.io.*
 import java.lang.reflect.Field
 import java.util.*
@@ -14,57 +15,54 @@ class PersistenceManager @Inject constructor(context: Context) {
     private val SERIALIZE_FILE = "serialized"
     private val MAX_TIME_TO_WAIT = 60
     private val first_init_done = false
-    var model: ModelWrapper
+    private var model: ModelWrapper
+    private var dataPoller: DataPoller
 
     init {
         // 1. load data from persitence
+        Log.d("456", "persistenceManager.init { ... }")
         try {
             Log.d("123", "load data from local storage")
             model = loadSerializedModel(context)
             Log.d("123", "load data from local storage: successful")
-        } catch (e: IOException) {
+        } catch (e: FileNotFoundException) {
             // nothing saved yet
             val user = User("USER_NAME", Club("NOCLUB", "NOCLUB"))
             val liga = Liga()
             val history = History(mutableListOf())
             model = ModelWrapper(user, liga, history)
-            Log.d("123", "load data from local storage: failed")
+            e.printStackTrace()
+            Log.d("123", "load data from local storage: no possible")
         } catch (e: ClassNotFoundException) {
             val user = User("USER_NAME", Club("NOCLUB", "NOCLUB"))
             val liga = Liga()
             val history = History(mutableListOf())
             model = ModelWrapper(user, liga, history)
+            e.printStackTrace()
             Log.d("123", "load data from local storage: failed")
         }
         // 2. load new data from web
-        Log.d("123", "load data from web")
-        val dataPoller = DataPoller(model.getHistory())
+        Log.d("123", "load data from web: ${model.getHistory().getListOfSeasons()}")
+        dataPoller = DataPoller(model.getHistory())
+        dataPoller.firstLoadFinishedCallback { this.saveData(context) }
         dataPoller.poll()
         Log.d("123", "go on")
-        // TODO: check: if loading takes too long. will view notice model change ?
+        // TODO: check stability
     }
 
-    /**
-     * creates any model for developing and testing
-     *
-     * @return dummy modelWrapper
-     */
-    private fun createSomeTestingModel(): ModelWrapper {
-        val colors = mutableListOf<Int>()
-        colors.add(Color.RED)
-        colors.add(-0x1)
-        val user = User("Mr_Dummy", Club("Mainz05", "M05"))
-        return ModelWrapper(user, Liga(), History(mutableListOf())).also { model = it }
+    fun getLoadedModel(): ModelWrapper {
+        Log.d("456", "persistenceManager.getLoadedModel()}")
+        return this.model
     }
 
     /**
      * method that deserialize model and returns it
-     *
      * @param context
      * @return loaded model: ModelWrapper
      */
     @Throws(IOException::class, ClassNotFoundException::class)
     private fun loadSerializedModel(context: Context): ModelWrapper {
+        println("###loadSerializedModel()")
         var fis: FileInputStream? = null
         fis = context.openFileInput(SERIALIZE_FILE)
         val inputStream = ObjectInputStream(fis)
@@ -98,7 +96,10 @@ class PersistenceManager @Inject constructor(context: Context) {
         } catch (e: IOException) {
             e.printStackTrace()
         }
+    }
 
+    fun firstLoadFinishedCallback(callback: () -> Unit) {
+        dataPoller.firstLoadFinishedCallback(callback)
     }
 
 }
