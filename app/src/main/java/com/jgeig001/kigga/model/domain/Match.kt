@@ -1,6 +1,5 @@
 package com.jgeig001.kigga.model.domain
 
-import android.util.Log
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import java.io.Serializable
@@ -42,10 +41,11 @@ class Match(
         return matchResult.getFulltimeAway()
     }
 
+    /**
+     * return true if NOW is after [kickoff]
+     */
     fun hasStarted(): Boolean {
-        val cal = Calendar.getInstance()
-        cal.timeZone = TimeZone.getTimeZone("Europe/Berlin")
-        val now: Long = cal.time.time
+        val now: Long = Calendar.getInstance().time.time
         return now > this.kickoff
     }
 
@@ -88,7 +88,6 @@ class Match(
     }
 
     fun betRepr(): String {
-        Log.d("123", "Match.betRepr()")
         return bet.repr()
     }
 
@@ -112,22 +111,18 @@ class Match(
     }
 
     fun addHomeGoal() {
-        Log.d("123", "Match.addHomeGoal()")
         this.getBet().incHomeGoal()
     }
 
     fun removeHomeGoal() {
-        Log.d("123", "Match.removeHomeGoal()")
         this.getBet().decHomeGoal()
     }
 
     fun addAwayGoal() {
-        Log.d("123", "Match.addAwayGoal()")
         this.getBet().incAwayGoal()
     }
 
     fun removeAwayGoal() {
-        Log.d("123", "Match.removeAwayGoal()")
         this.getBet().decAwayGoal()
     }
 

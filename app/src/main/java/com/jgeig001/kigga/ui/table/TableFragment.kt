@@ -1,6 +1,7 @@
 package com.jgeig001.kigga.ui.table
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,8 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class TableFragment : Fragment() {
+
+    // TODO: reload table data
 
     @Inject
     lateinit var model: ModelWrapper
@@ -55,5 +58,6 @@ class TableFragment : Fragment() {
             this.binding.tableListview.adapter = TableAdapter(table, requireContext())
         }
     }
+
 
 }

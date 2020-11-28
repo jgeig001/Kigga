@@ -1,13 +1,14 @@
 package com.jgeig001.kigga.ui.home
 
-import androidx.databinding.Observable
+import android.util.Log
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.jgeig001.kigga.model.domain.Club
 import com.jgeig001.kigga.model.domain.ModelWrapper
+import com.jgeig001.kigga.model.domain.TableElement
 
 /**
  * This class represents the ViewModel for the HomeTab. It holds LiveData-Variables which are bind
@@ -27,41 +28,37 @@ class HomeViewModel @ViewModelInject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private var _username = MutableLiveData(model.getUsername())
+    var favouriteClub = MutableLiveData(model.getUser().getFavouriteClub())
 
-    private var _points_curSeason = MutableLiveData("${model.getPointsCurSeason()}")
+    val points_curSeason: String = model.getPointsCurSeason().toString()
+    val points_allSeasons: String = model.getPointsAllTime().toString()
 
-    private var _points_allSeasons = MutableLiveData("${model.getPointsAllTime()}")
-
-    private var _favouriteClub = MutableLiveData("MrDummy")
-
-    val username: LiveData<String> = _username
-
-    val points_curSeason: LiveData<String> = _points_curSeason
-
-    val points_allSeasons: LiveData<String> = _points_allSeasons
-
-    init {
-        print("init homeviewmodel")
-        // do this in HomeFragment.kt ???
-        // register callbacks at model
-        // more to come...
-        this._username.value = this.model.getUsername()
+    fun calc3Table(): List<TableElement> {
+        val table = model.getLatestSeason().getTable()
+        val favClub: Club = favouriteClub.value ?: table.getTeam(0).club
+        return when {
+            table.isLeader(favClub) -> {
+                table.getTop3()
+            }
+            table.isLast(favClub) -> {
+                table.getFlop3()
+            }
+            else -> {
+                table.getClubsAround(favClub)
+            }
+        }
     }
 
-    fun setUsernameCallback(sender: Observable?, propertyId: Int) {
-        val s: String = model.getUsername()
-        this._username.value = s
+    fun get1st(): String {
+        return ""
     }
 
-    fun setPointsCurSeason(points: Int) {
-        this._points_curSeason.value = "Aktuelle Saison: ${points} Punkte"
+    fun get2nd(): String {
+        return ""
     }
 
-    fun onLike() {
-        println("@@@" + this.model)
-        println("HomeViewModel.onLike()")
-        this.model.setUsername(this._username.value + "#")
+    fun get3rd(): String {
+        return ""
     }
 
 }

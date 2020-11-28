@@ -1,5 +1,6 @@
 package com.jgeig001.kigga.ui.more
 
+import android.util.Log
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
@@ -14,14 +15,6 @@ class MoreViewModel @ViewModelInject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle
 ) : Serializable, ViewModel() {
 
-    @Transient
-    private val _username = MutableLiveData("MrDummy_Settings")
 
-    @Transient
-    val username: LiveData<String> = _username
-
-    fun onLike() {
-        this._username.value = this._username.value + "#"
-    }
 
 }

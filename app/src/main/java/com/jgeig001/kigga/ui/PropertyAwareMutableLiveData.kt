@@ -9,13 +9,14 @@ class PropertyAwareMutableLiveData<T : BaseObservable?>(obs: T?) : MutableLiveDa
 
     private val callback = object : Observable.OnPropertyChangedCallback() {
         override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
-            value = value
+            postValue(value)
         }
     }
 
-    override fun setValue(value: T?) {
-        super.setValue(value)
+    override fun postValue(value: T?) {
+        super.postValue(value)
 
         value?.addOnPropertyChangedCallback(callback)
     }
+
 }

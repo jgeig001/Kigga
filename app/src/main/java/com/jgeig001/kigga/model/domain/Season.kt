@@ -1,6 +1,5 @@
 package com.jgeig001.kigga.model.domain
 
-import android.util.Log
 import androidx.databinding.BaseObservable
 import java.io.Serializable
 import java.lang.IndexOutOfBoundsException
@@ -11,7 +10,6 @@ class Season(private var matchdays: List<Matchday>, private val year: Int) : Ser
     private var table: Table
 
     init {
-        Log.d("123", "init Season.class")
         table = Table()
     }
 
@@ -75,6 +73,7 @@ class Season(private var matchdays: List<Matchday>, private val year: Int) : Ser
         return this.table
     }
 
+    @Deprecated("use [this.setTableList()] instead")
     fun addTeamToTable(
         club: Club,
         points: Int,
@@ -86,10 +85,6 @@ class Season(private var matchdays: List<Matchday>, private val year: Int) : Ser
         matches: Int
     ): Boolean {
         return this.table.addTeam(club, points, goals, opponentGoals, won, draw, loss, matches)
-    }
-
-    fun printTable() {
-        table.printTable()
     }
 
     /**
@@ -131,6 +126,10 @@ class Season(private var matchdays: List<Matchday>, private val year: Int) : Ser
 
     fun getFirstMatchday(): Matchday {
         return matchdays[0]
+    }
+
+    fun setTableList(lis: MutableList<TableElement>) {
+        getTable().setTableList(lis)
     }
 
 

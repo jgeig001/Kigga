@@ -25,7 +25,7 @@ class Club(var clubName: String, var shortName: String) : Serializable {
         if (other !is Club) {
             return false
         }
-        val c: Club = other as Club
+        val c: Club = other
         return this.clubName == c.clubName && this.shortName == c.shortName
     }
 

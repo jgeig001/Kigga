@@ -15,6 +15,7 @@ import java.nio.charset.Charset
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.NoSuchElementException
 
 interface Updater {
     fun updateData()
@@ -34,7 +35,11 @@ class DataLoader(private var history: History) : Updater {
             Log.d("123", "model was not load correctly ?")
         }
         var emptyHistory = false
-        val lastLoadedSeason = history.getLatestSeason()
+        val lastLoadedSeason: Season? = try {
+            history.getLatestSeason()
+        } catch (ex: NoSuchElementException) {
+            null
+        }
         val lastLoadedSeasonYear: Int
         if (lastLoadedSeason == null) {
             // nothing loaded yet
@@ -110,8 +115,10 @@ class DataLoader(private var history: History) : Updater {
     }
 
     override fun loadTable() {
-        val x = history.getUnfinishedSeasons()
-        for (season in x) {
+        // fill list with TableElements
+        var tmpTableLis: MutableList<TableElement>
+        for (season in history.getUnfinishedSeasons()) {
+            tmpTableLis = mutableListOf()
             val url = "https://www.openligadb.de/api/getbltable/bl1/${season.getYear()}"
             val jsonArray = JSON_Reader.readJsonFromUrl(url)
             for (i in 0 until jsonArray!!.length()) {
@@ -124,18 +131,24 @@ class DataLoader(private var history: History) : Updater {
                 } catch (ex: ClubExistenceException) {
                     this.getClubFrom(jsonTeamObj)
                 }
-                season.addTeamToTable(
-                    club!!,
-                    jsonTeamObj.getInt("Points"),
-                    jsonTeamObj.getInt("Goals"),
-                    jsonTeamObj.getInt("OpponentGoals"),
-                    jsonTeamObj.getInt("Won"),
-                    jsonTeamObj.getInt("Draw"),
-                    jsonTeamObj.getInt("Lost"),
-                    jsonTeamObj.getInt("Matches")
+                if (season.getTable().isComplete()) {
+                    season.getTable().clearTable()
+                }
+                // TODO: better hide TableElement type in Table class, use some caching foobar
+                tmpTableLis.add(
+                    TableElement(
+                        club!!,
+                        jsonTeamObj.getInt("Points"),
+                        jsonTeamObj.getInt("Goals"),
+                        jsonTeamObj.getInt("OpponentGoals"),
+                        jsonTeamObj.getInt("Won"),
+                        jsonTeamObj.getInt("Draw"),
+                        jsonTeamObj.getInt("Lost"),
+                        jsonTeamObj.getInt("Matches")
+                    )
                 )
             }
-            season.printTable()
+            season.setTableList(tmpTableLis)
         }
     }
 
@@ -292,20 +305,17 @@ class DataLoader(private var history: History) : Updater {
         return season
     }
 
-    /**
-     * TODO: use it !!!
-     */
     override fun getLastUpdateOf(season: Season, matchday: Matchday): Date {
         try {
             val url = String.format(
                 "https://www.openligadb.de/api/getlastchangedate/bl1/%d/%d",
-                season.getYear(), season.getMatchdayIndexOf(matchday)
+                season.getYear(), season.getMatchdayIndexOf(matchday) + 1
             )
             val `is` = URL(url).openStream()
             val rd = BufferedReader(InputStreamReader(`is`, Charset.forName("UTF-8")))
             var jsonText = JSON_Reader.readAll(rd)
             jsonText = jsonText.replace('T', ' ').dropLast(1).drop(1)
-            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.ss")
+            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS")
             return formatter.parse(jsonText)
         } catch (e: IOException) {
             e.printStackTrace()

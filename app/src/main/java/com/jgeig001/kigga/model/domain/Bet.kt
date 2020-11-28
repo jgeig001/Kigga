@@ -60,10 +60,6 @@ class Bet(
         }
 
     fun getHomeGoalsStr(): String {
-        Log.d(
-            "123",
-            "##########$match ::: ${goals_home}, ${goals_away} --- ${goals_home.toString()}"
-        )
         if (goals_home == NO_BET)
             return "-"
         return goals_home.toString()

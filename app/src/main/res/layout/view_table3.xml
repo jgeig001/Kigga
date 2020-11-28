@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="com.jgeig001.kigga.ui.home.HomeViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/favouriteClubLable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lieblingsverein:  "
+            app:layout_constraintBottom_toTopOf="@+id/table3Linearlayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.2" />
+
+        <TextView
+            android:id="@+id/favouriteClub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Dortmund"
+            android:text="@{viewmodel.favouriteClub.clubName}"
+            app:layout_constraintStart_toEndOf="@+id/favouriteClubLable"
+            app:layout_constraintTop_toTopOf="@+id/favouriteClubLable" />
+
+        <Button
+            android:id="@+id/selec_fav_btn"
+            android:layout_width="wrap_content"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:layout_height="30dp"
+            android:text="auswählen"
+            android:textColor="?attr/light"
+            android:elevation="5dp"
+            android:background="@drawable/corners_green"
+            app:layout_constraintStart_toEndOf="@+id/favouriteClubLable"
+            app:layout_constraintTop_toTopOf="@+id/favouriteClubLable"/>
+
+        <LinearLayout
+            android:id="@+id/table3Linearlayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/selec_fav_btn">
+
+            <View
+                android:layout_width="165dp"
+                android:layout_height="1dp"
+                android:layout_margin="1dp"
+                android:background="?attr/colorPrimary_inverted" />
+
+            <include
+                android:id="@+id/table3_1st"
+                layout="@layout/include_mini_table_row"
+                app:viewmodel="@{viewmodel}" />
+
+            <View
+                android:layout_width="160dp"
+                android:layout_height="1dp"
+                android:layout_margin="1dp"
+                android:background="?attr/colorPrimary_inverted" />
+
+            <include
+                android:id="@+id/table3_2nd"
+                layout="@layout/include_mini_table_row"
+                app:viewmodel="@{viewmodel}" />
+
+            <View
+                android:layout_width="160dp"
+                android:layout_height="1dp"
+                android:layout_margin="1dp"
+                android:background="?attr/colorPrimary_inverted" />
+
+            <include
+                android:id="@+id/table3_3rd"
+                layout="@layout/include_mini_table_row"
+                app:viewmodel="@{viewmodel}" />
+
+            <View
+                android:layout_width="165dp"
+                android:layout_height="1dp"
+                android:layout_margin="1dp"
+                android:background="?attr/colorPrimary_inverted" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

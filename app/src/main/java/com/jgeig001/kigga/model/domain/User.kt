@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class User @Inject constructor(
     private var username: String,
-    private var favouriteClub: Club
+    private var favouriteClub: Club?
 ) : Serializable, BaseObservable() {
 
     @Bindable
@@ -22,7 +22,7 @@ class User @Inject constructor(
     }
 
     @Bindable
-    fun getFavouriteClub(): Club {
+    fun getFavouriteClub(): Club? {
         return this.favouriteClub
     }
 
@@ -32,6 +32,6 @@ class User @Inject constructor(
     }
 
     val favouriteClubName: String?
-        get() = favouriteClub.clubName
+        get() = favouriteClub?.clubName
 
 }

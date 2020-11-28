@@ -20,9 +20,7 @@ class ModelWrapper @Inject constructor(
     }
 
     override fun getPointsCurSeason(): Int {
-        history.getLatestSeason()?.let { curSeason ->
-            return getPointsOf(curSeason)
-        } ?: return 0
+        return getPointsOf(history.getLatestSeason())
     }
 
     override fun getPointsAllTime(): Int {
@@ -41,7 +39,7 @@ class ModelWrapper @Inject constructor(
         return sum
     }
 
-    override fun getFavouriteClub(): Club {
+    override fun getFavouriteClub(): Club? {
         return this.user.getFavouriteClub()
     }
 
@@ -53,8 +51,16 @@ class ModelWrapper @Inject constructor(
         return this.history.getListOfSeasons()
     }
 
-    override fun getCurSeason(): Season? {
+    override fun getLatestSeason(): Season {
         return this.history.getLatestSeason()
+    }
+
+    override fun getPreviousSeason(): Season? {
+        return history.getPreviousSeason()
+    }
+
+    override fun getCurrentMatchday(selectedSeasonIndex: Int): Matchday? {
+        return history.getCurrentMatchday(selectedSeasonIndex)
     }
 
     override fun get_nth_season(n: Int): Season? {
@@ -95,13 +101,17 @@ interface ModelAPI {
 
     fun getPointsAllTime(): Int
 
-    fun getFavouriteClub(): Club
+    fun getFavouriteClub(): Club?
 
     fun setFavouriteClub(club: Club)
 
     fun getListOfSeasons(): MutableList<Season>
 
-    fun getCurSeason(): Season?
+    fun getLatestSeason(): Season?
+
+    fun getPreviousSeason(): Season?
+
+    fun getCurrentMatchday(selectedSeasonIndex: Int): Matchday?
 
     fun get_nth_season(n: Int): Season?
 

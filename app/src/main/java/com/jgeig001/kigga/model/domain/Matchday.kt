@@ -2,9 +2,9 @@ package com.jgeig001.kigga.model.domain
 
 import java.io.Serializable
 
-/*
-* Spieltag mit mehreren Spielen
-* */
+/**
+ * Spieltag mit mehreren Spielen
+ */
 class Matchday(var matches: MutableList<Match>, var matchdayIndex: Int) : Serializable,
     ObservableMatchday() {
 

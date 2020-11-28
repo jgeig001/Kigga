@@ -22,7 +22,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_bet.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -75,7 +74,7 @@ class BetFragment : Fragment(R.layout.fragment_bet) {
         this.recyclerView.setHasFixedSize(true)
         this.layoutManager = LinearLayoutManager(this.context)
         this.betAdapter =
-            BetAdapter(this.viewModel.getMatchdayList(), model.getHistory(), requireContext())
+            BetAdapter(this.viewModel.getMatchdayList(), model, requireContext())
 
         this.recyclerView.layoutManager = this.layoutManager
         this.recyclerView.adapter = this.betAdapter
@@ -85,7 +84,6 @@ class BetFragment : Fragment(R.layout.fragment_bet) {
         setCallback()
 
         observeLiveData()
-
     }
 
     private fun observeLiveData() {
@@ -102,7 +100,6 @@ class BetFragment : Fragment(R.layout.fragment_bet) {
 
     private fun setCallback() {
         persistenceManager.firstLoadFinishedCallback {
-            Log.d("123", "# -> callback {...}")
             viewModel.updateLiveDataList(0)
             betAdapter.afterFirstLoadDone(viewModel.getMatchdayList())
             GlobalScope.launch(Dispatchers.Main) {
@@ -116,13 +113,14 @@ class BetFragment : Fragment(R.layout.fragment_bet) {
      * scroll recyclerView to the current matchday
      */
     private fun scrollToCurMatchday() {
-        // TODO: latest season or cur selected season
-        this.model.getCurSeason()?.let { curSeason ->
-            val i = curSeason.getCurrentMatchday()?.matchdayIndex ?: -1
+        // TODO: latest season or cur selected season ?
+        try {
+            val i = this.model.getLatestSeason().getCurrentMatchday()?.matchdayIndex ?: -1
             if (i > -1) {
-                Log.d("123", "scrollTo: $i")
                 this.recyclerView.layoutManager!!.scrollToPosition(i)
             }
+        } catch (ex: NoSuchElementException) {
+            return // ignore auto scroll
         }
     }
 

@@ -20,38 +20,30 @@ class PersistenceManager @Inject constructor(context: Context) {
 
     init {
         // 1. load data from persitence
-        Log.d("456", "persistenceManager.init { ... }")
         try {
-            Log.d("123", "load data from local storage")
             model = loadSerializedModel(context)
-            Log.d("123", "load data from local storage: successful")
         } catch (e: FileNotFoundException) {
             // nothing saved yet
-            val user = User("USER_NAME", Club("NOCLUB", "NOCLUB"))
+            val user = User("USER_NAME", null)
             val liga = Liga()
             val history = History(mutableListOf())
             model = ModelWrapper(user, liga, history)
             e.printStackTrace()
-            Log.d("123", "load data from local storage: no possible")
         } catch (e: ClassNotFoundException) {
-            val user = User("USER_NAME", Club("NOCLUB", "NOCLUB"))
+            val user = User("USER_NAME", null)
             val liga = Liga()
             val history = History(mutableListOf())
             model = ModelWrapper(user, liga, history)
             e.printStackTrace()
-            Log.d("123", "load data from local storage: failed")
         }
         // 2. load new data from web
-        Log.d("123", "load data from web: ${model.getHistory().getListOfSeasons()}")
         dataPoller = DataPoller(model.getHistory())
         dataPoller.firstLoadFinishedCallback { this.saveData(context) }
         dataPoller.poll()
-        Log.d("123", "go on")
         // TODO: check stability
     }
 
     fun getLoadedModel(): ModelWrapper {
-        Log.d("456", "persistenceManager.getLoadedModel()}")
         return this.model
     }
 

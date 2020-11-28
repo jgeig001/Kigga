@@ -17,7 +17,6 @@ class BetViewModel @ViewModelInject constructor(
     var liveDataList: List<PropertyAwareMutableLiveData<Matchday?>>
 
     init {
-        Log.d("123", "history in BetViewModel: ${model.getHistory().hashCode()}")
         this.liveDataList = generateLiveDataList()
     }
 
@@ -27,7 +26,6 @@ class BetViewModel @ViewModelInject constructor(
         val season: List<Matchday?> =
             model.getHistory().get_nth_season(selectedSeasonIndex)?.getMatchdays()
                 ?: List(Matchday.MAX_MATCHDAYS) { null }
-        Log.d("123", "BetViewModel.generateLiveDataList().season: $season")
         for (md: Matchday? in season) {
             val liveDataObject = PropertyAwareMutableLiveData<Matchday?>(md)
             lis.add(liveDataObject)
@@ -65,7 +63,7 @@ class BetViewModel @ViewModelInject constructor(
     }
 
     fun getMatchday(i: Int): Matchday? {
-        return model.getCurSeason()?.getMatchday(i)
+        return model.getLatestSeason()?.getMatchday(i)
     }
 
 }

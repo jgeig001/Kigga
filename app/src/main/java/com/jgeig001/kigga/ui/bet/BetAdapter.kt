@@ -16,6 +16,7 @@ import com.jgeig001.kigga.databinding.MatchdayCardBinding
 import com.jgeig001.kigga.model.domain.History
 import com.jgeig001.kigga.model.domain.Match
 import com.jgeig001.kigga.model.domain.Matchday
+import com.jgeig001.kigga.model.domain.ModelWrapper
 import com.jgeig001.kigga.utils.ArrowFunctions
 import com.jgeig001.kigga.utils.SharedPreferencesManager
 import com.jgeig001.kigga.utils.TrendCalculator
@@ -44,7 +45,7 @@ class MatchdayViewHolder(var binding: MatchdayCardBinding) :
  */
 class BetAdapter(
     private var matchdayList: MutableList<Matchday?>,
-    private var history: History,
+    private var model: ModelWrapper,
     private var context: Context
 ) : RecyclerView.Adapter<MatchdayViewHolder>(), Serializable {
 
@@ -84,7 +85,7 @@ class BetAdapter(
             context,
             History.SELECTED_SEASON_SP_KEY
         )
-        val curMatchday = history.getCurrentMatchday(selectedSeasonIndex)
+        val curMatchday = model.getCurrentMatchday(selectedSeasonIndex)
         val isCurMatchday: Boolean = curMatchday == thisMatchday
         if (isCurMatchday)
             holder.thisMatchday()
@@ -94,19 +95,27 @@ class BetAdapter(
         if (iter == null)
             return
 
-        val table = history.get_nth_season(selectedSeasonIndex)?.getTable()
+        val table = model.get_nth_season(selectedSeasonIndex)?.getTable()
 
         // iterate of single matchday_day
         for (matchdayDay in iter) {
 
+            // depending on system language
             val matchdayStrings = hashMapOf(
-                "Mon" to R.string.Mon,
+                "Mon" to R.string.Mon, // english
                 "Tue" to R.string.Tue,
                 "Wed" to R.string.Wed,
                 "Thu" to R.string.Thr,
                 "Fri" to R.string.Fri,
                 "Sat" to R.string.Sat,
-                "Sun" to R.string.Sun
+                "Sun" to R.string.Sun,
+                "Mo." to R.string.Mon, // deutsch
+                "Di." to R.string.Tue,
+                "Mi." to R.string.Wed,
+                "Do." to R.string.Thr,
+                "Fr." to R.string.Fri,
+                "Sa." to R.string.Sat,
+                "So." to R.string.Sun
             )
 
             // create view for matchdayDay
@@ -121,10 +130,9 @@ class BetAdapter(
                     Date(matchdayDay.first().getKickoff())
                 )
 
-
             if (!isCurMatchday) {
                 matchday_Day_View.background =
-                    ContextCompat.getDrawable(context, R.drawable.corners_other_matchdays)
+                    ContextCompat.getDrawable(context, R.drawable.corners_stroke_other_matchdays)
                 // setting another background resets the padding
                 matchday_Day_View.setPadding(0, 0, 0, dpToPx(6))
 
@@ -144,9 +152,6 @@ class BetAdapter(
                 var matchView: LinearLayout
                 // create view element for a match
                 if (match.hasStarted()) {
-
-                    /** show result */
-
                     matchView = LayoutInflater.from(parent!!.context)
                         .inflate(R.layout.view_match, parent, false) as LinearLayout
                     // and add data to it
@@ -156,15 +161,16 @@ class BetAdapter(
                         match.away_team.shortName
                     matchView.findViewById<TextView>(R.id.result).text =
                         match.getMatchResult().getRepr()
-                    val earnedPointsView = matchView.findViewById<ImageView>(R.id.earned_points)
                     val betResultViewHome = matchView.findViewById<TextView>(R.id.done_bet_home)
                     val betResultViewAway = matchView.findViewById<TextView>(R.id.done_bet_away)
                     betResultViewHome.visibility = View.VISIBLE
                     betResultViewHome.text = "[" + match.getBet().getHomeGoalsStr()
                     betResultViewAway.visibility = View.VISIBLE
                     betResultViewAway.text = ":" + match.getBet().getAwayGoalsStr() + "]"
+
+                    // display earned points...
+                    val earnedPointsView = matchView.findViewById<ImageView>(R.id.earned_points)
                     if (match.isFinished()) {
-                        // show earned points: if finished
                         val imageID = match.getBetResultDrawableResId()
                         earnedPointsView.visibility = View.VISIBLE
                         earnedPointsView.background =
@@ -194,7 +200,7 @@ class BetAdapter(
                         match.home_team.shortName
                     matchView.findViewById<TextView>(R.id.away_team).text =
                         match.away_team.shortName
-                    val trendHome = TrendCalculator.calcTrend(history, match.home_team)
+                    val trendHome = TrendCalculator.calcTrend(model, match.home_team)
                     matchView.findViewById<TextView>(R.id.trend_home).text = trendHome.toString()
                     matchView.findViewById<ImageView>(R.id.trend_arrow_home).rotation =
                         ArrowFunctions.trendArrow(trendHome)
@@ -202,7 +208,7 @@ class BetAdapter(
                         context.getDrawable(ArrowFunctions.getArrowDrawable(trendHome))
                     )
 
-                    val trendAway = TrendCalculator.calcTrend(history, match.away_team)
+                    val trendAway = TrendCalculator.calcTrend(model, match.away_team)
                     matchView.findViewById<TextView>(R.id.trend_away).text = trendAway.toString()
                     matchView.findViewById<ImageView>(R.id.trend_arrow_away).rotation =
                         ArrowFunctions.trendArrow(trendAway)

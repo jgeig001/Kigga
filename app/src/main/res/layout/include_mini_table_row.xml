@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="com.jgeig001.kigga.ui.home.HomeViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="160dp"
+        android:layout_height="20dp"
+        android:paddingStart="5dp">
+
+        <TextView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:text="@{viewmodel.get1st()}"
+            android:textAlignment="viewEnd" />
+
+        <Space
+            android:layout_width="5dp"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:text="@{viewmodel.get2nd()}"
+            android:textAlignment="viewStart" />
+
+        <TextView
+            android:layout_width="25dp"
+            android:layout_height="20dp"
+            android:text="@{viewmodel.get3rd()}"
+            android:textAlignment="viewEnd" />
+
+    </LinearLayout>
+
+</layout>

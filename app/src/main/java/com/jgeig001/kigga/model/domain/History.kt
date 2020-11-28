@@ -28,12 +28,8 @@ class History @Inject constructor(
         }
     }
 
-    fun getLatestSeason(): Season? {
-        return try {
-            this.listOfSeasons[this.listOfSeasons.size - 1]
-        } catch (e: ArrayIndexOutOfBoundsException) {
-            null
-        }
+    fun getLatestSeason(): Season {
+        return this.listOfSeasons.last()
     }
 
 
