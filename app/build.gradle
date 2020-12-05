@@ -65,6 +65,7 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1'
 
+    // chart lib
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
     testImplementation 'junit:junit:4.13.1'

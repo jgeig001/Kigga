@@ -333,6 +333,9 @@ class DataLoader(private var history: History, private var liga: LigaClass) : Up
             return formatter.parse(jsonText)
         } catch (e: UnknownHostException) {
             return Date(Long.MIN_VALUE)
+        } catch (e: ParseException) {
+            Log.e("123", "ParseException")
+            return Date(Long.MIN_VALUE)
         } finally {
             inputStream?.close()
         }

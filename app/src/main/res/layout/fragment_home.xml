@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -13,9 +14,35 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!-- sum stats of all seasons -->
         <include
+            android:id="@+id/include"
             layout="@layout/view_table3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/seasons_sum_stats"
             app:viewmodel="@{viewModel}" />
+
+        <include
+            android:id="@+id/seasons_sum_stats"
+            layout="@layout/pie_chart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/include" />
+
+        <!-- stats of seasons -->
+        <ListView
+            android:id="@+id/seasons_stats_listView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/seasons_sum_stats"
+            tools:listitem="@layout/season_stats" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
