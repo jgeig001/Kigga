@@ -4,8 +4,8 @@
     <data>
 
         <variable
-            name="viewmodel"
-            type="com.jgeig001.kigga.ui.home.HomeViewModel" />
+            name="tableElement"
+            type="com.jgeig001.kigga.ui.home.RankedTableElement" />
     </data>
 
     <LinearLayout
@@ -14,9 +14,10 @@
         android:paddingStart="5dp">
 
         <TextView
+            android:id="@+id/miniRank"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:text="@{viewmodel.get1st()}"
+            android:text="@{tableElement.rankString}"
             android:textAlignment="viewEnd" />
 
         <Space
@@ -24,15 +25,17 @@
             android:layout_height="match_parent" />
 
         <TextView
+            android:id="@+id/miniName"
             android:layout_width="100dp"
             android:layout_height="20dp"
-            android:text="@{viewmodel.get2nd()}"
+            android:text="@{tableElement.clubNameShort}"
             android:textAlignment="viewStart" />
 
         <TextView
+            android:id="@+id/miniPoints"
             android:layout_width="25dp"
             android:layout_height="20dp"
-            android:text="@{viewmodel.get3rd()}"
+            android:text="@{tableElement.pointsString}"
             android:textAlignment="viewEnd" />
 
     </LinearLayout>

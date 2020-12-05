@@ -57,6 +57,10 @@ class Table : BaseObservable(), Serializable {
         return tableList[n]
     }
 
+    fun isEmpty(): Boolean {
+        return tableList.isEmpty()
+    }
+
     /**
      * adds a team to the table
      * return true if successful
@@ -123,15 +127,24 @@ class Table : BaseObservable(), Serializable {
     /**
      * get top 3 leading teams
      */
-    fun getTop3(): List<TableElement> {
-        return tableList.subList(0, 3)
+    fun getTop3(): List<Pair<TableElement, Int>> {
+        val lis = mutableListOf<Pair<TableElement, Int>>()
+        tableList.subList(0, 3).forEachIndexed { index, tableElement ->
+            lis.add(Pair(tableElement, index + 1))
+        }
+        return lis
     }
 
     /**
      * get the last 3 teams
      */
-    fun getFlop3(): List<TableElement> {
-        return tableList.subList(MAX_TEAMS - 3, MAX_TEAMS)
+    fun getFlop3(): List<Pair<TableElement, Int>> {
+        val lis = mutableListOf<Pair<TableElement, Int>>()
+        for ((tableElement, rank) in tableList.subList(MAX_TEAMS - 3, MAX_TEAMS)
+            .zip(arrayOf(16, 17, 18))) {
+            lis.add(Pair(tableElement, rank))
+        }
+        return lis
     }
 
     /**
@@ -139,9 +152,14 @@ class Table : BaseObservable(), Serializable {
      * e.g. if [club] is 10th then following list will be returned [9thClub, 10thClub, 11thClub]
      * there is not check if the is a club before or after. make sure there is before calling!
      */
-    fun getClubsAround(club: Club): List<TableElement> {
+    fun getClubsAround(club: Club): List<Pair<TableElement, Int>> {
         val rank = getRankOf(club)
-        return tableList.subList(rank - 2, rank + 1)
+        val lis = mutableListOf<Pair<TableElement, Int>>()
+        for ((tableElement, r) in tableList.subList(rank - 2, rank + 1)
+            .zip(arrayOf(rank - 1, rank, rank + 1))) {
+            lis.add(Pair(tableElement, r))
+        }
+        return lis
     }
 
     /**

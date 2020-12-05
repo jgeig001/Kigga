@@ -1,7 +1,6 @@
 package com.jgeig001.kigga.ui.bet
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -99,7 +98,7 @@ class BetFragment : Fragment(R.layout.fragment_bet) {
     }
 
     private fun setCallback() {
-        persistenceManager.firstLoadFinishedCallback {
+        persistenceManager.addFirstLoadFinishedCallback {
             viewModel.updateLiveDataList(0)
             betAdapter.afterFirstLoadDone(viewModel.getMatchdayList())
             GlobalScope.launch(Dispatchers.Main) {
@@ -131,9 +130,9 @@ class BetFragment : Fragment(R.layout.fragment_bet) {
             this.model.getListOfSeasons()
         )
         seasonAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
-        season_spinner.adapter = seasonAdapter
-        season_spinner.setSelection(this.viewModel.getSelectedSeasonIndex())
-        season_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        bet_season_spinner.adapter = seasonAdapter
+        bet_season_spinner.setSelection(this.viewModel.getSelectedSeasonIndex())
+        bet_season_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>,
                 view: View?,

@@ -1,5 +1,6 @@
 package com.jgeig001.kigga.model.domain
 
+import android.util.Log
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import androidx.databinding.library.baseAdapters.BR
@@ -7,31 +8,24 @@ import java.io.Serializable
 import javax.inject.Inject
 
 class User @Inject constructor(
-    private var username: String,
     private var favouriteClub: Club?
 ) : Serializable, BaseObservable() {
 
-    @Bindable
-    fun getUsername(): String {
-        return this.username
-    }
-
-    fun setUsername(username: String) {
-        this.username = username
-        notifyPropertyChanged(BR.username)
-    }
-
-    @Bindable
     fun getFavouriteClub(): Club? {
         return this.favouriteClub
     }
 
-    fun setFavouriteClub(club: Club) {
+    fun setFavouriteClub(club: Club?) {
         this.favouriteClub = club
-        notifyPropertyChanged(BR.favouriteClub)
+        Log.d("123", "User.setter($club)")
+        Log.d("123", this.toString())
     }
 
-    val favouriteClubName: String?
-        get() = favouriteClub?.clubName
+    fun hasNoFavouriteClub(): Boolean {
+        return favouriteClub == null
+    }
+
+    val favouriteClubName: String
+        get() = favouriteClub?.clubName ?: ""
 
 }

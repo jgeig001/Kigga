@@ -1,6 +1,5 @@
 package com.jgeig001.kigga.model.domain
 
-import android.util.Log
 import androidx.databinding.BaseObservable
 import com.jgeig001.kigga.BR
 

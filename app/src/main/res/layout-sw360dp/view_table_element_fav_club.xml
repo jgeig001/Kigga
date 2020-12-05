@@ -11,6 +11,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal"
+            android:background="@color/dark_stroke"
             android:paddingTop="5dp"
             android:paddingBottom="5dp">
 
@@ -19,9 +20,10 @@
                 android:layout_width="20dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
-                android:fontFamily="@font/comfortaa_light"
+                android:fontFamily="@font/comfortaa_bold"
                 android:hint="0."
-                android:textAlignment="textEnd" />
+                android:textAlignment="textEnd"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/ele_club"
@@ -31,7 +33,8 @@
                 android:layout_marginEnd="2dp"
                 android:fontFamily="@font/comfortaa_bold"
                 android:hint="Verein"
-                android:paddingStart="5dp" />
+                android:paddingStart="5dp"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/ele_matches"
@@ -39,9 +42,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="3dp"
-                android:fontFamily="@font/comfortaa_light"
+                android:fontFamily="@font/comfortaa_bold"
                 android:hint="Sp."
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/ele_goals"
+                android:layout_width="65dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="3dp"
+                android:fontFamily="@font/comfortaa_bold"
+                android:hint="Tore"
+                android:textAlignment="center"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/ele_diff"
@@ -49,9 +64,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="3dp"
-                android:fontFamily="@font/comfortaa_light"
+                android:fontFamily="@font/comfortaa_bold"
                 android:hint="Diff."
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/ele_points"
@@ -62,7 +78,8 @@
                 android:fontFamily="@font/comfortaa_bold"
                 android:hint="Pkt."
                 android:textAlignment="center"
-                android:textColor="?attr/green" />
+                android:textColor="?attr/green"
+                android:textSize="16sp" />
 
         </LinearLayout>
 

@@ -42,7 +42,7 @@ class TestTrendCalculator {
 
         val season = Season(matchday_lis, 2020)
         val history = History(mutableListOf(season))
-        val model = ModelWrapper(User("username", null), Liga(), history)
+        val model = ModelWrapper(User(null), LigaClass(), history)
 
         val last5 = TrendCalculator.last5(model, myClub)
 
@@ -85,7 +85,7 @@ class TestTrendCalculator {
 
         val season = Season(matchday_lis, 2020)
         val history = History(mutableListOf(season))
-        val model = ModelWrapper(User("username", null), Liga(), history)
+        val model = ModelWrapper(User(null), LigaClass(), history)
 
         val last5 = TrendCalculator.last5(model, myClub)
 
@@ -120,7 +120,7 @@ class TestTrendCalculator {
 
         val season = Season(matchday_lis, 2020)
         val history = History(mutableListOf(season))
-        val model = ModelWrapper(User("username", null), Liga(), history)
+        val model = ModelWrapper(User(null), LigaClass(), history)
 
         val last5 = TrendCalculator.last5(model, myClub)
 
@@ -194,7 +194,7 @@ class TestTrendCalculator {
 
         // history
         val history = History(mutableListOf(season0, season1))
-        val model = ModelWrapper(User("username", null), Liga(), history)
+        val model = ModelWrapper(User(null), LigaClass(), history)
 
         val last5 = TrendCalculator.last5(model, myClub)
 
@@ -239,7 +239,7 @@ class TestTrendCalculator {
 
         val season = Season(matchday_lis, 2020)
         val history = History(mutableListOf(season))
-        val model = ModelWrapper(User("username", null), Liga(), history)
+        val model = ModelWrapper(User(null), LigaClass(), history)
 
         val trend = TrendCalculator.calcTrend(model, myClub)
         println(trend)
@@ -276,7 +276,7 @@ class TestTrendCalculator {
 
         val season = Season(matchday_lis, 2020)
         val history = History(mutableListOf(season))
-        val model = ModelWrapper(User("username", null), Liga(), history)
+        val model = ModelWrapper(User(null), LigaClass(), history)
 
         val trend = TrendCalculator.calcTrend(model, myClub)
         println(trend)

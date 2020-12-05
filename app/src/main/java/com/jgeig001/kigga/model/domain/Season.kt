@@ -7,11 +7,7 @@ import java.lang.IndexOutOfBoundsException
 class Season(private var matchdays: List<Matchday>, private val year: Int) : Serializable,
     BaseObservable() {
 
-    private var table: Table
-
-    init {
-        table = Table()
-    }
+    private var table: Table = Table()
 
     fun getMatchdays(): List<Matchday> {
         return this.matchdays

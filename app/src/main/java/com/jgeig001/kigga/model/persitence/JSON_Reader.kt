@@ -35,17 +35,20 @@ object JSON_Reader {
      */
     @Throws(JSONException::class, IOException::class)
     fun readJsonFromUrl(url: String?): JSONArray? {
-        val inputStream: InputStream
+        var inputStream: InputStream? = null
         return try {
-            inputStream = URL(url).openStream()
+            val connection = URL(url).openConnection()
+            connection.readTimeout = 30000 // 30 sec
+            inputStream = connection.getInputStream()
             val rd = BufferedReader(InputStreamReader(inputStream, Charset.forName("UTF-8")))
             val jsonText: String = readAll(rd)
             val json = JSONArray(jsonText)
             inputStream.close()
             json
         } catch (e: IOException) {
-            val s = "[{'x': 1}]"
-            JSONArray(s)
+            null
+        } finally {
+            inputStream?.close()
         }
     }
 

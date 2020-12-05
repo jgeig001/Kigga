@@ -1,21 +1,19 @@
 package com.jgeig001.kigga.model.domain
 
 import com.jgeig001.kigga.utils.HashtagMap
-import com.jgeig001.kigga.utils.NameChanger
 import java.io.Serializable
 
 class Club(var clubName: String, var shortName: String) : Serializable {
 
+    var twitterHashtag: String
+
     init {
-        if (NameChanger.needChange(clubName)) {
-            this.clubName = NameChanger.doChange(clubName)
-        }
-        if (NameChanger.needChange(shortName)) {
-            this.shortName = NameChanger.doChange(shortName)
-        }
+        twitterHashtag = HashtagMap.hashtagMap[shortName] ?: ""
     }
 
-    var twitterHashtag: String = HashtagMap.hashtagMap[shortName] ?: ""
+    fun setHastagAgain() {
+        twitterHashtag = HashtagMap.hashtagMap[shortName] ?: ""
+    }
 
     override fun toString(): String {
         return this.clubName;

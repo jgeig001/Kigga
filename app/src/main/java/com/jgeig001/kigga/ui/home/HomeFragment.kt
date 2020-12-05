@@ -9,10 +9,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import com.jgeig001.kigga.MainActivity
 import com.jgeig001.kigga.R
 import com.jgeig001.kigga.databinding.FragmentHomeBinding
-
 import com.jgeig001.kigga.model.domain.ModelWrapper
+import com.jgeig001.kigga.utils.FavClubChooser
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.view_table3.*
 import javax.inject.Inject
@@ -37,7 +38,7 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         // Obtain binding
         val binding: FragmentHomeBinding =
@@ -54,21 +55,33 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         observeLiveData()
+        selec_fav_btn.setOnClickListener { chooseFavClub() }
     }
 
     private fun observeLiveData() {
-        homeViewModel.favouriteClub.observe(
+        homeViewModel.userLiveData.observe(
             viewLifecycleOwner,
-            Observer { club ->
-                if (club != null) {
-                    favouriteClub.text = club.clubName
+            Observer { user ->
+                Log.d("123", "### fav club changed ###")
+                if (user?.getFavouriteClub() != null) {
                     selec_fav_btn.visibility = View.INVISIBLE
                 } else {
-                    favouriteClub.text = ""
                     selec_fav_btn.visibility = View.VISIBLE
                 }
-
+                homeViewModel.updateMiniTable()
             }
         )
     }
+
+    private fun chooseFavClub() {
+        val dialog =
+            FavClubChooser.getLiveDataClubChooserDialog(
+                requireContext(),
+                model.getUser(),
+                model.getLiga(),
+                homeViewModel.userLiveData
+            )
+        dialog.show()
+    }
+
 }

@@ -1,8 +1,10 @@
 package com.jgeig001.kigga.di
 
 import android.content.Context
-import android.util.Log
-import com.jgeig001.kigga.model.domain.*
+import com.jgeig001.kigga.model.domain.History
+import com.jgeig001.kigga.model.domain.LigaClass
+import com.jgeig001.kigga.model.domain.ModelWrapper
+import com.jgeig001.kigga.model.domain.User
 import com.jgeig001.kigga.model.persitence.PersistenceManager
 import com.jgeig001.kigga.utils.SharedPreferencesManager
 import dagger.Module
@@ -18,20 +20,20 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideModelWrapper(user: User, liga: Liga, history: History): ModelWrapper {
+    fun provideModelWrapper(user: User, liga: LigaClass, history: History): ModelWrapper {
         return ModelWrapper(user, liga, history)
     }
 
     @Singleton
     @Provides
-    fun provideUser(): User {
-        return User("Mr.Dummy", Club("1. FSV Mainz 05", "FSV Mainz"))
+    fun provideUser(persistenceManager: PersistenceManager): User {
+        return persistenceManager.getLoadedModel().getUser()
     }
 
     @Singleton
     @Provides
-    fun provideLiga(): Liga {
-        return Liga()
+    fun provideLigaClass(persistenceManager: PersistenceManager): LigaClass {
+        return persistenceManager.getLoadedModel().getLiga()
     }
 
     @Singleton

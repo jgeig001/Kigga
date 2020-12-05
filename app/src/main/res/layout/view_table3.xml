@@ -11,39 +11,47 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
 
         <TextView
             android:id="@+id/favouriteClubLable"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lieblingsverein:  "
+            android:layout_height="28dp"
+            android:layout_marginBottom="5dp"
+            android:text="Dein Club:  "
+            android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@+id/table3Linearlayout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.2" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/favouriteClub"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Dortmund"
-            android:text="@{viewmodel.favouriteClub.clubName}"
+            android:autoSizeMaxTextSize="16sp"
+            android:autoSizeMinTextSize="12sp"
+            android:autoSizeTextType="uniform"
+            android:singleLine="false"
+            android:text="@{viewmodel.userLiveData.favouriteClubName}"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="@+id/favouriteClubLable"
             app:layout_constraintStart_toEndOf="@+id/favouriteClubLable"
             app:layout_constraintTop_toTopOf="@+id/favouriteClubLable" />
 
         <Button
             android:id="@+id/selec_fav_btn"
             android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/corners_green"
+            android:elevation="5dp"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
-            android:layout_height="30dp"
             android:text="auswählen"
             android:textColor="?attr/light"
-            android:elevation="5dp"
-            android:background="@drawable/corners_green"
-            app:layout_constraintStart_toEndOf="@+id/favouriteClubLable"
-            app:layout_constraintTop_toTopOf="@+id/favouriteClubLable"/>
+            app:layout_constraintBottom_toBottomOf="@+id/favouriteClub"
+            app:layout_constraintStart_toEndOf="@+id/favouriteClub"
+            app:layout_constraintTop_toTopOf="@+id/favouriteClub" />
 
         <LinearLayout
             android:id="@+id/table3Linearlayout"
@@ -65,7 +73,7 @@
             <include
                 android:id="@+id/table3_1st"
                 layout="@layout/include_mini_table_row"
-                app:viewmodel="@{viewmodel}" />
+                app:tableElement="@{viewmodel.miniTableLiveDataObjects[0]}" />
 
             <View
                 android:layout_width="160dp"
@@ -76,7 +84,7 @@
             <include
                 android:id="@+id/table3_2nd"
                 layout="@layout/include_mini_table_row"
-                app:viewmodel="@{viewmodel}" />
+                app:tableElement="@{viewmodel.miniTableLiveDataObjects[1]}" />
 
             <View
                 android:layout_width="160dp"
@@ -87,7 +95,7 @@
             <include
                 android:id="@+id/table3_3rd"
                 layout="@layout/include_mini_table_row"
-                app:viewmodel="@{viewmodel}" />
+                app:tableElement="@{viewmodel.miniTableLiveDataObjects[2]}" />
 
             <View
                 android:layout_width="165dp"

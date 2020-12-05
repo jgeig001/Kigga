@@ -1,16 +1,12 @@
 package com.jgeig001.kigga.model.persitence
 
 import android.content.Context
-import android.graphics.Color
-import android.util.Log
 import com.jgeig001.kigga.model.domain.*
-import kotlinx.coroutines.Job
 import java.io.*
-import java.lang.reflect.Field
 import java.util.*
 import javax.inject.Inject
 
-class PersistenceManager @Inject constructor(context: Context) {
+class PersistenceManager @Inject constructor(private var context: Context) {
 
     private val SERIALIZE_FILE = "serialized"
     private val MAX_TIME_TO_WAIT = 60
@@ -24,23 +20,21 @@ class PersistenceManager @Inject constructor(context: Context) {
             model = loadSerializedModel(context)
         } catch (e: FileNotFoundException) {
             // nothing saved yet
-            val user = User("USER_NAME", null)
-            val liga = Liga()
+            val user = User(null)
+            val liga = LigaClass()
             val history = History(mutableListOf())
             model = ModelWrapper(user, liga, history)
-            e.printStackTrace()
         } catch (e: ClassNotFoundException) {
-            val user = User("USER_NAME", null)
-            val liga = Liga()
+            val user = User(null)
+            val liga = LigaClass()
             val history = History(mutableListOf())
             model = ModelWrapper(user, liga, history)
             e.printStackTrace()
         }
         // 2. load new data from web
-        dataPoller = DataPoller(model.getHistory())
-        dataPoller.firstLoadFinishedCallback { this.saveData(context) }
+        dataPoller = DataPoller(model.getHistory(), model.getUser(), model.getLiga(), context)
+        dataPoller.addFirstLoadFinishedCallback { this.saveData(context) }
         dataPoller.poll()
-        // TODO: check stability
     }
 
     fun getLoadedModel(): ModelWrapper {
@@ -55,14 +49,13 @@ class PersistenceManager @Inject constructor(context: Context) {
     @Throws(IOException::class, ClassNotFoundException::class)
     private fun loadSerializedModel(context: Context): ModelWrapper {
         println("###loadSerializedModel()")
-        var fis: FileInputStream? = null
-        fis = context.openFileInput(SERIALIZE_FILE)
+        var fis: FileInputStream = context.openFileInput(SERIALIZE_FILE)
         val inputStream = ObjectInputStream(fis)
         val lis = inputStream.readObject() as ArrayList<*>
         inputStream.close()
         fis.close()
         val user = lis[0] as User
-        val liga = lis[1] as Liga
+        val liga = lis[1] as LigaClass
         val history = lis[2] as History
         return ModelWrapper(user, liga, history)
     }
@@ -72,7 +65,7 @@ class PersistenceManager @Inject constructor(context: Context) {
      * @param context
      */
     fun saveData(context: Context) {
-        println("###savedData()")
+        println("###SerializedModel()")
         try {
             val fos: FileOutputStream = context.openFileOutput(SERIALIZE_FILE, Context.MODE_PRIVATE)
             val os = ObjectOutputStream(fos)
@@ -90,8 +83,19 @@ class PersistenceManager @Inject constructor(context: Context) {
         }
     }
 
-    fun firstLoadFinishedCallback(callback: () -> Unit) {
-        dataPoller.firstLoadFinishedCallback(callback)
+    /**
+     * adds an callback which gets called when the model got initialised
+     */
+    fun addFirstLoadFinishedCallback(callback: () -> Unit) {
+        dataPoller.addFirstLoadFinishedCallback(callback)
+    }
+
+    fun favClubCallback(callback: (user: User, liga: LigaClass) -> Unit) {
+        dataPoller.favClubCallback(callback)
+    }
+
+    fun internetWarningDialog(openDialog: () -> Unit) {
+        dataPoller.internetWarningDialog(openDialog)
     }
 
 }

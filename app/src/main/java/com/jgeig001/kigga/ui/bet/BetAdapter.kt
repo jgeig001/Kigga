@@ -237,11 +237,17 @@ class BetAdapter(
                     (matchView.findViewById<View>(R.id.goals_bet_away) as TextView).text =
                         match.getBetAwayGoals()
 
+                    val homeHashtag = match.home_team.twitterHashtag
+                    if (homeHashtag.isBlank())
+                        match.home_team.setHastagAgain()
+                    val awayHashtag = match.away_team.twitterHashtag
+                    if (awayHashtag.isBlank())
+                        match.away_team.setHastagAgain()
                     matchView.findViewById<TextView>(R.id.twitter_hashtag).text =
                         context.getString(
                             R.string.twitter_hashtag_template,
-                            match.home_team.twitterHashtag,
-                            match.away_team.twitterHashtag
+                            homeHashtag,
+                            awayHashtag
                         )
                     matchView.findViewById<TextView>(R.id.twitter_link).text = context.getString(
                         R.string.twitter_hashtag_link,

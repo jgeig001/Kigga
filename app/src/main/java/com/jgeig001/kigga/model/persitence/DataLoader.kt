@@ -2,7 +2,6 @@ package com.jgeig001.kigga.model.persitence;
 
 import android.util.Log
 import com.jgeig001.kigga.model.domain.*
-import com.jgeig001.kigga.model.domain.Liga
 import com.jgeig001.kigga.model.domain.Matchday.Companion.MAX_MATCHDAYS
 import com.jgeig001.kigga.model.domain.Matchday.Companion.MAX_MATCHES
 import com.jgeig001.kigga.model.exceptions.ClubExistenceException
@@ -10,21 +9,23 @@ import com.jgeig001.kigga.model.exceptions.NotLoadableException
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.*
+import java.net.HttpURLConnection
+import java.net.SocketTimeoutException
 import java.net.URL
+import java.net.UnknownHostException
 import java.nio.charset.Charset
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.NoSuchElementException
 
 interface Updater {
     fun updateData()
     fun loadTable()
-    fun loadNewClubs()
+    fun loadNewClubs(): Boolean
     fun getLastUpdateOf(season: Season, matchday: Matchday): Date
 }
 
-class DataLoader(private var history: History) : Updater {
+class DataLoader(private var history: History, private var liga: LigaClass) : Updater {
 
     /**
      * loads new available data
@@ -32,7 +33,7 @@ class DataLoader(private var history: History) : Updater {
     override fun updateData() {
         // --- LOGIC: what to load --- //
         if (history.getListOfSeasons().size == 0) {
-            Log.d("123", "model was not load correctly ?")
+            //Log.d("123", "model was not load correctly ?")
         }
         var emptyHistory = false
         val lastLoadedSeason: Season? = try {
@@ -56,7 +57,7 @@ class DataLoader(private var history: History) : Updater {
             while (true) {
                 try {
                     loadedSeason = getSeason(year)
-                    history.addSeason(loadedSeason!!)
+                    history.addSeason(loadedSeason!!) // TODO: remove crash operator
                 } catch (e: NotLoadableException) {
                     // no new data to load
                     break
@@ -115,40 +116,48 @@ class DataLoader(private var history: History) : Updater {
     }
 
     override fun loadTable() {
-        // fill list with TableElements
-        var tmpTableLis: MutableList<TableElement>
-        for (season in history.getUnfinishedSeasons()) {
-            tmpTableLis = mutableListOf()
-            val url = "https://www.openligadb.de/api/getbltable/bl1/${season.getYear()}"
-            val jsonArray = JSON_Reader.readJsonFromUrl(url)
-            for (i in 0 until jsonArray!!.length()) {
-                /* iterate over teams */
-                val jsonTeamObj = jsonArray.getJSONObject(i)
-                // get club object
-                jsonTeamObj["TeamName"]
-                val club = try {
-                    Liga.getClubBy(jsonTeamObj.getString("TeamName"))
-                } catch (ex: ClubExistenceException) {
-                    this.getClubFrom(jsonTeamObj)
+        try {
+            // fill list with TableElements
+            var tmpTableLis: MutableList<TableElement>
+            for (season in history.getUnfinishedSeasons()) {
+                tmpTableLis = mutableListOf()
+                val url = "https://www.openligadb.de/api/getbltable/bl1/${season.getYear()}"
+                val jsonArray = JSON_Reader.readJsonFromUrl(url)
+                if (jsonArray != null) {
+                    for (i in 0 until jsonArray.length()) {
+                        /* iterate over teams */
+                        val jsonTeamObj = jsonArray.getJSONObject(i)
+                        // get club object
+                        jsonTeamObj["TeamName"]
+                        val club = try {
+                            liga.getClubBy(jsonTeamObj.getString("TeamName"))
+                        } catch (ex: ClubExistenceException) {
+                            this.getClubFrom(jsonTeamObj)
+                        }
+                        if (season.getTable().isComplete()) {
+                            season.getTable().clearTable()
+                        }
+                        // TODO: better hide TableElement type in Table class, use some caching foobar
+                        tmpTableLis.add(
+                            TableElement(
+                                club!!,
+                                jsonTeamObj.getInt("Points"),
+                                jsonTeamObj.getInt("Goals"),
+                                jsonTeamObj.getInt("OpponentGoals"),
+                                jsonTeamObj.getInt("Won"),
+                                jsonTeamObj.getInt("Draw"),
+                                jsonTeamObj.getInt("Lost"),
+                                jsonTeamObj.getInt("Matches")
+                            )
+                        )
+                    }
+                    season.setTableList(tmpTableLis)
                 }
-                if (season.getTable().isComplete()) {
-                    season.getTable().clearTable()
-                }
-                // TODO: better hide TableElement type in Table class, use some caching foobar
-                tmpTableLis.add(
-                    TableElement(
-                        club!!,
-                        jsonTeamObj.getInt("Points"),
-                        jsonTeamObj.getInt("Goals"),
-                        jsonTeamObj.getInt("OpponentGoals"),
-                        jsonTeamObj.getInt("Won"),
-                        jsonTeamObj.getInt("Draw"),
-                        jsonTeamObj.getInt("Lost"),
-                        jsonTeamObj.getInt("Matches")
-                    )
-                )
             }
-            season.setTableList(tmpTableLis)
+        } catch (ex: Exception) {
+            // return, at least you tried
+            ex.printStackTrace()
+            return
         }
     }
 
@@ -181,26 +190,28 @@ class DataLoader(private var history: History) : Updater {
                 matchday_number
             )
             val jsonArrayOfMatches = JSON_Reader.readJsonFromUrl(url)
-            for (i in 0 until jsonArrayOfMatches!!.length()) {
-                val json_match = jsonArrayOfMatches.getJSONObject(i)
-                var matchID: Int
-                matchID = json_match.getInt("MatchID")
-                val jsonMatchResult = json_match.getJSONArray("MatchResults")
-                if (jsonMatchResult.length() != 0) {
-                    // match has started and a result
-                    val halfTimeTeam1 = jsonMatchResult.getJSONObject(1).getInt("PointsTeam1")
-                    val halfTimeTeam2 = jsonMatchResult.getJSONObject(1).getInt("PointsTeam2")
-                    val fullTimeTeam1 = jsonMatchResult.getJSONObject(0).getInt("PointsTeam1")
-                    val fullTimeTeam2 = jsonMatchResult.getJSONObject(0).getInt("PointsTeam2")
-                    val matchIsFinished = json_match.getBoolean("MatchIsFinished")
-                    val matchResult = MatchResult(
-                        halfTimeTeam1,
-                        halfTimeTeam2,
-                        fullTimeTeam1,
-                        fullTimeTeam2,
-                        matchIsFinished
-                    )
-                    map[matchID] = matchResult
+            if (jsonArrayOfMatches != null) {
+                for (i in 0 until jsonArrayOfMatches!!.length()) {
+                    val json_match = jsonArrayOfMatches.getJSONObject(i)
+                    var matchID: Int
+                    matchID = json_match.getInt("MatchID")
+                    val jsonMatchResult = json_match.getJSONArray("MatchResults")
+                    if (jsonMatchResult.length() != 0) {
+                        // match has started and a result
+                        val halfTimeTeam1 = jsonMatchResult.getJSONObject(1).getInt("PointsTeam1")
+                        val halfTimeTeam2 = jsonMatchResult.getJSONObject(1).getInt("PointsTeam2")
+                        val fullTimeTeam1 = jsonMatchResult.getJSONObject(0).getInt("PointsTeam1")
+                        val fullTimeTeam2 = jsonMatchResult.getJSONObject(0).getInt("PointsTeam2")
+                        val matchIsFinished = json_match.getBoolean("MatchIsFinished")
+                        val matchResult = MatchResult(
+                            halfTimeTeam1,
+                            halfTimeTeam2,
+                            fullTimeTeam1,
+                            fullTimeTeam2,
+                            matchIsFinished
+                        )
+                        map[matchID] = matchResult
+                    }
                 }
             }
             return map
@@ -231,8 +242,8 @@ class DataLoader(private var history: History) : Updater {
         val season: Season
         try {
             val jsonArrayOfMatches = JSON_Reader.readJsonFromUrl(url)
-            if (jsonArrayOfMatches!!.isNull(0)) {
-                throw NotLoadableException(String.format("season %d is not available", year))
+            if (jsonArrayOfMatches == null || jsonArrayOfMatches.length() == 0) {
+                throw NotLoadableException(String.format("season %d is not available ", year))
             }
 
             // fill allMatches
@@ -306,21 +317,24 @@ class DataLoader(private var history: History) : Updater {
     }
 
     override fun getLastUpdateOf(season: Season, matchday: Matchday): Date {
+        val url = String.format(
+            "https://www.openligadb.de/api/getlastchangedate/bl1/%d/%d",
+            season.getYear(), season.getMatchdayIndexOf(matchday) + 1
+        )
+        var inputStream: InputStream? = null
         try {
-            val url = String.format(
-                "https://www.openligadb.de/api/getlastchangedate/bl1/%d/%d",
-                season.getYear(), season.getMatchdayIndexOf(matchday) + 1
-            )
-            val `is` = URL(url).openStream()
-            val rd = BufferedReader(InputStreamReader(`is`, Charset.forName("UTF-8")))
+            val connection = URL(url).openConnection()
+            connection.readTimeout = 30000 // 30 sec
+            inputStream = connection.getInputStream()
+            val rd = BufferedReader(InputStreamReader(inputStream, Charset.forName("UTF-8")))
             var jsonText = JSON_Reader.readAll(rd)
             jsonText = jsonText.replace('T', ' ').dropLast(1).drop(1)
             val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS")
             return formatter.parse(jsonText)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: ParseException) {
-            e.printStackTrace()
+        } catch (e: UnknownHostException) {
+            return Date(Long.MIN_VALUE)
+        } finally {
+            inputStream?.close()
         }
         return Date(Long.MIN_VALUE)
     }
@@ -328,23 +342,30 @@ class DataLoader(private var history: History) : Updater {
     @Throws(JSONException::class)
     private fun getClubFrom(teamObject: JSONObject): Club? {
         return try {
-            Liga.getClubBy(teamObject.getString("TeamName"))
+            liga.getClubBy(teamObject.getString("TeamName"))
         } catch (e: ClubExistenceException) {
             val newClub = Club(teamObject.getString("TeamName"), teamObject.getString("ShortName"))
-            Liga.addClub(newClub)
+            liga.addClub(newClub)
             newClub
         }
     }
 
-    override fun loadNewClubs() {
+    /**
+     * adds (new) club to Liga object
+     * returns true if successful else false
+     */
+    override fun loadNewClubs(): Boolean {
         val url =
             "https://www.openligadb.de/api/getavailableteams/bl1/${getCurYear()}"
         try {
             val jsonArrayOfClubs = JSON_Reader.readJsonFromUrl(url)
-            for (i in 0 until jsonArrayOfClubs!!.length()) {
+            if (jsonArrayOfClubs == null) {
+                return false
+            }
+            for (i in 0 until jsonArrayOfClubs.length()) {
                 val jsonClubObj = jsonArrayOfClubs.getJSONObject(i)
-                if (!Liga.clubExists(jsonClubObj.getString("TeamName"))) {
-                    Liga.addClub(
+                if (!liga.clubExists(jsonClubObj.getString("TeamName"))) {
+                    liga.addClub(
                         Club(
                             jsonClubObj.getString("TeamName"),
                             jsonClubObj.getString("ShortName")
@@ -354,9 +375,12 @@ class DataLoader(private var history: History) : Updater {
             }
         } catch (e: IOException) {
             e.printStackTrace()
+            return false
         } catch (e: JSONException) {
             e.printStackTrace()
+            return false
         }
+        return true
     }
 
 }

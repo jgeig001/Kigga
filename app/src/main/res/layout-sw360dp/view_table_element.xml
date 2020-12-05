@@ -18,10 +18,10 @@
                 android:id="@+id/ele_rank"
                 android:layout_width="20dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:fontFamily="@font/comfortaa_light"
+                android:textAlignment="textEnd"
                 android:hint="0."
-                android:textAlignment="textEnd" />
+                android:layout_marginEnd="5dp"
+                android:fontFamily="@font/comfortaa_light" />
 
             <TextView
                 android:id="@+id/ele_club"
@@ -29,7 +29,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="2dp"
-                android:fontFamily="@font/comfortaa_bold"
                 android:hint="Verein"
                 android:paddingStart="5dp" />
 
@@ -41,6 +40,16 @@
                 android:layout_marginEnd="3dp"
                 android:fontFamily="@font/comfortaa_light"
                 android:hint="Sp."
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/ele_goals"
+                android:layout_width="65dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="3dp"
+                android:fontFamily="@font/comfortaa_light"
+                android:hint="Tore"
                 android:textAlignment="center" />
 
             <TextView
@@ -59,8 +68,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="3dp"
-                android:fontFamily="@font/comfortaa_bold"
                 android:hint="Pkt."
+                android:fontFamily="@font/comfortaa_bold"
                 android:textAlignment="center"
                 android:textColor="?attr/green" />
 

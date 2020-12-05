@@ -6,18 +6,11 @@ import javax.inject.Inject
 
 class ModelWrapper @Inject constructor(
     private var user: User,
-    private var liga: Liga,
+    private var liga: LigaClass,
     private var history: History
 ) : Serializable, BaseObservable(), ModelAPI {
 
     // -------------------------------------------- API --------------------------------------------
-    override fun getUsername(): String {
-        return this.user.getUsername()
-    }
-
-    override fun setUsername(username: String) {
-        this.user.setUsername(username)
-    }
 
     override fun getPointsCurSeason(): Int {
         return getPointsOf(history.getLatestSeason())
@@ -78,7 +71,7 @@ class ModelWrapper @Inject constructor(
         return this.user
     }
 
-    fun getLiga(): Liga {
+    fun getLiga(): LigaClass {
         return this.liga
     }
 
@@ -92,10 +85,6 @@ class ModelWrapper @Inject constructor(
  * The API with all public functions the model offer
  */
 interface ModelAPI {
-
-    fun getUsername(): String
-
-    fun setUsername(username: String)
 
     fun getPointsCurSeason(): Int
 

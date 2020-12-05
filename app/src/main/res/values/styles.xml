@@ -17,6 +17,9 @@
         <item name="twitter">@color/twitter</item>
         <item name="dark_stroke">@color/dark_stroke</item>
         <item name="black_n_light">@color/black_n_light</item>
+
+        <item name="android:fontFamily">@font/comfortaa_regular</item>
+        <item name="fontFamily">@font/comfortaa_regular</item> <!-- target android sdk versions < 26 and > 14 if theme other than AppCompat -->
     </style>
 
     <style name="MyAppTheme.NoActionBar">

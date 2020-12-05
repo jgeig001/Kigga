@@ -1,45 +1,49 @@
 package com.jgeig001.kigga.ui.table
 
 import android.content.Context
-import android.util.Log
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.jgeig001.kigga.model.domain.History
 import com.jgeig001.kigga.model.domain.ModelWrapper
 import com.jgeig001.kigga.model.domain.Season
 import com.jgeig001.kigga.model.domain.Table
-import com.jgeig001.kigga.utils.SharedPreferencesManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 
 class TableViewModel @ViewModelInject constructor(
     private var model: ModelWrapper,
+    private var selectedSeasonIndex: Int,
     @ApplicationContext var context: Context,
     @Assisted private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-
-    var tableLiveData: MutableLiveData<Table>
+    var tableLiveData: MutableLiveData<Table?>
 
     init {
-        Log.d("1234", "TableViewModel.init{}")
-        val selectedSeasonIndex = SharedPreferencesManager.getInt(
-            context,
-            History.SELECTED_SEASON_SP_KEY
-        )
-        val season: Season =
-            model.getHistory().get_nth_season(selectedSeasonIndex) ?: model.getLatestSeason()
-        tableLiveData = MutableLiveData(season.getTable())
+        tableLiveData = try {
+            val season: Season =
+                model.getHistory().get_nth_season(selectedSeasonIndex) ?: model.getLatestSeason()
+            MutableLiveData(season.getTable())
+        } catch (ex: NoSuchElementException) {
+            MutableLiveData(null)
+        }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        Log.d("1234", "TableViewModel.onCleared()!!!")
+    fun getSelectedSeasonIndex(): Int {
+        return this.selectedSeasonIndex
     }
 
-    // observe SharedPreferences: (IF CHANGE) => set new table
+    fun setSelectedSeasonIndex(index: Int) {
+        this.selectedSeasonIndex = index
+        this.updateLiveDataList(index)
+    }
+
+    private fun updateLiveDataList(index: Int) {
+        model.getHistory().get_nth_season(index)?.getTable().let { table ->
+            tableLiveData.postValue(table)
+        }
+    }
 
 }
 

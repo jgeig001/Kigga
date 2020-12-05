@@ -1,6 +1,5 @@
 package com.jgeig001.kigga.ui.bet
 
-import android.util.Log
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.SavedStateHandle
@@ -20,7 +19,7 @@ class BetViewModel @ViewModelInject constructor(
         this.liveDataList = generateLiveDataList()
     }
 
-    private fun generateLiveDataList(): List<PropertyAwareMutableLiveData<Matchday?>> {
+    fun generateLiveDataList(): List<PropertyAwareMutableLiveData<Matchday?>> {
         // create one LiveData object for each matchday
         val lis = mutableListOf<PropertyAwareMutableLiveData<Matchday?>>()
         val season: List<Matchday?> =
@@ -62,8 +61,8 @@ class BetViewModel @ViewModelInject constructor(
         return this.selectedSeasonIndex
     }
 
-    fun getMatchday(i: Int): Matchday? {
-        return model.getLatestSeason()?.getMatchday(i)
+    fun getMatchday(i: Int): Matchday {
+        return model.getLatestSeason().getMatchday(i)
     }
 
 }

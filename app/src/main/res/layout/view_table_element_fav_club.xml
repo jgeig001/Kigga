@@ -18,10 +18,11 @@
                 android:id="@+id/ele_rank"
                 android:layout_width="20dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:fontFamily="@font/comfortaa_light"
+                android:textAlignment="textEnd"
                 android:hint="0."
-                android:textAlignment="textEnd" />
+                android:textSize="16sp"
+                android:layout_marginEnd="5dp"
+                android:fontFamily="@font/comfortaa_bold" />
 
             <TextView
                 android:id="@+id/ele_club"
@@ -31,6 +32,7 @@
                 android:layout_marginEnd="2dp"
                 android:fontFamily="@font/comfortaa_bold"
                 android:hint="Verein"
+                android:textSize="16sp"
                 android:paddingStart="5dp" />
 
             <TextView
@@ -39,8 +41,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="3dp"
-                android:fontFamily="@font/comfortaa_light"
+                android:fontFamily="@font/comfortaa_bold"
                 android:hint="Sp."
+                android:textSize="16sp"
                 android:textAlignment="center" />
 
             <TextView
@@ -49,8 +52,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="3dp"
-                android:fontFamily="@font/comfortaa_light"
+                android:fontFamily="@font/comfortaa_bold"
                 android:hint="Diff."
+                android:textSize="16sp"
                 android:textAlignment="center" />
 
             <TextView
@@ -59,8 +63,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="3dp"
-                android:fontFamily="@font/comfortaa_bold"
                 android:hint="Pkt."
+                android:textSize="16sp"
+                android:fontFamily="@font/comfortaa_bold"
                 android:textAlignment="center"
                 android:textColor="?attr/green" />
 
