@@ -85,6 +85,7 @@
                 android:backgroundTint="@color/green" />
 
             <TextView
+                android:id="@+id/correct_result_percentage"
                 android:layout_width="28dp"
                 android:layout_height="wrap_content"
                 android:textSize="13sp" />
@@ -110,6 +111,7 @@
                 android:backgroundTint="@color/blue" />
 
             <TextView
+                android:id="@+id/correct_outcome_percentage"
                 android:layout_width="28dp"
                 android:layout_height="wrap_content"
                 android:textSize="13sp" />
@@ -135,6 +137,7 @@
                 android:backgroundTint="@color/colorPrimary_inverted" />
 
             <TextView
+                android:id="@+id/wrong_percentage"
                 android:layout_width="28dp"
                 android:layout_height="wrap_content"
                 android:textSize="13sp" />

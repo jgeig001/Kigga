@@ -5,8 +5,10 @@ import java.io.Serializable
 /**
  * Spieltag mit mehreren Spielen
  */
-class Matchday(var matches: MutableList<Match>, var matchdayIndex: Int) : Serializable,
-    ObservableMatchday() {
+data class Matchday(
+    var matches: MutableList<Match>,
+    var matchdayIndex: Int
+) : Serializable, ObservableMatchday() {
 
     companion object {
         // number of matchdays per season

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
@@ -31,6 +32,8 @@ class TableFragment : Fragment() {
 
     private lateinit var binding: FragmentTableBinding
 
+    private lateinit var tableAdapter: TableAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -54,11 +57,20 @@ class TableFragment : Fragment() {
             requireContext(),
             History.SELECTED_SEASON_SP_KEY
         )
+
         model.get_nth_season(selectedSeasonIndex)?.getTable()?.let { table ->
-            this.binding.tableListview.adapter = TableAdapter(table, model.getUser().getFavouriteClub(), requireContext())
+            tableAdapter = TableAdapter(table, model.getUser().getFavouriteClub(), requireContext())
+            this.binding.tableListview.adapter = tableAdapter
         }
 
         this.setupSpinner()
+
+        tableViewModel.tableLiveData.observe(
+            viewLifecycleOwner,
+            Observer { table ->
+                table?.let { t -> tableAdapter.updateView(t) }
+            }
+        )
     }
 
     private fun setupSpinner() {

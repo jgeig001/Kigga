@@ -14,6 +14,11 @@ class Match(
     private var matchResult: MatchResult
 ) : Serializable, BaseObservable() {
 
+    companion object {
+        const val NULL_REPR = "[-:-]"
+        const val NO_BET = -1
+    }
+
     private var bet: Bet = Bet(this)
 
     @Bindable

@@ -4,7 +4,7 @@ import androidx.databinding.BaseObservable
 import java.io.Serializable
 import java.lang.IndexOutOfBoundsException
 
-class Season(private var matchdays: List<Matchday>, private val year: Int) : Serializable,
+data class Season(private var matchdays: List<Matchday>, private val year: Int) : Serializable,
     BaseObservable() {
 
     private var table: Table = Table()
@@ -69,7 +69,7 @@ class Season(private var matchdays: List<Matchday>, private val year: Int) : Ser
         return this.table
     }
 
-    @Deprecated("use [this.setTableList()] instead")
+    @Deprecated("use [this.setNewTableList()] instead")
     fun addTeamToTable(
         club: Club,
         points: Int,
@@ -125,7 +125,7 @@ class Season(private var matchdays: List<Matchday>, private val year: Int) : Ser
     }
 
     fun setTableList(lis: MutableList<TableElement>) {
-        getTable().setTableList(lis)
+        getTable().setNewTableList(lis)
     }
 
 

@@ -1,6 +1,5 @@
 package com.jgeig001.kigga.model.domain
 
-import android.util.Log
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import com.jgeig001.kigga.R
@@ -28,22 +27,17 @@ enum class BetPoints(val points: Int, val drawableId: Int) {
 
 class Bet(
     val match: Match,
-    private var goals_home: Int = NO_BET,
-    private var goals_away: Int = NO_BET
+    private var goals_home: Int = Match.NO_BET,
+    private var goals_away: Int = Match.NO_BET
 ) :
     Serializable, BaseObservable() {
 
-    companion object {
-        const val NULL_REPR = "[-:-]"
-        const val NO_BET = -1
-    }
-
-    @Bindable
+    @Bindable // TODO: del ?
     private var bet: IntArray = intArrayOf(goals_home, goals_away)
 
     val points: Int
         get() {
-            if (goals_home == NO_BET && goals_away == NO_BET)
+            if (goals_home == Match.NO_BET && goals_away == Match.NO_BET)
                 return -1
             if (goals_home == this.match.fulltimeHome() && goals_away == this.match.fulltimeAway()) {
                 return BetPoints.RIGHT_RESULT.points
@@ -60,13 +54,13 @@ class Bet(
         }
 
     fun getHomeGoalsStr(): String {
-        if (goals_home == NO_BET)
+        if (goals_home == Match.NO_BET)
             return "-"
         return goals_home.toString()
     }
 
     fun getAwayGoalsStr(): String {
-        if (goals_away == NO_BET)
+        if (goals_away == Match.NO_BET)
             return "-"
         return goals_away.toString()
     }
@@ -101,21 +95,21 @@ class Bet(
     }
 
     fun activateBet() {
-        if (goals_home == NO_BET)
+        if (goals_home == Match.NO_BET)
             goals_home = 0
-        if (goals_away == NO_BET)
+        if (goals_away == Match.NO_BET)
             goals_away = 0
     }
 
     fun repr(): String {
-        return if (goals_home == NO_BET && goals_away == NO_BET)
+        return if (goals_home == Match.NO_BET && goals_away == Match.NO_BET)
             String.format(
                 "%d:%d",
                 this.goals_home,
                 this.goals_away
             )
         else
-            NULL_REPR
+            Match.NULL_REPR
     }
 
 }

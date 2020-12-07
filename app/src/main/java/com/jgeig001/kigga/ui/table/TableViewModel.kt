@@ -22,13 +22,13 @@ class TableViewModel @ViewModelInject constructor(
 
     init {
         tableLiveData = try {
-            val season: Season =
-                model.getHistory().get_nth_season(selectedSeasonIndex) ?: model.getLatestSeason()
+            val season: Season = model.getHistory().get_nth_season(selectedSeasonIndex) ?: model.getLatestSeason()
             MutableLiveData(season.getTable())
         } catch (ex: NoSuchElementException) {
             MutableLiveData(null)
         }
     }
+
 
     fun getSelectedSeasonIndex(): Int {
         return this.selectedSeasonIndex
