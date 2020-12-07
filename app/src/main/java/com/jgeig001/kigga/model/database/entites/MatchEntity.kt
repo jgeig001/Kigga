@@ -11,5 +11,12 @@ data class MatchEntity(
     val homeTeamName: String,
     val awayTeamName: String,
     val kickoff: Long,
+    var goals_home: Int,
+    var goals_away: Int,
+    var home_halftime: Int,
+    var away_halftime: Int,
+    var home_fulltime: Int,
+    var away_fulltime: Int,
+    var isFinished: Boolean,
     val matchdayIDRef: Int
 )

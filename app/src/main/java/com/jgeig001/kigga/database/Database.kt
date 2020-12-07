@@ -8,11 +8,9 @@ import com.jgeig001.kigga.model.database.entites.*
 
 @Database(
     entities = [
-        BetEntity::class,
         ClubEntity::class,
         TableEntity::class,
         TableElementEntity::class,
-        MatchResultEntity::class,
         MatchEntity::class,
         MatchdayEntity::class,
         SeasonEntity::class
