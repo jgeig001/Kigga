@@ -1,12 +1,13 @@
 package com.jgeig001.kigga.di
 
 import android.content.Context
+import androidx.room.Room
+import com.jgeig001.kigga.database.LocalDatabase
 import com.jgeig001.kigga.model.domain.History
 import com.jgeig001.kigga.model.domain.LigaClass
 import com.jgeig001.kigga.model.domain.ModelWrapper
-import com.jgeig001.kigga.model.domain.User
 import com.jgeig001.kigga.model.persitence.PersistenceManager
-import com.jgeig001.kigga.utils.SharedPreferencesManager
+import com.jgeig001.kigga.utils.SeasonSelect
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,14 +21,8 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideModelWrapper(user: User, liga: LigaClass, history: History): ModelWrapper {
-        return ModelWrapper(user, liga, history)
-    }
-
-    @Singleton
-    @Provides
-    fun provideUser(persistenceManager: PersistenceManager): User {
-        return persistenceManager.getLoadedModel().getUser()
+    fun provideModelWrapper(liga: LigaClass, history: History): ModelWrapper {
+        return ModelWrapper(liga, history)
     }
 
     @Singleton
@@ -44,15 +39,28 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun providePersistanceManager(@ApplicationContext context: Context): PersistenceManager {
-        return PersistenceManager(context)
+    fun providePersistanceManager(
+        @ApplicationContext context: Context,
+        db: LocalDatabase
+    ): PersistenceManager {
+
+        return PersistenceManager(context, db)
     }
 
     @Singleton
     @Provides
     fun provideSelectedSeasonIndex(@ApplicationContext context: Context): Int {
-        return SharedPreferencesManager.getInt(context, History.SELECTED_SEASON_SP_KEY)
+        return SeasonSelect.getSelectedSeasonIndex(context)
     }
 
+    @Singleton
+    @Provides
+    fun provideLocalDatabase(@ApplicationContext context: Context): LocalDatabase {
+        return Room.databaseBuilder(
+            context.applicationContext,
+            LocalDatabase::class.java,
+            "local_database"
+        ).build()
+    }
 
 }

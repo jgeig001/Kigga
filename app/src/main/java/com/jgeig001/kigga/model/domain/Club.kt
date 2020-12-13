@@ -3,9 +3,7 @@ package com.jgeig001.kigga.model.domain
 import com.jgeig001.kigga.utils.HashtagMap
 import java.io.Serializable
 
-class Club(var clubName: String, var shortName: String) : Serializable {
-
-    var twitterHashtag: String
+class Club(var clubName: String, var shortName: String, var twitterHashtag: String = "") : Serializable {
 
     init {
         twitterHashtag = HashtagMap.hashtagMap[shortName] ?: ""

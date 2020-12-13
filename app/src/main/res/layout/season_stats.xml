@@ -31,6 +31,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/bet_stats_sum">
 
+            <!-- chart -->
 
         </View>
 

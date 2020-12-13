@@ -1,10 +1,12 @@
 package com.jgeig001.kigga.ui.bet
 
+import android.util.Log
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.jgeig001.kigga.model.domain.*
+import com.jgeig001.kigga.model.domain.Matchday
+import com.jgeig001.kigga.model.domain.ModelWrapper
 import com.jgeig001.kigga.ui.PropertyAwareMutableLiveData
 
 class BetViewModel @ViewModelInject constructor(
@@ -59,10 +61,6 @@ class BetViewModel @ViewModelInject constructor(
 
     fun getSelectedSeasonIndex(): Int {
         return this.selectedSeasonIndex
-    }
-
-    fun getMatchday(i: Int): Matchday {
-        return model.getLatestSeason().getMatchday(i)
     }
 
 }

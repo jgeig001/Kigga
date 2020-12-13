@@ -16,7 +16,7 @@ class TableElement(
     var won: Int,
     var draw: Int,
     var lost: Int,
-    var matches: Int
+    var matches: Int // amount of played matches
 ) : Serializable {
     override fun toString(): String {
         return "${club}, ${matches}, ${won}, ${draw}, ${lost}, ${goals}, ${opponentGoals}, ${points}"
@@ -35,7 +35,7 @@ class Table : BaseObservable(), Serializable {
      * the first element is the leader of the table and the last element the last team
      */
     @Bindable
-    private var tableList: MutableList<TableElement>
+    var tableList: MutableList<TableElement>
 
     init {
         tableList = mutableListOf()
@@ -165,9 +165,9 @@ class Table : BaseObservable(), Serializable {
     /**
      * [tableList] will be set to [lis]
      */
-    fun setTableList(lis: MutableList<TableElement>) {
+    fun setNewTableList(lis: List<TableElement>) {
         this.clearTable()
-        this.tableList = lis
+        this.tableList = lis.toMutableList()
         notifyPropertyChanged(BR.tableList)
     }
 

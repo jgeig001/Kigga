@@ -4,7 +4,7 @@ import androidx.databinding.BaseObservable
 import java.io.Serializable
 import java.lang.IndexOutOfBoundsException
 
-class Season(private var matchdays: List<Matchday>, private val year: Int) : Serializable,
+data class Season(private var matchdays: List<Matchday>, private val year: Int) : Serializable,
     BaseObservable() {
 
     private var table: Table = Table()
@@ -31,10 +31,6 @@ class Season(private var matchdays: List<Matchday>, private val year: Int) : Ser
         return this.year
     }
 
-    override fun toString(): String {
-        return String.format("Saison %d/%d", this.year, this.year + 1)
-    }
-
     fun getMatchday(i: Int): Matchday {
         return matchdays[i]
     }
@@ -46,30 +42,18 @@ class Season(private var matchdays: List<Matchday>, private val year: Int) : Ser
             }
         }
         return null
-        // TODO: safe delete
-        matchdays.forEachIndexed { i, matchday ->
-            if (matchday.matches.all { m -> m.isFinished() } && !matchdays[i + 1].matches.all { m -> m.isFinished() }) {
-                return try {
-                    matchdays[i + 1]
-                } catch (e: IndexOutOfBoundsException) {
-                    null
-                }
-            }
-        }
-        return null
     }
 
     fun isFished(): Boolean {
         // finished if the last matchday is finished
-        val last = matchdays.last()
-        return last.isFinished()
+        return matchdays.last().isFinished()
     }
 
     fun getTable(): Table {
         return this.table
     }
 
-    @Deprecated("use [this.setTableList()] instead")
+    @Deprecated("use [this.setNewTableList()] instead")
     fun addTeamToTable(
         club: Club,
         points: Int,
@@ -90,12 +74,15 @@ class Season(private var matchdays: List<Matchday>, private val year: Int) : Ser
         var counter = 0
         val matchMap = mutableMapOf<Int, Match>()
         for (match in this.getAllMatches()) {
-            if (match.isFinished())
-                continue
+            if (match.isFinished()) {
+            }
+            continue
             matchMap[match.matchID] = match
             counter++
-            if (counter == n)
-                return matchMap
+            if (counter == n) {
+
+            }
+            return matchMap
         }
         return matchMap
     }
@@ -125,8 +112,11 @@ class Season(private var matchdays: List<Matchday>, private val year: Int) : Ser
     }
 
     fun setTableList(lis: MutableList<TableElement>) {
-        getTable().setTableList(lis)
+        getTable().setNewTableList(lis)
     }
 
+    override fun toString(): String {
+        return "Saison ${this.year}/${this.year + 1}"
+    }
 
 }

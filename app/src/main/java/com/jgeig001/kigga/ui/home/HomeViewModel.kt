@@ -9,6 +9,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.jgeig001.kigga.model.domain.*
 import com.jgeig001.kigga.ui.PropertyAwareMutableLiveData
+import com.jgeig001.kigga.utils.FavClubChooser
 import dagger.hilt.android.qualifiers.ApplicationContext
 
 class HomeViewModel @ViewModelInject constructor(
@@ -17,7 +18,8 @@ class HomeViewModel @ViewModelInject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    var userLiveData: MutableLiveData<User> = MutableLiveData(model.getUser())
+    var favClubLiveData: MutableLiveData<String> =
+        MutableLiveData(FavClubChooser.getFavClubName(context) ?: "")
 
     var miniTableLiveDataObjects: MutableList<MutableLiveData<RankedTableElement>> = mutableListOf()
 
@@ -48,22 +50,25 @@ class HomeViewModel @ViewModelInject constructor(
     }
 
     private fun calc3Table(): List<RankedTableElement> {
-        val table = model.getLatestSeason().getTable()
-        // if no fav club: show TOP3
-        val favClub: Club = userLiveData.value?.getFavouriteClub() ?: table.getTeam(0).club
-        val teams = when {
-            table.isLeader(favClub) -> {
-                table.getTop3()
+        model.getRunningSeason()?.let { season ->
+            val table = season.getTable()
+            // if no fav club: show TOP3
+            val favClub: Club = model.getFavouriteClub(context) ?: table.getTeam(0).club
+            val teams = when {
+                table.isLeader(favClub) -> {
+                    table.getTop3()
+                }
+                table.isLast(favClub) -> {
+                    table.getFlop3()
+                }
+                else -> {
+                    table.getClubsAround(favClub)
+                }
             }
-            table.isLast(favClub) -> {
-                table.getFlop3()
-            }
-            else -> {
-                table.getClubsAround(favClub)
-            }
+            // transform Pairs to RankedTableElements
+            return teams.map { pair -> RankedTableElement(pair.first, pair.second) }
         }
-        // transform Pairs to RankedTableElements
-        return teams.map { pair -> RankedTableElement(pair.first, pair.second) }
+        return emptyList()
     }
 
 }

@@ -9,7 +9,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import com.jgeig001.kigga.MainActivity
 import com.jgeig001.kigga.R
 import com.jgeig001.kigga.databinding.FragmentHomeBinding
 import com.jgeig001.kigga.model.domain.ModelWrapper
@@ -56,19 +55,21 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         observeLiveData()
         selec_fav_btn.setOnClickListener { chooseFavClub() }
+        favouriteClub.text = FavClubChooser.getFavClubName(requireContext())
     }
 
     private fun observeLiveData() {
-        homeViewModel.userLiveData.observe(
+        homeViewModel.favClubLiveData.observe(
             viewLifecycleOwner,
-            Observer { user ->
+            Observer {
                 Log.d("123", "### fav club changed ###")
-                if (user?.getFavouriteClub() != null) {
+                if (FavClubChooser.hasFavouriteClub(requireContext())) {
                     selec_fav_btn.visibility = View.INVISIBLE
                 } else {
                     selec_fav_btn.visibility = View.VISIBLE
                 }
                 homeViewModel.updateMiniTable()
+                favouriteClub.text = FavClubChooser.getFavClubName(requireContext())
             }
         )
     }
@@ -77,9 +78,8 @@ class HomeFragment : Fragment() {
         val dialog =
             FavClubChooser.getLiveDataClubChooserDialog(
                 requireContext(),
-                model.getUser(),
                 model.getLiga(),
-                homeViewModel.userLiveData
+                homeViewModel.favClubLiveData
             )
         dialog.show()
     }

@@ -33,6 +33,7 @@ class TableAdapter(
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        // TODO: feature: highlight clubs with current running matches
         val thisClub = try {
             table.getTeam(position).club
         } catch (ex: IndexOutOfBoundsException) {

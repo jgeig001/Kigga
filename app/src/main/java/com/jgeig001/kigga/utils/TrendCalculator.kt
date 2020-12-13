@@ -7,9 +7,9 @@ object TrendCalculator {
 
     val pointsNormalized = mapOf(0 to 0.0f, 1 to 0.33f, 3 to 1.0f, null to 0f)
 
-    fun calcTrend(model: ModelWrapper, club: Club): Float {
+    fun calcTrend(season: Season, history: History, club: Club): Float {
         var sum = 0f
-        val last5 = last5(model, club)
+        val last5 = last5(season, history, club)
         val multipliers = listOf(6f, 4f, 4f, 3f, 3f)
         for ((match, multiplicator) in last5.zip(multipliers)) {
             match.ligaPointsFor(club)?.let { ligaPoints ->
@@ -32,29 +32,25 @@ object TrendCalculator {
      * If the last 5 matches are in two seasons it will give you the last machtes of the prevoius season.
      * e.g. [MD_3, MD_2, MD_1, MD_34, MD_33]
      */
-    fun last5(model: ModelWrapper, club: Club): List<Match> {
+    fun last5(season: Season, history: History, club: Club): List<Match> {
         val five = 5
         val lis = mutableListOf<Match>()
 
         // look for the last 5 matches in the current season
-        model.getLatestSeason().let { thisSeason ->
-            for (match in thisSeason.getAllMatches()
-                // only matches of this club which are finished
-                .filter { match -> match.matchOf(club) && match.isFinished() }
-                .asReversed()) {
-                lis.add(0, match)
-                if (lis.size >= five)
-                    return lis.asReversed()
-            }
+
+        for (match in season.getAllMatches()
+            // only matches of this club which are finished
+            .filter { match -> match.matchOf(club) && match.isFinished() }
+            .asReversed()) {
+            lis.add(0, match)
+            if (lis.size >= five)
+                return lis.asReversed()
         }
-        for (m in lis) {
-            println(m)
-        }
-        println("---")
         // add the last matches of the previous season
         if (lis.size < five) {
             val missingMatchDays = five - lis.size
-            model.getPreviousSeason()?.let { prev ->
+            val prevSeason = history.getPrevSeasonOf(season)
+            prevSeason?.let { prev ->
                 // the last n matches of the previous season
                 val sub = prev.getAllMatches()
                     // only the last matchdays

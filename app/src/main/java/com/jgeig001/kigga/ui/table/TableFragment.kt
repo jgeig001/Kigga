@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
@@ -14,6 +15,7 @@ import com.jgeig001.kigga.databinding.FragmentTableBinding
 import com.jgeig001.kigga.model.domain.History
 import com.jgeig001.kigga.model.domain.ModelWrapper
 import com.jgeig001.kigga.model.domain.Season
+import com.jgeig001.kigga.utils.SeasonSelect
 import com.jgeig001.kigga.utils.SharedPreferencesManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_table.*
@@ -30,6 +32,8 @@ class TableFragment : Fragment() {
     private val tableViewModel: TableViewModel by viewModels()
 
     private lateinit var binding: FragmentTableBinding
+
+    private lateinit var tableAdapter: TableAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,15 +54,22 @@ class TableFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val selectedSeasonIndex = SharedPreferencesManager.getInt(
-            requireContext(),
-            History.SELECTED_SEASON_SP_KEY
-        )
+        val selectedSeasonIndex = SeasonSelect.getSelectedSeasonIndex(requireContext())
+
         model.get_nth_season(selectedSeasonIndex)?.getTable()?.let { table ->
-            this.binding.tableListview.adapter = TableAdapter(table, model.getUser().getFavouriteClub(), requireContext())
+            tableAdapter =
+                TableAdapter(table, model.getFavouriteClub(requireContext()), requireContext())
+            this.binding.tableListview.adapter = tableAdapter
         }
 
         this.setupSpinner()
+
+        tableViewModel.tableLiveData.observe(
+            viewLifecycleOwner,
+            Observer { table ->
+                table?.let { t -> tableAdapter.updateView(t) }
+            }
+        )
     }
 
     private fun setupSpinner() {
@@ -78,11 +89,7 @@ class TableFragment : Fragment() {
                 id: Long
             ) {
                 tableViewModel.setSelectedSeasonIndex(position)
-                SharedPreferencesManager.writeInt(
-                    requireContext(),
-                    History.SELECTED_SEASON_SP_KEY,
-                    position
-                )
+                SeasonSelect.setSelectedSeasonIndex(requireContext(), position)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {

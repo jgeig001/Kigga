@@ -4,112 +4,125 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.jgeig001.kigga.ui.table.TableViewModel" />
     </data>
 
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="7dp"
-                android:fontFamily="@font/comfortaa_bold"
-                android:text="1. Bundesliga"
-                android:textAlignment="center"
-                android:textSize="16sp" />
-
-            <Spinner
-                android:id="@+id/table_season_spinner"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="7dp" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="7dp"
+                    android:fontFamily="@font/comfortaa_bold"
+                    android:text="1. Bundesliga"
+                    android:textAlignment="center"
+                    android:textSize="16sp" />
+
+                <Spinner
+                    android:id="@+id/table_season_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="7dp" />
+
+            </LinearLayout>
+
+            <!-- just a separator -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="?attr/colorPrimary_inverted" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimaryDarkWhite"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp">
+
+                <TextView
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/comfortaa_bold"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:layout_width="125dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:fontFamily="@font/comfortaa_bold"
+                    android:paddingStart="5dp"
+                    android:text="Verein" />
+
+                <TextView
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="3dp"
+                    android:fontFamily="@font/comfortaa_bold"
+                    android:text="Sp."
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="3dp"
+                    android:fontFamily="@font/comfortaa_bold"
+                    android:text="Diff."
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="3dp"
+                    android:fontFamily="@font/comfortaa_bold"
+                    android:text="Pkt."
+                    android:textAlignment="center" />
+
+            </LinearLayout>
+
+            <!-- just a separator -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="?attr/colorPrimary_inverted" />
+
+            <ListView
+                android:id="@+id/table_listview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="56dp"
+                android:textAlignment="center" />
 
         </LinearLayout>
 
-        <!-- just a separator -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="?attr/colorPrimary_inverted" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <ProgressBar
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimaryDarkWhite"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp">
+            android:layout_gravity="center"
+            android:visibility="@{viewModel.loadingBarVisibile ? View.VISIBLE : View.INVISIBLE}" />
 
-            <TextView
-                android:layout_width="20dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/comfortaa_bold"
-                android:visibility="invisible" />
-
-            <TextView
-                android:layout_width="125dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginEnd="2dp"
-                android:fontFamily="@font/comfortaa_bold"
-                android:paddingStart="5dp"
-                android:text="Verein" />
-
-            <TextView
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginEnd="3dp"
-                android:fontFamily="@font/comfortaa_bold"
-                android:text="Sp."
-                android:textAlignment="center" />
-
-            <TextView
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginEnd="3dp"
-                android:fontFamily="@font/comfortaa_bold"
-                android:text="Diff."
-                android:textAlignment="center" />
-
-            <TextView
-                android:layout_width="32dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginEnd="3dp"
-                android:fontFamily="@font/comfortaa_bold"
-                android:text="Pkt."
-                android:textAlignment="center" />
-
-        </LinearLayout>
-
-        <!-- just a separator -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="?attr/colorPrimary_inverted" />
-
-        <ListView
-            android:id="@+id/table_listview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="56dp"
-            android:textAlignment="center" />
-
-    </LinearLayout>
-
+    </FrameLayout>
 
 </layout>

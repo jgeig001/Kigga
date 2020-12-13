@@ -32,7 +32,6 @@
             android:autoSizeMinTextSize="12sp"
             android:autoSizeTextType="uniform"
             android:singleLine="false"
-            android:text="@{viewmodel.userLiveData.favouriteClubName}"
             android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="@+id/favouriteClubLable"
             app:layout_constraintStart_toEndOf="@+id/favouriteClubLable"

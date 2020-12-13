@@ -4,8 +4,8 @@ import androidx.databinding.BaseObservable
 import java.io.Serializable
 import javax.inject.Inject
 
-class History @Inject constructor(
-    private var listOfSeasons: MutableList<Season>
+class History constructor(
+    private var listOfSeasons: MutableList<Season> = mutableListOf()
 ) : Serializable, BaseObservable() {
 
     companion object {
@@ -92,8 +92,24 @@ class History @Inject constructor(
         return null
     }
 
-    fun getPreviousSeason(): Season? {
-        return this.get_nth_season(listOfSeasons.size - 2)
+    fun getRunningSeason(): Season? {
+        listOfSeasons.reversed().forEachIndexed { index, season ->
+            if (!season.isFished()) {
+                return get_nth_season(index - 1) ?: season
+            }
+        }
+        return null
+    }
+
+    fun getPrevRunningSeason(): Season? {
+        val runningSeason = getRunningSeason()
+        runningSeason?.let { season ->
+            return getPrevSeasonOf(season)
+        } ?: return null
+    }
+
+    fun getPrevSeasonOf(season: Season): Season? {
+        return getSeasonOf(season.getYear() - 1)
     }
 
     fun getCurrentMatchday(selectedSeason: Int): Matchday? {

@@ -33,7 +33,7 @@
     <string name="no_club">keiner</string>
     <string name="dialog_message_club_chooser">Wähle deinen Lieblingsverein aus. Du kannst ihn jederzeit ändern.</string>
     <string name="no_internet_title">Foul !!!</string>
-    <string name="no_internet_message">Wir können keine Verbindung zum Server herstellen. Schaue, ob du eine funktionierende Internetverbindung hast.</string>
+    <string name="no_internet_message">Wir können leider keine Verbindung zum Server herstellen. Schaue, ob du eine funktionierende Internetverbindung hast und versuche es erneut.</string>
     <string name="kickoff">Anpfiff: </string>
 
 </resources>
