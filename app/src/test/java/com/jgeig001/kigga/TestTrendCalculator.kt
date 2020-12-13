@@ -42,9 +42,9 @@ class TestTrendCalculator {
 
         val season = Season(matchday_lis, 2020)
         val history = History(mutableListOf(season))
-        val model = ModelWrapper(User(null), LigaClass(), history)
 
-        val last5 = TrendCalculator.last5(model, myClub)
+        val last5 = TrendCalculator.last5(season, history, myClub)
+
 
         assert(last5[0] == match5)
         assert(last5[1] == match4)
@@ -85,9 +85,8 @@ class TestTrendCalculator {
 
         val season = Season(matchday_lis, 2020)
         val history = History(mutableListOf(season))
-        val model = ModelWrapper(User(null), LigaClass(), history)
 
-        val last5 = TrendCalculator.last5(model, myClub)
+        val last5 = TrendCalculator.last5(season, history, myClub)
 
         assert(last5[0] == match5)
         assert(last5[1] == match4)
@@ -120,9 +119,8 @@ class TestTrendCalculator {
 
         val season = Season(matchday_lis, 2020)
         val history = History(mutableListOf(season))
-        val model = ModelWrapper(User(null), LigaClass(), history)
 
-        val last5 = TrendCalculator.last5(model, myClub)
+        val last5 = TrendCalculator.last5(season, history, myClub)
 
         assert(last5[0] == match3)
         assert(last5[1] == match2)
@@ -138,7 +136,9 @@ class TestTrendCalculator {
         val matchday_lis_0 = mutableListOf<Matchday>()
         var i = 1
         while (matchday_lis_0.size < Matchday.MAX_MATCHDAYS - 6) {
-            val match = Match(0, myClub, otherClub, 0, MatchResult())
+            val result = MatchResult(1, 1, 1, 1, true)
+            val match = Match(0, myClub, otherClub, 0, result)
+
             matchday_lis_0.add(0, Matchday(mutableListOf(match), i))
             i++
         }
@@ -185,18 +185,22 @@ class TestTrendCalculator {
         result2.finishIt()
         val match3 = Match(0, myClub, otherClub, 0, result2)
 
+        // last matchday
+        val result3 = MatchResult()
+        val match4 = Match(0, myClub, otherClub, 0, result3)
+
         val matchday_lis_1 = mutableListOf(
             Matchday(mutableListOf(match1), 1),
             Matchday(mutableListOf(match2), 2),
-            Matchday(mutableListOf(match3), 3)
+            Matchday(mutableListOf(match3), 3),
+            Matchday(mutableListOf(match4), 3)
         )
         val season1 = Season(matchday_lis_1, 2020)
 
         // history
         val history = History(mutableListOf(season0, season1))
-        val model = ModelWrapper(User(null), LigaClass(), history)
 
-        val last5 = TrendCalculator.last5(model, myClub)
+        val last5 = TrendCalculator.last5(season1, history, myClub)
 
         for (m in last5) {
             println(m)
@@ -239,9 +243,8 @@ class TestTrendCalculator {
 
         val season = Season(matchday_lis, 2020)
         val history = History(mutableListOf(season))
-        val model = ModelWrapper(User(null), LigaClass(), history)
 
-        val trend = TrendCalculator.calcTrend(model, myClub)
+        val trend = TrendCalculator.calcTrend(season, history, myClub)
         println(trend)
         assert(trend == 1f)
     }
@@ -276,9 +279,8 @@ class TestTrendCalculator {
 
         val season = Season(matchday_lis, 2020)
         val history = History(mutableListOf(season))
-        val model = ModelWrapper(User(null), LigaClass(), history)
 
-        val trend = TrendCalculator.calcTrend(model, myClub)
+        val trend = TrendCalculator.calcTrend(season, history, myClub)
         println(trend)
         // 0 to 0.0f, 1 to 0.33f, 3 to 1.0f, null to 0f
         // 6f, 4f, 4f, 3f, 3f

@@ -68,6 +68,14 @@ class MatchResult(
         return this.getRepr()
     }
 
+    fun getHalftimeAway(): Int {
+        return away_halftime
+    }
+
+    fun getHalftimeHome(): Int {
+        return home_halftime
+    }
+
     fun getFulltimeAway(): Int {
         return away_fulltime
     }

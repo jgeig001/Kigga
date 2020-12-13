@@ -31,10 +31,6 @@ data class Season(private var matchdays: List<Matchday>, private val year: Int) 
         return this.year
     }
 
-    override fun toString(): String {
-        return String.format("Saison %d/%d", this.year, this.year + 1)
-    }
-
     fun getMatchday(i: Int): Matchday {
         return matchdays[i]
     }
@@ -46,23 +42,11 @@ data class Season(private var matchdays: List<Matchday>, private val year: Int) 
             }
         }
         return null
-        // TODO: safe delete
-        matchdays.forEachIndexed { i, matchday ->
-            if (matchday.matches.all { m -> m.isFinished() } && !matchdays[i + 1].matches.all { m -> m.isFinished() }) {
-                return try {
-                    matchdays[i + 1]
-                } catch (e: IndexOutOfBoundsException) {
-                    null
-                }
-            }
-        }
-        return null
     }
 
     fun isFished(): Boolean {
         // finished if the last matchday is finished
-        val last = matchdays.last()
-        return last.isFinished()
+        return matchdays.last().isFinished()
     }
 
     fun getTable(): Table {
@@ -90,12 +74,15 @@ data class Season(private var matchdays: List<Matchday>, private val year: Int) 
         var counter = 0
         val matchMap = mutableMapOf<Int, Match>()
         for (match in this.getAllMatches()) {
-            if (match.isFinished())
-                continue
+            if (match.isFinished()) {
+            }
+            continue
             matchMap[match.matchID] = match
             counter++
-            if (counter == n)
-                return matchMap
+            if (counter == n) {
+
+            }
+            return matchMap
         }
         return matchMap
     }
@@ -128,5 +115,8 @@ data class Season(private var matchdays: List<Matchday>, private val year: Int) 
         getTable().setNewTableList(lis)
     }
 
+    override fun toString(): String {
+        return "Saison ${this.year}/${this.year + 1}"
+    }
 
 }

@@ -19,6 +19,7 @@ class Match(
         const val NO_BET = -1
     }
 
+    @Bindable
     private var bet: Bet = Bet(this)
 
     @Bindable
@@ -84,12 +85,20 @@ class Match(
         return sdf.format(date)
     }
 
-    fun getBetHomeGoals(): String {
+    fun getBetHomeGoalsStr(): String {
         return bet.getHomeGoalsStr()
     }
 
-    fun getBetAwayGoals(): String {
+    fun getBetAwayGoalsStr(): String {
         return bet.getAwayGoalsStr()
+    }
+
+    fun getBetHomeGoals(): Int {
+        return bet.getHomeGoals()
+    }
+
+    fun getBetAwayGoals(): Int {
+        return bet.getAwayGoals()
     }
 
     fun betRepr(): String {
@@ -160,6 +169,10 @@ class Match(
             return 0
         }
         return null
+    }
+
+    fun setBet(bet: Bet) {
+        this.bet = bet
     }
 
 

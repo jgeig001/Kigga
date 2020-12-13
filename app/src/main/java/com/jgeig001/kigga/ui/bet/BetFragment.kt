@@ -45,7 +45,7 @@ class BetFragment : Fragment(R.layout.fragment_bet) {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Obtain binding
         this.binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_bet, container, false)
@@ -112,11 +112,15 @@ class BetFragment : Fragment(R.layout.fragment_bet) {
      * scroll recyclerView to the current matchday
      */
     private fun scrollToCurMatchday() {
-        // TODO: latest season or cur selected season ?
+        // TODO: latest season OR cur selected season OR spinner.selected ?
         try {
-            val i = this.model.getLatestSeason().getCurrentMatchday()?.matchdayIndex ?: -1
-            if (i > -1) {
-                this.recyclerView.layoutManager!!.scrollToPosition(i)
+            val index = this.viewModel.getSelectedSeasonIndex()
+            val season = this.model.get_nth_season(index) ?: this.model.getRunningSeason()
+            season?.let {
+                val i = it.getCurrentMatchday()?.matchdayIndex ?: -1
+                if (i > -1) {
+                    this.recyclerView.layoutManager!!.scrollToPosition(i)
+                }
             }
         } catch (ex: NoSuchElementException) {
             return // ignore auto scroll
@@ -124,6 +128,7 @@ class BetFragment : Fragment(R.layout.fragment_bet) {
     }
 
     private fun setupSpinner() {
+        // adapter for spinner
         val seasonAdapter: ArrayAdapter<Season> = ArrayAdapter(
             this.requireActivity(),
             android.R.layout.simple_spinner_item,
@@ -131,6 +136,7 @@ class BetFragment : Fragment(R.layout.fragment_bet) {
         )
         seasonAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
         bet_season_spinner.adapter = seasonAdapter
+        // selection
         bet_season_spinner.setSelection(this.viewModel.getSelectedSeasonIndex())
         bet_season_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(

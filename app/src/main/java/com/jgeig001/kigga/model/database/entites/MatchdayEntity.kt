@@ -5,8 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "matchday_table")
 data class MatchdayEntity(
-    @PrimaryKey(autoGenerate = true)
-    val matchdayID: Int,
+    @PrimaryKey
+    val matchdayID: Int, // year & matchday_index
     val matchdayIndex: Int,
     val seasonIDRef: Int
 )

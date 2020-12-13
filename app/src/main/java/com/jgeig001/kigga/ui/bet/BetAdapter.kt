@@ -1,6 +1,7 @@
 package com.jgeig001.kigga.ui.bet
 
 import android.content.Context
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ import com.jgeig001.kigga.model.domain.Match
 import com.jgeig001.kigga.model.domain.Matchday
 import com.jgeig001.kigga.model.domain.ModelWrapper
 import com.jgeig001.kigga.utils.ArrowFunctions
+import com.jgeig001.kigga.utils.SeasonSelect
 import com.jgeig001.kigga.utils.SharedPreferencesManager
 import com.jgeig001.kigga.utils.TrendCalculator
 import java.io.Serializable
@@ -81,19 +83,14 @@ class BetAdapter(
         holder.setMatchdayNumber(position, context)
 
         // check if this matchday ist the current matchday
-        val selectedSeasonIndex = SharedPreferencesManager.getInt(
-            context,
-            History.SELECTED_SEASON_SP_KEY
-        )
+        val selectedSeasonIndex = SeasonSelect.getSelectedSeasonIndex(context)
         val curMatchday = model.getCurrentMatchday(selectedSeasonIndex)
         val isCurMatchday: Boolean = curMatchday == thisMatchday
         if (isCurMatchday)
             holder.thisMatchday()
 
-        val iter: MutableList<MutableList<Match>>? =
-            matchdayList[position]?.matchday_day_iter()
-        if (iter == null)
-            return
+        val iter: MutableList<MutableList<Match>> =
+            matchdayList[position]?.matchday_day_iter() ?: return
 
         val table = model.get_nth_season(selectedSeasonIndex)?.getTable()
 
@@ -186,10 +183,8 @@ class BetAdapter(
                     matchView = LayoutInflater.from(parent!!.context)
                         .inflate(R.layout.view_match_bet, parent, false) as LinearLayout
 
-                    // ###
                     matchView.gravity = Gravity.CENTER_HORIZONTAL
 
-                    val x = match.home_team
                     table?.getRankOf(match.home_team)
                     matchView.findViewById<TextView>(R.id.rank_home).text =
                         "${table?.getRankOf(match.home_team)}."
@@ -200,21 +195,39 @@ class BetAdapter(
                         match.home_team.shortName
                     matchView.findViewById<TextView>(R.id.away_team).text =
                         match.away_team.shortName
-                    val trendHome = TrendCalculator.calcTrend(model, match.home_team)
-                    matchView.findViewById<TextView>(R.id.trend_home).text = trendHome.toString()
-                    matchView.findViewById<ImageView>(R.id.trend_arrow_home).rotation =
-                        ArrowFunctions.trendArrow(trendHome)
-                    matchView.findViewById<ImageView>(R.id.trend_arrow_home).setImageDrawable(
-                        context.getDrawable(ArrowFunctions.getArrowDrawable(trendHome))
-                    )
 
-                    val trendAway = TrendCalculator.calcTrend(model, match.away_team)
-                    matchView.findViewById<TextView>(R.id.trend_away).text = trendAway.toString()
-                    matchView.findViewById<ImageView>(R.id.trend_arrow_away).rotation =
-                        ArrowFunctions.trendArrow(trendAway)
-                    matchView.findViewById<ImageView>(R.id.trend_arrow_away).setImageDrawable(
-                        context.getDrawable(ArrowFunctions.getArrowDrawable(trendAway))
-                    )
+                    // calc trend
+                    (model.get_nth_season(SeasonSelect.getSelectedSeasonIndex(context))
+                        ?: model.getRunningSeason())?.let {
+                        val trendHome = TrendCalculator.calcTrend(
+                            it,
+                            model.getHistory(),
+                            match.home_team
+                        )
+                        Log.d("123", "trendHome: $trendHome")
+                        matchView.findViewById<TextView>(R.id.trend_home).text =
+                            trendHome.toString()
+                        matchView.findViewById<ImageView>(R.id.trend_arrow_home).rotation =
+                            ArrowFunctions.trendArrow(trendHome)
+                        matchView.findViewById<ImageView>(R.id.trend_arrow_home)
+                            .setImageDrawable(
+                                context.getDrawable(ArrowFunctions.getArrowDrawable(trendHome))
+                            )
+                        val trendAway = TrendCalculator.calcTrend(
+                            it,
+                            model.getHistory(),
+                            match.away_team
+                        )
+                        matchView.findViewById<TextView>(R.id.trend_away).text =
+                            trendAway.toString()
+                        matchView.findViewById<ImageView>(R.id.trend_arrow_away).rotation =
+                            ArrowFunctions.trendArrow(trendAway)
+                        matchView.findViewById<ImageView>(R.id.trend_arrow_away)
+                            .setImageDrawable(
+                                context.getDrawable(ArrowFunctions.getArrowDrawable(trendAway))
+                            )
+                    }
+
 
                     matchView.findViewById<TextView>(R.id.kickoff).text =
                         context.getString(
@@ -233,9 +246,9 @@ class BetAdapter(
                     away_minus.setOnClickListener { thisMatchday.removeAwayGoal(match) }
                     // tipp textfield: set text
                     (matchView.findViewById<View>(R.id.goals_bet_home) as TextView).text =
-                        match.getBetHomeGoals()
+                        match.getBetHomeGoalsStr()
                     (matchView.findViewById<View>(R.id.goals_bet_away) as TextView).text =
-                        match.getBetAwayGoals()
+                        match.getBetAwayGoalsStr()
 
                     val homeHashtag = match.home_team.twitterHashtag
                     if (homeHashtag.isBlank())

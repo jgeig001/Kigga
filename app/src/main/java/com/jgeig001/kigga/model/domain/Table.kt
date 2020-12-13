@@ -165,9 +165,9 @@ class Table : BaseObservable(), Serializable {
     /**
      * [tableList] will be set to [lis]
      */
-    fun setNewTableList(lis: MutableList<TableElement>) {
+    fun setNewTableList(lis: List<TableElement>) {
         this.clearTable()
-        this.tableList = lis
+        this.tableList = lis.toMutableList()
         notifyPropertyChanged(BR.tableList)
     }
 

@@ -1,7 +1,6 @@
 package com.jgeig001.kigga.model.persitence
 
 import android.content.Context
-import android.util.Log
 import com.jgeig001.kigga.model.domain.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -17,7 +16,6 @@ import java.util.*
 
 class DataPoller(
     private val history: History,
-    private val user: User,
     private val liga: LigaClass,
     private val context: Context
 ) {
@@ -28,14 +26,14 @@ class DataPoller(
     private var inetConnectionWorked = false
     private var firstLoadDone: Boolean = false
     private var initCallbacks: MutableList<() -> Unit> = mutableListOf()
-    private var favClubCallBack: ((user: User, liga: LigaClass) -> Unit)? = null
+    private var favClubCallBack: ((liga: LigaClass) -> Unit)? = null
     private lateinit var openWarningDialogCallback: () -> Unit
 
     fun firstLoadDone() {
         firstLoadDone = true
         this.initCallbacks.map { cb: () -> Unit -> cb() }
         favClubCallBack?.let { callbackFun ->
-            callbackFun(user, liga)
+            callbackFun(liga)
         }
     }
 
@@ -125,7 +123,7 @@ class DataPoller(
      */
     private fun newDataAvailable(lastUpdate: Long): Pair<Boolean, Long> {
         val latestSeason: Season? = try {
-            history.getLatestSeason()
+            history.getRunningSeason()
         } catch (ex: NoSuchElementException) {
             null
         }
@@ -145,7 +143,7 @@ class DataPoller(
         return Pair(false, 0L)
     }
 
-    fun favClubCallback(callback: (user: User, liga: LigaClass) -> Unit) {
+    fun setFavClubCallback(callback: (liga: LigaClass) -> Unit) {
         this.favClubCallBack = callback
     }
 

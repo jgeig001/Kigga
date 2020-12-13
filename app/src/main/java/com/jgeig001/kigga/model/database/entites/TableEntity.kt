@@ -5,7 +5,6 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "table_table")
 data class TableEntity(
-    @PrimaryKey(autoGenerate = true)
-    var tableID: Int,
-    var seasonID: Int
+    @PrimaryKey
+    var seasonID: Int // expandable: table for each matchday
 )

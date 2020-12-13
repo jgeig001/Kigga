@@ -19,7 +19,6 @@
                 android:layout_width="20dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="textEnd"
-                android:hint="0."
                 android:layout_marginEnd="5dp"
                 android:fontFamily="@font/comfortaa_light" />
 

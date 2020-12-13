@@ -32,9 +32,6 @@ class DataLoader(private var history: History, private var liga: LigaClass) : Up
      */
     override fun updateData() {
         // --- LOGIC: what to load --- //
-        if (history.getListOfSeasons().size == 0) {
-            //Log.d("123", "model was not load correctly ?")
-        }
         var emptyHistory = false
         val lastLoadedSeason: Season? = try {
             history.getLatestSeason()

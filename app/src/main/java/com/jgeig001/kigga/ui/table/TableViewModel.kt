@@ -20,11 +20,17 @@ class TableViewModel @ViewModelInject constructor(
 
     var tableLiveData: MutableLiveData<Table?>
 
+    var loadingBarVisibile: MutableLiveData<Boolean> = MutableLiveData(true)
+
     init {
         tableLiveData = try {
-            val season: Season = model.getHistory().get_nth_season(selectedSeasonIndex) ?: model.getLatestSeason()
-            MutableLiveData(season.getTable())
+            val season: Season =
+                model.getHistory().get_nth_season(selectedSeasonIndex) ?: model.getLatestSeason()
+            val table = season.getTable()
+            loadingBarVisibile.postValue(false)
+            MutableLiveData(table)
         } catch (ex: NoSuchElementException) {
+            loadingBarVisibile.postValue(true)
             MutableLiveData(null)
         }
     }
@@ -41,6 +47,7 @@ class TableViewModel @ViewModelInject constructor(
 
     private fun updateLiveDataList(index: Int) {
         model.getHistory().get_nth_season(index)?.getTable().let { table ->
+            loadingBarVisibile.postValue(false)
             tableLiveData.postValue(table)
         }
     }

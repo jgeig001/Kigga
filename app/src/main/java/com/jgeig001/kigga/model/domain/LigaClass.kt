@@ -10,10 +10,6 @@ class LigaClass : Serializable, BaseObservable() {
     // key: full clubName, value: club itself
     private var listOfClubs: HashMap<String, Club> = hashMapOf()
 
-    fun getListOfClubs(): HashMap<String, Club> {
-        return listOfClubs
-    }
-
     fun getAllClubs(): MutableCollection<Club> {
         return this.listOfClubs.values
     }

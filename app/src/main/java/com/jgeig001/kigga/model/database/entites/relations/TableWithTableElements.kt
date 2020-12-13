@@ -8,7 +8,7 @@ import com.jgeig001.kigga.model.database.entites.TableEntity
 data class TableWithTableElements(
     @Embedded val table: TableEntity,
     @Relation(
-        parentColumn = "tableID",
+        parentColumn = "seasonID",
         entityColumn = "tableIDRef"
     )
     val tableElements: List<TableElementEntity>

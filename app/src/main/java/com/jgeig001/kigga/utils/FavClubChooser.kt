@@ -2,19 +2,17 @@ package com.jgeig001.kigga.utils
 
 import android.app.AlertDialog
 import android.content.Context
-import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.jgeig001.kigga.R
 import com.jgeig001.kigga.model.domain.Club
 import com.jgeig001.kigga.model.domain.LigaClass
-import com.jgeig001.kigga.model.domain.User
 
 object FavClubChooser {
 
+    private const val FAV_CLUB_KEY = "FAV_CLUB_KEY"
+
     fun getClubChooserDialog(
         context: Context,
-        user: User,
         liga: LigaClass
     ): AlertDialog {
         var allClubs: MutableCollection<Club> = liga.getAllClubs()
@@ -35,10 +33,10 @@ object FavClubChooser {
         ) { dialog, which ->
             if (array[which] == context.getString(R.string.no_club)) {
                 // user has no favourite club
-                user.setFavouriteClub(null)
+                setFavClub(context, "")
             } else {
                 val choosenClubName = array[which]
-                user.setFavouriteClub(liga.getClubBy(choosenClubName))
+                setFavClub(context, choosenClubName)
             }
             dialog.dismiss()
         }
@@ -46,11 +44,10 @@ object FavClubChooser {
         return builder.create()
     }
 
-    fun <T> getLiveDataClubChooserDialog(
+    fun getLiveDataClubChooserDialog(
         context: Context,
-        user: User,
         liga: LigaClass,
-        livedata: MutableLiveData<T>
+        livedata: MutableLiveData<String>
     ): AlertDialog {
         var allClubs: MutableCollection<Club> = liga.getAllClubs()
 
@@ -69,21 +66,39 @@ object FavClubChooser {
             -1
         ) { dialog, which ->
             // update object held by livedata
-            if (array[which] == context.getString(R.string.no_club)) {
+            val choosenClubName = array[which]
+            if (choosenClubName == context.getString(R.string.no_club)) {
                 // user has no favourite club
-                user.setFavouriteClub(null)
+                setFavClub(context, "")
             } else {
-                val choosenClubName = array[which]
-                user.setFavouriteClub(liga.getClubBy(choosenClubName))
+                setFavClub(context, choosenClubName)
             }
             // update UI and trigger observer
-            livedata.postValue(user as T)
-            // close dialog
+            livedata.postValue(choosenClubName)
             dialog.dismiss()
         }
 
         return builder.create()
     }
 
+    fun setFavClub(context: Context, clubName: String) {
+        SharedPreferencesManager.writeString(context, FAV_CLUB_KEY, clubName)
+    }
+
+    fun getFavClubName(context: Context): String? {
+        return SharedPreferencesManager.getString(context, FAV_CLUB_KEY)
+    }
+
+    fun getFavClub(context: Context, liga: LigaClass): Club {
+        return liga.getClubBy(getFavClubName(context) ?: "")
+    }
+
+    fun hasNoFavouriteClub(context: Context): Boolean {
+        return getFavClubName(context) == SharedPreferencesManager.DEFAULT_STRING
+    }
+
+    fun hasFavouriteClub(context: Context): Boolean {
+        return getFavClubName(context) != SharedPreferencesManager.DEFAULT_STRING
+    }
 
 }

@@ -8,7 +8,7 @@ import com.jgeig001.kigga.model.database.entites.SeasonEntity
 data class SeasonWithMatchdays(
     @Embedded val season: SeasonEntity,
     @Relation(
-        parentColumn = "seasonID",
+        parentColumn = "year",
         entityColumn = "seasonIDRef"
     )
     val matchdays: List<MatchdayEntity>

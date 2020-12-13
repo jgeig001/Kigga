@@ -21,7 +21,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
                 android:fontFamily="@font/comfortaa_bold"
-                android:hint="0."
                 android:textAlignment="textEnd" />
 
             <TextView
@@ -41,7 +40,8 @@
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="3dp"
                 android:fontFamily="@font/comfortaa_bold"
-                android:hint="Sp." />
+                android:hint="Sp."
+                android:textAlignment="center" />
 
             <TextView
                 android:id="@+id/ele_goals"

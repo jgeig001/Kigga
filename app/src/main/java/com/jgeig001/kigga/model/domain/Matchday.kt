@@ -73,7 +73,7 @@ data class Matchday(
      * e.g. [[all matches on friday], [all matches on saturday], [all matches on sunday]]
      * @return ArrayList<ArrayList></ArrayList><Match>>
     </Match> */
-    fun matchday_day_iter(): MutableList<MutableList<Match>>? {
+    fun matchday_day_iter(): MutableList<MutableList<Match>> {
         val listOfLists: MutableList<MutableList<Match>> = ArrayList()
         listOfLists.add(mutableListOf())
         var prev: Match = this.matches[0]
@@ -95,8 +95,14 @@ data class Matchday(
         }
         return listOfLists
     }
-    /*override fun toString(): String {
-        return String.format("%d. Spieltag", this.number);
-    }*/
+
+    fun get_DB_ID(): Int {
+        return "${matches.first().matchID}${matchdayIndex}".toInt()
+    }
+
+    override fun toString(): String {
+        val matchesStr = matches.map { m -> "${m.home_team} - ${m.away_team} | " }
+        return "Matchday: ($matchdayIndex.) matches:$matchesStr"
+    }
 
 }

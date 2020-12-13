@@ -32,9 +32,6 @@ class Bet(
 ) :
     Serializable, BaseObservable() {
 
-    @Bindable // TODO: del ?
-    private var bet: IntArray = intArrayOf(goals_home, goals_away)
-
     val points: Int
         get() {
             if (goals_home == Match.NO_BET && goals_away == Match.NO_BET)
@@ -70,6 +67,8 @@ class Bet(
         return BetPoints.getDrawable(p)
     }
 
+    /* inc & dec */
+
     fun incHomeGoal() {
         activateBet()
         this.goals_home += 1
@@ -94,6 +93,14 @@ class Bet(
         }
     }
 
+    fun setHomeGoals(goals: Int) {
+        this.goals_home = goals
+    }
+
+    fun setAwayGoals(goals: Int) {
+        this.goals_away = goals
+    }
+
     fun activateBet() {
         if (goals_home == Match.NO_BET)
             goals_home = 0
@@ -110,6 +117,14 @@ class Bet(
             )
         else
             Match.NULL_REPR
+    }
+
+    fun getHomeGoals(): Int {
+        return goals_home
+    }
+
+    fun getAwayGoals(): Int {
+        return goals_away
     }
 
 }

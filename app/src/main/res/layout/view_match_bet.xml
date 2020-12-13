@@ -224,7 +224,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="21dp"
                     android:fontFamily="@font/comfortaa_light"
-                    android:hint="0.99"
+                    android:hint="0.0"
                     android:textSize="13sp" />
 
                 <TextView
@@ -232,7 +232,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="21dp"
                     android:fontFamily="@font/comfortaa_light"
-                    android:hint="0.99"
+                    android:hint="0.0"
                     android:textSize="13sp" />
 
             </LinearLayout>

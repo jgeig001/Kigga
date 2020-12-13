@@ -1,11 +1,13 @@
 package com.jgeig001.kigga.model.domain
 
+import android.content.Context
 import androidx.databinding.BaseObservable
+import com.jgeig001.kigga.model.exceptions.ClubExistenceException
+import com.jgeig001.kigga.utils.FavClubChooser
 import java.io.Serializable
 import javax.inject.Inject
 
 class ModelWrapper @Inject constructor(
-    private var user: User,
     private var liga: LigaClass,
     private var history: History
 ) : Serializable, BaseObservable(), ModelAPI {
@@ -13,7 +15,9 @@ class ModelWrapper @Inject constructor(
     // -------------------------------------------- API --------------------------------------------
 
     override fun getPointsCurSeason(): Int {
-        return getPointsOf(history.getLatestSeason())
+        history.getRunningSeason()?.let { season ->
+            return getPointsOf(season)
+        } ?: return 0
     }
 
     override fun getPointsAllTime(): Int {
@@ -32,12 +36,16 @@ class ModelWrapper @Inject constructor(
         return sum
     }
 
-    override fun getFavouriteClub(): Club? {
-        return this.user.getFavouriteClub()
+    override fun getFavouriteClub(context: Context): Club? {
+        return try {
+            FavClubChooser.getFavClub(context, liga)
+        } catch (e: ClubExistenceException) {
+            null
+        }
     }
 
-    override fun setFavouriteClub(club: Club) {
-        this.user.setFavouriteClub(club)
+    override fun setFavouriteClub(context: Context, clubName: String) {
+        FavClubChooser.setFavClub(context, clubName)
     }
 
     override fun getListOfSeasons(): MutableList<Season> {
@@ -48,8 +56,12 @@ class ModelWrapper @Inject constructor(
         return this.history.getLatestSeason()
     }
 
-    override fun getPreviousSeason(): Season? {
-        return history.getPreviousSeason()
+    override fun getRunningSeason(): Season? {
+        return this.history.getRunningSeason()
+    }
+
+    override fun getPrevRunningSeason(): Season? {
+        return history.getPrevRunningSeason()
     }
 
     override fun getCurrentMatchday(selectedSeasonIndex: Int): Matchday? {
@@ -67,10 +79,6 @@ class ModelWrapper @Inject constructor(
     // ---------------------------------------------------------------------------------------------
 
     // get components
-    fun getUser(): User {
-        return this.user
-    }
-
     fun getLiga(): LigaClass {
         return this.liga
     }
@@ -90,15 +98,17 @@ interface ModelAPI {
 
     fun getPointsAllTime(): Int
 
-    fun getFavouriteClub(): Club?
+    fun getFavouriteClub(context: Context): Club?
 
-    fun setFavouriteClub(club: Club)
+    fun setFavouriteClub(context: Context, clubName: String)
 
     fun getListOfSeasons(): MutableList<Season>
 
     fun getLatestSeason(): Season?
 
-    fun getPreviousSeason(): Season?
+    fun getRunningSeason(): Season?
+
+    fun getPrevRunningSeason(): Season?
 
     fun getCurrentMatchday(selectedSeasonIndex: Int): Matchday?
 
