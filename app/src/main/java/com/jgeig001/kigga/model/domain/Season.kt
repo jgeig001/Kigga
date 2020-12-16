@@ -119,4 +119,28 @@ data class Season(private var matchdays: List<Matchday>, private val year: Int) 
         return "Saison ${this.year}/${this.year + 1}"
     }
 
+    fun getFinishedMatches(): List<Match> {
+        val lis = mutableListOf<Match>()
+        for (match in getAllMatches()) {
+            if (match.isFinished()) {
+                lis.add(match)
+            } else {
+                break
+            }
+        }
+        return lis
+    }
+
+    fun getCorrectResultBet(): Int {
+        return getFinishedMatches().sumBy { m -> if (m.correctResultBet()) 1 else 0 }
+    }
+
+    fun getCorrectOutcomeBet(): Int {
+        return getFinishedMatches().sumBy { m -> if (m.correctOutcomeBet()) 1 else 0 }
+    }
+
+    fun getWrongBet(): Int {
+        return getFinishedMatches().sumBy { m -> if (m.wrongBet()) 1 else 0 }
+    }
+
 }

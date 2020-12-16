@@ -1,7 +1,9 @@
 package com.jgeig001.kigga.model.persitence
 
-import android.content.Context
-import com.jgeig001.kigga.model.domain.*
+import android.util.Log
+import com.jgeig001.kigga.model.domain.History
+import com.jgeig001.kigga.model.domain.LigaClass
+import com.jgeig001.kigga.model.domain.Season
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -16,38 +18,41 @@ import java.util.*
 
 class DataPoller(
     private val history: History,
-    private val liga: LigaClass,
-    private val context: Context
+    private val liga: LigaClass
 ) {
-
     // constants
     private val SEC = 10L
 
     private var inetConnectionWorked = false
     private var firstLoadDone: Boolean = false
-    private var initCallbacks: MutableList<() -> Unit> = mutableListOf()
+
+    private var dataLoader: DataLoader = DataLoader(history, liga)
+
+    private var dumpDBCallback: (() -> Unit)? = null
+    private var betFragmentCallback: (() -> Unit)? = null
     private var favClubCallBack: ((liga: LigaClass) -> Unit)? = null
     private lateinit var openWarningDialogCallback: () -> Unit
 
     fun firstLoadDone() {
         firstLoadDone = true
-        this.initCallbacks.map { cb: () -> Unit -> cb() }
+        dumpDBCallback?.let { cb -> cb() }
+        betFragmentCallback?.let { cb -> cb() }
         favClubCallBack?.let { callbackFun ->
             callbackFun(liga)
         }
     }
 
     fun addFirstLoadFinishedCallback(callback: () -> Unit) {
-        this.initCallbacks.add(callback)
+        //this.initCallbacks.add(callback)
     }
 
     fun callbackNOTset(): Boolean {
-        // wait until callback from [BetFragment] and from [PersistenceManager] was set => size:2
         // may change if further callbacks are added
-        return initCallbacks.size < 2
+        val dumpDBCallbackIsInit = dumpDBCallback != null
+        val betFragmentCallbackIsInit = betFragmentCallback != null
+        val favClubCallBackIsInit = favClubCallBack != null
+        return !(dumpDBCallbackIsInit && betFragmentCallbackIsInit && favClubCallBackIsInit)
     }
-
-    private var dataLoader: DataLoader = DataLoader(history, liga)
 
     /**
      * show an alertdialog if internet connection is difficult...
@@ -76,7 +81,7 @@ class DataPoller(
             dataLoader.loadNewClubs()
             dataLoader.updateData()
             if (!firstLoadDone) {
-                while (callbackNOTset() && favClubCallBack == null) {
+                while (callbackNOTset()) {
                     // wait until fragment(VIEW) set callback
                     delay(25)
                 }
@@ -105,8 +110,6 @@ class DataPoller(
                     dataLoader.updateData()
                     dataLoader.loadTable()
                     inetConnectionWorked = true
-                } else {
-                    //Log.d("123", "NO new data")
                 }
                 delay(SEC * 1000)
             }
@@ -132,7 +135,6 @@ class DataPoller(
                 season,
                 season.getCurrentMatchday() ?: season.getFirstMatchday()
             )
-            //Log.d("123", "last_db_update:$last_db_update --- lastUpdate:${Date(lastUpdate)}")
             return if (last_db_update.after(Date(lastUpdate))) {
                 return Pair(true, last_db_update.time)
             } else {
@@ -141,10 +143,6 @@ class DataPoller(
 
         }
         return Pair(false, 0L)
-    }
-
-    fun setFavClubCallback(callback: (liga: LigaClass) -> Unit) {
-        this.favClubCallBack = callback
     }
 
     /**
@@ -171,6 +169,18 @@ class DataPoller(
 
     fun internetWarningDialog(openDialog: () -> Unit) {
         openWarningDialogCallback = openDialog
+    }
+
+    fun setFavClubCallback(callback: (liga: LigaClass) -> Unit) {
+        this.favClubCallBack = callback
+    }
+
+    fun addDumpDBCallback(callback: () -> Unit) {
+        dumpDBCallback = callback
+    }
+
+    fun addBetFragmentCallback(callback: () -> Unit) {
+        betFragmentCallback = callback
     }
 
 }

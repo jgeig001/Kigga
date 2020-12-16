@@ -8,8 +8,6 @@ import com.jgeig001.kigga.model.domain.*
 import com.jgeig001.kigga.model.exceptions.DatabaseEmptyWarning
 import com.jgeig001.kigga.model.repository.*
 import kotlinx.coroutines.*
-import java.io.*
-import java.util.*
 import javax.inject.Inject
 
 
@@ -17,7 +15,7 @@ interface Persistent {
     /**
      * loads the business model from room db
      */
-    fun loadFromDatabase(): ModelWrapper
+    fun loadFromDatabase(model: ModelWrapper)
 
     /**
      * dumps whole model to room db
@@ -30,29 +28,27 @@ class PersistenceManager @Inject constructor(private var context: Context, val d
 
     val DB_TAG = "localdb"
 
-    private val SERIALIZE_FILE = "serialized"
-    private val MAX_TIME_TO_WAIT = 60
-    private val first_init_done = false
     private var dataPoller: DataPoller
     private var model: ModelWrapper
 
     init {
         model = getEmptyModel()
-        dataPoller = DataPoller(model.getHistory(), model.getLiga(), context)
+        dataPoller = DataPoller(model.getHistory(), model.getLiga())
+        loadModel()
+    }
 
-
+    private fun loadModel() {
         GlobalScope.launch(Dispatchers.IO) {
-            // 1. load data from persitence
-            model = try {
-                loadFromDatabase()
+            // 1. load data from db
+            try {
+                loadFromDatabase(model)
             } catch (e: DatabaseEmptyWarning) {
                 // nothing saved yet
                 getEmptyModel()
             }
 
             // 2. load new data from web
-            dataPoller = DataPoller(model.getHistory(), model.getLiga(), context)
-            dataPoller.addFirstLoadFinishedCallback {
+            dataPoller.addDumpDBCallback {
                 GlobalScope.launch { dumpDatabase() }
             }
             dataPoller.poll()
@@ -73,9 +69,10 @@ class PersistenceManager @Inject constructor(private var context: Context, val d
      * loads the business model from room db
      */
     @Throws(DatabaseEmptyWarning::class)
-    override fun loadFromDatabase(): ModelWrapper {
-        var modelWrapper: ModelWrapper
+    override fun loadFromDatabase(model: ModelWrapper) {
         runBlocking {
+            val startTime = System.nanoTime()
+            Log.d("123", "startTime: $startTime")
             val TAG = "TAG"
             Log.d(TAG, "loadDatabase()")
             val clubRepo = ClubRepository(db)
@@ -90,7 +87,7 @@ class PersistenceManager @Inject constructor(private var context: Context, val d
             }
 
             /* LIGA */
-            val liga = LigaClass()
+            val liga = model.getLiga()
             for (clubEntity in clubRepo.getAllClubs()) {
                 val club =
                     Club(clubEntity.clubName, clubEntity.shortName, clubEntity.twitterHashtag)
@@ -144,7 +141,6 @@ class PersistenceManager @Inject constructor(private var context: Context, val d
                 listOfSeasons.add(season)
 
                 /* TABLE */
-
                 val tableElementEntities = tableElementRepo.getTablelementsOf(seasonID)
                 val tableElements = tableElementEntities.map { tableElementEntity ->
                     TableElement(
@@ -161,12 +157,9 @@ class PersistenceManager @Inject constructor(private var context: Context, val d
                 season.getTable().setNewTableList(tableElements)
             }
 
-            val history = History(listOfSeasons)
-
-            Log.d("123", "loadDatabase() | END |")
-            modelWrapper = ModelWrapper(liga, history)
+            model.getHistory().setListOfSeasons(listOfSeasons)
+            //delay(2000)
         }
-        return modelWrapper
     }
 
     /**
@@ -257,7 +250,7 @@ class PersistenceManager @Inject constructor(private var context: Context, val d
      * adds an callback which gets called when the model got initialised
      */
     fun addFirstLoadFinishedCallback(callback: () -> Unit) {
-        dataPoller.addFirstLoadFinishedCallback(callback)
+        //dataPoller.addFirstLoadFinishedCallback(callback)
     }
 
     fun setFavClubCallback(callback: (liga: LigaClass) -> Unit) {
@@ -268,45 +261,8 @@ class PersistenceManager @Inject constructor(private var context: Context, val d
         dataPoller.internetWarningDialog(openDialog)
     }
 
-    /* DEPRECATED */
-    /**
-     * method that deserialize model and returns it
-     * @param context
-     * @return loaded model: ModelWrapper
-     */
-    @Throws(IOException::class, ClassNotFoundException::class)
-    private fun deserializeBusinessModel(context: Context): ModelWrapper {
-        println("###loadSerializedModel()")
-        var fis: FileInputStream = context.openFileInput(SERIALIZE_FILE)
-        val inputStream = ObjectInputStream(fis)
-        val lis = inputStream.readObject() as ArrayList<*>
-        inputStream.close()
-        fis.close()
-        val liga = lis[1] as LigaClass
-        val history = lis[2] as History
-        return ModelWrapper(liga, history)
-    }
-
-    /**
-     * Saves the data with java serialization.
-     * @param context
-     */
-    fun serializeBusinessModel(context: Context) {
-        println("###SerializedModel()")
-        try {
-            val fos: FileOutputStream = context.openFileOutput(SERIALIZE_FILE, Context.MODE_PRIVATE)
-            val os = ObjectOutputStream(fos)
-            val lis = mutableListOf<Any>()
-            lis.add(model.getLiga())
-            lis.add(model.getHistory())
-            os.writeObject(lis)
-            os.close()
-            fos.close()
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
+    fun addBetFragmentCallback(callback: () -> Unit) {
+        dataPoller.addBetFragmentCallback(callback)
     }
 
 }

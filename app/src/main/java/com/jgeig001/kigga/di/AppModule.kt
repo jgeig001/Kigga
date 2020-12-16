@@ -43,7 +43,6 @@ object AppModule {
         @ApplicationContext context: Context,
         db: LocalDatabase
     ): PersistenceManager {
-
         return PersistenceManager(context, db)
     }
 

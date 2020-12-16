@@ -27,13 +27,6 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.App" parent="Theme.MaterialComponents.BottomSheetDialog">
-
-        <item name="bottomNavigationStyle">@style/Widget.MaterialComponents.BottomNavigationView.Colored</item>
-        <item name="colorPrimary">#00FF99</item>
-        <item name="colorOnPrimary">#C700FF</item>
-    </style>
-
     <style name="tab_text_style" parent="@android:style/TextAppearance.Widget.TabWidget">
         <item name="android:fontFamily">@font/comfortaa_regular</item>
         <item name="android:textSize">28sp</item>

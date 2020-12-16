@@ -1,7 +1,6 @@
 package com.jgeig001.kigga.model.domain
 
 import androidx.databinding.BaseObservable
-import androidx.databinding.Bindable
 import com.jgeig001.kigga.R
 import java.io.Serializable
 
@@ -50,6 +49,20 @@ class Bet(
             } else BetPoints.WRONG.points
         }
 
+
+    fun betCorrectResult(): Boolean {
+        return points == BetPoints.RIGHT_RESULT.points
+    }
+
+    fun betCorrectOutcome(): Boolean {
+        return points == BetPoints.RIGHT_OUTCOME.points
+    }
+
+    fun betWrong(): Boolean {
+        val p = points
+        return p == BetPoints.WRONG.points || p == -1 // wrong or no bet
+    }
+
     fun getHomeGoalsStr(): String {
         if (goals_home == Match.NO_BET)
             return "-"
@@ -75,10 +88,13 @@ class Bet(
     }
 
     fun decHomeGoal() {
+        if (deactivateBet())
+            return
         if (this.goals_home > 0) {
             activateBet()
             this.goals_home -= 1
         }
+        zerozero()
     }
 
     fun incAwayGoal() {
@@ -87,9 +103,18 @@ class Bet(
     }
 
     fun decAwayGoal() {
+        if (deactivateBet())
+            return
         if (this.goals_away > 0) {
             activateBet()
             this.goals_away -= 1
+        }
+        zerozero()
+    }
+
+    private fun zerozero() {
+        if (goals_home == Match.NO_BET && goals_away == Match.NO_BET) {
+            activateBet()
         }
     }
 
@@ -101,11 +126,20 @@ class Bet(
         this.goals_away = goals
     }
 
-    fun activateBet() {
+    private fun activateBet() {
         if (goals_home == Match.NO_BET)
             goals_home = 0
         if (goals_away == Match.NO_BET)
             goals_away = 0
+    }
+
+    private fun deactivateBet(): Boolean {
+        if (goals_home == 0 && goals_away == 0) {
+            goals_home = Match.NO_BET
+            goals_away = Match.NO_BET
+            return true
+        }
+        return false
     }
 
     fun repr(): String {

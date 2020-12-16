@@ -128,4 +128,8 @@ class History constructor(
         return listOfSeasons.filter { it.getYear() >= year }
     }
 
+    fun setListOfSeasons(listOfSeasons: MutableList<Season>) {
+        this.listOfSeasons = listOfSeasons
+    }
+
 }

@@ -105,12 +105,24 @@ class Match(
         return bet.repr()
     }
 
+    fun correctResultBet(): Boolean {
+        return bet.betCorrectResult()
+    }
+
+    fun correctOutcomeBet(): Boolean {
+        return bet.betCorrectOutcome()
+    }
+
+    fun wrongBet(): Boolean {
+        return bet.betWrong()
+    }
+
     /**
      * returns the points user gets
-     * if there was no bet made, it returns 0
+     * if there was no bet made, it returns -1
      */
     fun getBetPoints(): Int {
-        return this.bet?.let { it.points } ?: 0
+        return this.bet.points
     }
 
     fun getBetResultDrawableResId(): Int {

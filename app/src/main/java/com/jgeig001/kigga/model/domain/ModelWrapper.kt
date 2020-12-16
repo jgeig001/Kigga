@@ -76,7 +76,20 @@ class ModelWrapper @Inject constructor(
         return mutableListOf()
     }
 
-    // ---------------------------------------------------------------------------------------------
+    // ---
+    fun getSeasonsCorrectResult(seasons: List<Season>): Int {
+        return seasons.sumBy { season -> season.getCorrectResultBet() }
+    }
+
+    fun getSeasonsCorrectOutcome(seasons: List<Season>): Int {
+        return seasons.sumBy { season -> season.getCorrectOutcomeBet() }
+    }
+
+    fun getSeasonsWrong(seasons: List<Season>): Int {
+        return seasons.sumBy { season -> season.getWrongBet() }
+    }
+
+// ---------------------------------------------------------------------------------------------
 
     // get components
     fun getLiga(): LigaClass {

@@ -204,7 +204,6 @@ class BetAdapter(
                             model.getHistory(),
                             match.home_team
                         )
-                        Log.d("123", "trendHome: $trendHome")
                         matchView.findViewById<TextView>(R.id.trend_home).text =
                             trendHome.toString()
                         matchView.findViewById<ImageView>(R.id.trend_arrow_home).rotation =

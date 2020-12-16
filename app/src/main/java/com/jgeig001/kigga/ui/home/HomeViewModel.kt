@@ -3,12 +3,12 @@ package com.jgeig001.kigga.ui.home
 import android.content.Context
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.jgeig001.kigga.model.domain.*
-import com.jgeig001.kigga.ui.PropertyAwareMutableLiveData
+import com.jgeig001.kigga.model.domain.Club
+import com.jgeig001.kigga.model.domain.ModelWrapper
+import com.jgeig001.kigga.model.domain.TableElement
 import com.jgeig001.kigga.utils.FavClubChooser
 import dagger.hilt.android.qualifiers.ApplicationContext
 
