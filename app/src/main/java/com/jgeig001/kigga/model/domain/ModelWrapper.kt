@@ -31,7 +31,10 @@ class ModelWrapper @Inject constructor(
     private fun getPointsOf(season: Season): Int {
         var sum = 0
         for (match in season.getAllMatches()) {
-            sum += match.getBetPoints()
+            var p = match.getBetPoints()
+            if (p == -1)
+                p = 0
+            sum += p
         }
         return sum
     }
@@ -77,16 +80,49 @@ class ModelWrapper @Inject constructor(
     }
 
     // ---
-    fun getSeasonsCorrectResult(seasons: List<Season>): Int {
-        return seasons.sumBy { season -> season.getCorrectResultBet() }
+
+    fun getAllSeasonsDistributionMap(): MutableMap<BetPoints, Int> {
+        val allSeasonsMap = mutableMapOf(
+            BetPoints.RIGHT_RESULT to 0,
+            BetPoints.RIGHT_OUTCOME to 0,
+            BetPoints.WRONG to 0
+        )
+        for (season in getListOfSeasons()) {
+            val oneSeasonMap = getBetDistribution(season)
+            for ((k, v) in oneSeasonMap) {
+                incMap(allSeasonsMap, k, v)
+            }
+        }
+        return allSeasonsMap
     }
 
-    fun getSeasonsCorrectOutcome(seasons: List<Season>): Int {
-        return seasons.sumBy { season -> season.getCorrectOutcomeBet() }
+    /**
+     * returns a map with the distribution of bet results of [season]
+     * {RIGHT_RESULT: x, RIGHT_OUTCOME: y, WRONG: n-x-y}
+     */
+    fun getBetDistribution(season: Season): MutableMap<BetPoints, Int> {
+        val map = mutableMapOf(
+            BetPoints.RIGHT_RESULT to 0,
+            BetPoints.RIGHT_OUTCOME to 0,
+            BetPoints.WRONG to 0
+        )
+        for (match in season.getFinishedMatches()) {
+            when (match.getBet().getBetPoints()) {
+                BetPoints.RIGHT_RESULT -> incMap(map, BetPoints.RIGHT_RESULT)
+                BetPoints.RIGHT_OUTCOME -> incMap(map, BetPoints.RIGHT_OUTCOME)
+                BetPoints.WRONG -> incMap(map, BetPoints.WRONG)
+            }
+        }
+        return map
     }
 
-    fun getSeasonsWrong(seasons: List<Season>): Int {
-        return seasons.sumBy { season -> season.getWrongBet() }
+    private fun incMap(map: MutableMap<BetPoints, Int>, key: BetPoints, x: Int = 1) {
+        val v: Int = map[key] ?: 0
+        map[key] = v + x
+    }
+
+    fun matchesWithBetAllTime(): Int {
+        return getListOfSeasons().sumBy { season -> season.matchesWithBets() }
     }
 
 // ---------------------------------------------------------------------------------------------

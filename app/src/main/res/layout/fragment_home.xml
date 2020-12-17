@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.jgeig001.kigga.ui.home.HomeViewModel" />p
+            type="com.jgeig001.kigga.ui.home.HomeViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -47,8 +47,8 @@
             app:viewmodel="@{viewModel}" />
 
         <!-- stats of seasons -->
-        <ListView
-            android:id="@+id/seasons_stats_listView"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/seasons_stats_recyclerView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"

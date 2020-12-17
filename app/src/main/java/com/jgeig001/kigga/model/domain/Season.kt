@@ -131,16 +131,8 @@ data class Season(private var matchdays: List<Matchday>, private val year: Int) 
         return lis
     }
 
-    fun getCorrectResultBet(): Int {
-        return getFinishedMatches().sumBy { m -> if (m.correctResultBet()) 1 else 0 }
-    }
-
-    fun getCorrectOutcomeBet(): Int {
-        return getFinishedMatches().sumBy { m -> if (m.correctOutcomeBet()) 1 else 0 }
-    }
-
-    fun getWrongBet(): Int {
-        return getFinishedMatches().sumBy { m -> if (m.wrongBet()) 1 else 0 }
+    fun matchesWithBets(): Int {
+        return getFinishedMatches().filter { match -> match.getBet().isAvtive() }.size
     }
 
 }

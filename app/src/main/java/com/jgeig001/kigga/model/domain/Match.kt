@@ -125,7 +125,7 @@ class Match(
         return this.bet.points
     }
 
-    fun getBetResultDrawableResId(): Int {
+    fun getBetResultDrawableResId(): Int? {
         return bet.getDrawableResId()
     }
 

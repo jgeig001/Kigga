@@ -10,11 +10,14 @@ import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.jgeig001.kigga.R
 import com.jgeig001.kigga.databinding.FragmentTableBinding
 import com.jgeig001.kigga.model.domain.History
 import com.jgeig001.kigga.model.domain.ModelWrapper
 import com.jgeig001.kigga.model.domain.Season
+import com.jgeig001.kigga.ui.home.SeasonStatsViewHolder
 import com.jgeig001.kigga.utils.SeasonSelect
 import com.jgeig001.kigga.utils.SharedPreferencesManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,7 +36,8 @@ class TableFragment : Fragment() {
 
     private lateinit var binding: FragmentTableBinding
 
-    private lateinit var tableAdapter: TableAdapter
+    private lateinit var recyclerView: RecyclerView
+    lateinit var tableAdapter: TableAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,8 +62,11 @@ class TableFragment : Fragment() {
 
         model.get_nth_season(selectedSeasonIndex)?.getTable()?.let { table ->
             tableAdapter =
-                TableAdapter(table, model.getFavouriteClub(requireContext()), requireContext())
-            this.binding.tableListview.adapter = tableAdapter
+                TableAdapter(table, model.getFavouriteClub(requireContext()))
+            this.recyclerView = table_recyclerview
+            this.recyclerView.setHasFixedSize(true)
+            this.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+            this.recyclerView.adapter = tableAdapter
         }
 
         this.setupSpinner()
@@ -67,7 +74,9 @@ class TableFragment : Fragment() {
         tableViewModel.tableLiveData.observe(
             viewLifecycleOwner,
             Observer { table ->
-                table?.let { t -> tableAdapter.updateView(t) }
+                table?.let { t ->
+                    tableAdapter.updateData(t)
+                }
             }
         )
     }

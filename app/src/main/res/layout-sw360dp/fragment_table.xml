@@ -121,8 +121,8 @@
                 android:layout_height="2dp"
                 android:background="?attr/colorPrimary_inverted" />
 
-            <ListView
-                android:id="@+id/table_listview"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/table_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="56dp"

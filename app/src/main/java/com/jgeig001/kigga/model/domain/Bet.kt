@@ -13,12 +13,12 @@ enum class BetPoints(val points: Int, val drawableId: Int) {
     WRONG(0, R.drawable.ic_points_0);
 
     companion object {
-        fun getDrawable(points: Int): Int {
+        fun getDrawable(points: Int): Int? {
             return when (points) {
                 RIGHT_RESULT.points -> RIGHT_RESULT.drawableId
                 RIGHT_OUTCOME.points -> RIGHT_OUTCOME.drawableId
                 WRONG.points -> WRONG.drawableId
-                else -> WRONG.drawableId
+                else -> null
             }
         }
     }
@@ -31,22 +31,26 @@ class Bet(
 ) :
     Serializable, BaseObservable() {
 
+    fun getBetPoints(): BetPoints? {
+        if (goals_home == Match.NO_BET && goals_away == Match.NO_BET)
+            return null
+        if (goals_home == this.match.fulltimeHome() && goals_away == this.match.fulltimeAway()) {
+            return BetPoints.RIGHT_RESULT
+        }
+        if (goals_home > goals_away && match.getMatchResult().isHomeWin) {
+            return BetPoints.RIGHT_OUTCOME
+        }
+        if (goals_home == goals_away && match.getMatchResult().isDraw) {
+            return BetPoints.RIGHT_OUTCOME
+        }
+        return if (goals_home < goals_away && match.getMatchResult().isAwayWin) {
+            BetPoints.RIGHT_OUTCOME
+        } else BetPoints.WRONG
+    }
+
     val points: Int
         get() {
-            if (goals_home == Match.NO_BET && goals_away == Match.NO_BET)
-                return -1
-            if (goals_home == this.match.fulltimeHome() && goals_away == this.match.fulltimeAway()) {
-                return BetPoints.RIGHT_RESULT.points
-            }
-            if (goals_home > goals_away && match.getMatchResult().isHomeWin) {
-                return BetPoints.RIGHT_OUTCOME.points
-            }
-            if (goals_home == goals_away && match.getMatchResult().isDraw) {
-                return BetPoints.RIGHT_OUTCOME.points
-            }
-            return if (goals_home < goals_away && match.getMatchResult().isAwayWin) {
-                BetPoints.RIGHT_OUTCOME.points
-            } else BetPoints.WRONG.points
+            getBetPoints()?.let { return it.points } ?: return -1
         }
 
 
@@ -75,7 +79,7 @@ class Bet(
         return goals_away.toString()
     }
 
-    fun getDrawableResId(): Int {
+    fun getDrawableResId(): Int? {
         val p = this.points
         return BetPoints.getDrawable(p)
     }
@@ -140,6 +144,10 @@ class Bet(
             return true
         }
         return false
+    }
+
+    fun isAvtive(): Boolean {
+        return goals_home != Match.NO_BET && goals_away != Match.NO_BET
     }
 
     fun repr(): String {

@@ -1,7 +1,6 @@
 package com.jgeig001.kigga.ui.bet
 
 import android.content.Context
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -14,14 +13,13 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.jgeig001.kigga.R
 import com.jgeig001.kigga.databinding.MatchdayCardBinding
-import com.jgeig001.kigga.model.domain.History
 import com.jgeig001.kigga.model.domain.Match
 import com.jgeig001.kigga.model.domain.Matchday
 import com.jgeig001.kigga.model.domain.ModelWrapper
 import com.jgeig001.kigga.utils.ArrowFunctions
 import com.jgeig001.kigga.utils.SeasonSelect
-import com.jgeig001.kigga.utils.SharedPreferencesManager
 import com.jgeig001.kigga.utils.TrendCalculator
+import com.jgeig001.kigga.utils.WeekdayTranslator
 import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
@@ -97,30 +95,14 @@ class BetAdapter(
         // iterate of single matchday_day
         for (matchdayDay in iter) {
 
-            // depending on system language
-            val matchdayStrings = hashMapOf(
-                "Mon" to R.string.Mon, // english
-                "Tue" to R.string.Tue,
-                "Wed" to R.string.Wed,
-                "Thu" to R.string.Thr,
-                "Fri" to R.string.Fri,
-                "Sat" to R.string.Sat,
-                "Sun" to R.string.Sun,
-                "Mo." to R.string.Mon, // deutsch
-                "Di." to R.string.Tue,
-                "Mi." to R.string.Wed,
-                "Do." to R.string.Thr,
-                "Fr." to R.string.Fri,
-                "Sa." to R.string.Sat,
-                "So." to R.string.Sun
-            )
-
             // create view for matchdayDay
             val matchday_Day_View: LinearLayout = LayoutInflater.from(parent!!.context)
                 .inflate(R.layout.view_matchday_day, parent, false) as LinearLayout
 
             matchday_Day_View.findViewById<TextView>(R.id.matchday_day_name).text =
-                context.getString(matchdayStrings[matchdayDay[0].getMatchdayDay()] ?: 0)
+                context.getString(
+                    WeekdayTranslator.matchdayStrings[matchdayDay[0].getMatchdayDay()] ?: 0
+                )
 
             matchday_Day_View.findViewById<TextView>(R.id.matchday_day_date).text =
                 SimpleDateFormat("dd.MM.yyyy").format(
@@ -168,10 +150,12 @@ class BetAdapter(
                     // display earned points...
                     val earnedPointsView = matchView.findViewById<ImageView>(R.id.earned_points)
                     if (match.isFinished()) {
-                        val imageID = match.getBetResultDrawableResId()
-                        earnedPointsView.visibility = View.VISIBLE
-                        earnedPointsView.background =
-                            ContextCompat.getDrawable(context, imageID)
+                        match.getBetResultDrawableResId()?.let { imageID ->
+                            earnedPointsView.visibility = View.VISIBLE
+                            earnedPointsView.background =
+                                ContextCompat.getDrawable(context, imageID)
+                        } ?: run { earnedPointsView.visibility = View.GONE }
+
                     } else {
                         earnedPointsView.visibility = View.INVISIBLE
                     }

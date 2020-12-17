@@ -40,7 +40,6 @@ class BetFragment : Fragment(R.layout.fragment_bet) {
     lateinit var persistenceManager: PersistenceManager
 
     private lateinit var betAdapter: BetAdapter
-    private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var recyclerView: RecyclerView
 
     override fun onCreateView(
@@ -72,11 +71,10 @@ class BetFragment : Fragment(R.layout.fragment_bet) {
         // setup
         this.recyclerView = recyclerViewID
         this.recyclerView.setHasFixedSize(true)
-        this.layoutManager = LinearLayoutManager(this.context)
         this.betAdapter =
             BetAdapter(this.viewModel.getMatchdayList(), model, requireContext())
 
-        this.recyclerView.layoutManager = this.layoutManager
+        this.recyclerView.layoutManager = LinearLayoutManager(this.context)
         this.recyclerView.adapter = this.betAdapter
 
         this.scrollToCurMatchday()

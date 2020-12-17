@@ -24,6 +24,7 @@
     <string name="Sun">Sonntag</string>
 
     <string name="twitter_hashtag_link">https://twitter.com/hashtag/%s?src=hashtag_click</string>
+    <string name="seasonString">Saison%d/%d</string>
     <string name="matchdayString">%d. Spieltag</string>
     <string name="spieltag">Spieltag</string>
     <string name="clock">%sUhr</string>
