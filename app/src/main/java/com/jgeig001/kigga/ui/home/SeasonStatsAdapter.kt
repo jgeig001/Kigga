@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.CombinedChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.jgeig001.kigga.R
 import com.jgeig001.kigga.databinding.SeasonStatsBinding
 import com.jgeig001.kigga.model.domain.BetPoints
@@ -16,12 +17,19 @@ import com.jgeig001.kigga.model.domain.Season
 import com.jgeig001.kigga.utils.FloatRounder.round2D
 import kotlin.math.roundToInt
 
-// x-Achse = horizontal
-// y-Achse = vertical
+class LineValueFomatter(private val maxValue: Float) : ValueFormatter() {
+    /** only show the peak value */
+    override fun getFormattedValue(value: Float): String {
+        return if (value == maxValue) value.toInt().toString() else ""
+    }
+}
+
 class SeasonStatsViewHolder(var binding: SeasonStatsBinding, private var context: Context) :
     RecyclerView.ViewHolder(binding.root) {
 
     private lateinit var thisSeason: Season
+
+    private val black_n_light_COLOR = context.resources.getColor(R.color.black_n_light)
 
     fun setThisSeason(season: Season) {
         thisSeason = season
@@ -31,66 +39,30 @@ class SeasonStatsViewHolder(var binding: SeasonStatsBinding, private var context
 
         val chart = binding.statsGraph
 
-        /*
-        // working sample
-        with(chart) {
-            axisLeft.isEnabled = true
-            axisRight.isEnabled = false
-            xAxis.isEnabled = true
-            xAxis.axisMaximum = 110f
-            legend.isEnabled = false
-            description.isEnabled = false
-
-            // (2)
-            setTouchEnabled(true)
-            isDragEnabled = true
-            setScaleEnabled(false)
-            setPinchZoom(false)
-        }
-
-        val entries =
-            mutableListOf(
-                Entry(1f, 2f),
-                Entry(13f, 14f),
-                Entry(25f, 26f),
-                Entry(29f, 25f),
-                Entry(36f, 26f),
-                Entry(47f, 29f),
-                Entry(49f, 26f),
-                Entry(52f, 26f),
-                Entry(53f, 55f),
-                Entry(55f, 77f),
-                Entry(67f, 1f),
-                Entry(71f, 12f),
-                Entry(85f, 126f)
-            )
-
-        val set = LineDataSet(entries, "Line DataSet")
-        val lineData = LineData()
-        lineData.addDataSet(set)
-
-        val data = CombinedData()
-        data.setData(lineData)
-
-        chart.data = data
-        chart.invalidate()*/
-
         chart.setDrawOrder(arrayOf(CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE))
-
         chart.getDescription().isEnabled = false
+        chart.onTouchListener = null
+        chart.extraBottomOffset = 5f
 
-        val yAxis = chart.getAxisLeft()
-        yAxis.setDrawGridLines(false)
-        yAxis.axisMinimum = 0f // this replaces setStartAtZero(true)
+        chart.getAxisLeft().apply {
+            setDrawGridLines(true)
+            axisMinimum = 0f // this replaces setStartAtZero(true)
+            textColor = black_n_light_COLOR
+            textSize = 13f
+        }
 
         chart.axisRight.isEnabled = false
         chart.legend.isEnabled = false
 
-        val xAxis = chart.getXAxis()
-        xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.axisMinimum = 0f
-        xAxis.granularity = 1f
-        xAxis.axisMaximum = Matchday.MAX_MATCHDAYS.toFloat()
+        chart.getXAxis().apply {
+            position = XAxis.XAxisPosition.BOTTOM
+            axisMinimum = 0f
+            granularity = 1f
+            axisMaximum = Matchday.MAX_MATCHDAYS.toFloat()
+            textColor = black_n_light_COLOR
+            textSize = 13f
+            setLabelCount(8, true)
+        }
 
         val data = CombinedData()
         data.setData(generateLineData(thisSeason))
@@ -104,18 +76,30 @@ class SeasonStatsViewHolder(var binding: SeasonStatsBinding, private var context
     private fun generateLineData(thisSeason: Season): LineData {
         val lineData = LineData()
         val entries = mutableListOf<Entry>()
-        var points = 0
-        thisSeason.getMatchdaysWithBets().forEachIndexed { index, matchday: Matchday? ->
+        var pointsCumulative = 0
+        val relevantMatchdays = thisSeason.getMatchdaysWithBets()
+        relevantMatchdays.forEachIndexed { index, matchday: Matchday? ->
             if (matchday != null) {
-                points += matchday.getBetPoints()
-                val entry = Entry(index.toFloat(), points.toFloat())
+                val pointsOfMatchday = matchday.getBetPoints()
+                pointsCumulative += pointsOfMatchday
+                val entry = Entry(index.toFloat() + 0.8f, pointsCumulative.toFloat())
                 entries.add(entry)
             }
         }
 
-        val set = LineDataSet(entries, "lines")
-        set.mode = LineDataSet.Mode.CUBIC_BEZIER
-        set.color = context.resources.getColor(R.color.black_n_light)
+        val set = LineDataSet(entries, "lines").apply {
+            mode = LineDataSet.Mode.LINEAR
+            circleColors = listOf(black_n_light_COLOR)
+            circleHoleColor = black_n_light_COLOR
+            color = black_n_light_COLOR
+            lineWidth = 1.5f
+            circleRadius = 3.6f
+            circleHoleRadius = 5f
+            valueFormatter = LineValueFomatter(pointsCumulative.toFloat())
+            valueTextSize = 10f
+            valueTextColor = black_n_light_COLOR
+        }
+
         lineData.addDataSet(set)
 
         return lineData
@@ -130,7 +114,7 @@ class SeasonStatsViewHolder(var binding: SeasonStatsBinding, private var context
             pointsCorrectOutcome += pair.first
             pointsCorrectResult += pair.second
             val entry = BarEntry(
-                index.toFloat(),
+                index.toFloat() + 0.8f,
                 floatArrayOf(pointsCorrectOutcome, pointsCorrectResult)
             )
             entries.add(entry)
@@ -138,6 +122,7 @@ class SeasonStatsViewHolder(var binding: SeasonStatsBinding, private var context
 
         val set = BarDataSet(entries, "bars")
         set.highLightAlpha = 100
+        set.setDrawValues(false)
         set.setColors(
             context.resources.getColor(R.color.blue),
             context.resources.getColor(R.color.green)

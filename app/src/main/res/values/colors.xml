@@ -11,6 +11,7 @@
     <color name="colorPrimary_inverted">#1F1E1E</color>
     <color name="green">#44EF1C</color>
     <color name="blue">#1569FF</color>
+    <color name="blueInLight_greenInDark">#1569FF</color>
     <color name="no_color">#FAFAFA</color>
     <color name="twitter">#26A2E7</color>
     <color name="dark_stroke">#B4B4B4</color>

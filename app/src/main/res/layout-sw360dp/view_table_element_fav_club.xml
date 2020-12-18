@@ -72,7 +72,7 @@
                 android:fontFamily="@font/comfortaa_bold"
                 android:hint="Pkt."
                 android:textAlignment="center"
-                android:textColor="?attr/green" />
+                android:textColor="?attr/blueInLight_greenInDark" />
 
         </LinearLayout>
 

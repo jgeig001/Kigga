@@ -13,6 +13,7 @@
         <attr name="colorPrimary_inverted" format="color" />
         <attr name="green" format="color" />
         <attr name="blue" format="color" />
+        <attr name="blueInLight_greenInDark" format="color" />
         <attr name="no_color" format="color" />
         <attr name="twitter" format="color" />
         <attr name="dark_stroke" format="color" />
