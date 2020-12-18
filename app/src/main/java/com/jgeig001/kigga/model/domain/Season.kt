@@ -131,8 +131,28 @@ data class Season(private var matchdays: List<Matchday>, private val year: Int) 
         return lis
     }
 
-    fun matchesWithBets(): Int {
-        return getFinishedMatches().filter { match -> match.getBet().isAvtive() }.size
+    fun matchesWithBetsSize(): Int {
+        return getFinishedMatches().filter { match -> match.hasBet() }.size
+    }
+
+    /**
+     * list with an element for each matchday with any bets
+     * if on a matchday any bet was made it holds the matchday
+     * if no bet was made it contains null as placeholder
+     * the last n matchdays with no bets are dropped
+     * e.g. [md, md, null, md, null, md, md, md]
+     */
+    fun getMatchdaysWithBets(): List<Matchday?> {
+        val lis = matchdays.map { md -> if (md.matches.any { m -> m.hasBet() }) md else null }
+        // delete all matchdays with no bets at the list end
+        var delCounter = 0
+        for (md in lis.reversed()) {
+            if (md == null)
+                delCounter += 1
+            else
+                break
+        }
+        return lis.dropLast(delCounter)
     }
 
 }

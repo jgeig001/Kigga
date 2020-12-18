@@ -119,9 +119,9 @@ class Match(
 
     /**
      * returns the points user gets
-     * if there was no bet made, it returns -1
+     * if there was no bet made, it returns
      */
-    fun getBetPoints(): Int {
+    fun getBetPoints(): Int? {
         return this.bet.points
     }
 
@@ -185,6 +185,10 @@ class Match(
 
     fun setBet(bet: Bet) {
         this.bet = bet
+    }
+
+    fun hasBet(): Boolean {
+        return bet.isAvtive()
     }
 
 

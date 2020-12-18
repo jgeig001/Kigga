@@ -13,7 +13,7 @@ enum class BetPoints(val points: Int, val drawableId: Int) {
     WRONG(0, R.drawable.ic_points_0);
 
     companion object {
-        fun getDrawable(points: Int): Int? {
+        fun getDrawable(points: Int?): Int? {
             return when (points) {
                 RIGHT_RESULT.points -> RIGHT_RESULT.drawableId
                 RIGHT_OUTCOME.points -> RIGHT_OUTCOME.drawableId
@@ -48,9 +48,9 @@ class Bet(
         } else BetPoints.WRONG
     }
 
-    val points: Int
+    val points: Int?
         get() {
-            getBetPoints()?.let { return it.points } ?: return -1
+            getBetPoints()?.let { return it.points } ?: return null
         }
 
 
@@ -64,7 +64,7 @@ class Bet(
 
     fun betWrong(): Boolean {
         val p = points
-        return p == BetPoints.WRONG.points || p == -1 // wrong or no bet
+        return p == BetPoints.WRONG.points || p == null // wrong or no bet
     }
 
     fun getHomeGoalsStr(): String {

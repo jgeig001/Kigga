@@ -31,10 +31,7 @@ class ModelWrapper @Inject constructor(
     private fun getPointsOf(season: Season): Int {
         var sum = 0
         for (match in season.getAllMatches()) {
-            var p = match.getBetPoints()
-            if (p == -1)
-                p = 0
-            sum += p
+            sum += match.getBetPoints() ?: 0
         }
         return sum
     }
@@ -122,7 +119,7 @@ class ModelWrapper @Inject constructor(
     }
 
     fun matchesWithBetAllTime(): Int {
-        return getListOfSeasons().sumBy { season -> season.matchesWithBets() }
+        return getListOfSeasons().sumBy { season -> season.matchesWithBetsSize() }
     }
 
 // ---------------------------------------------------------------------------------------------

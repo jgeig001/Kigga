@@ -10,53 +10,60 @@
             type="com.jgeig001.kigga.ui.home.HomeViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical">
+        android:layout_marginBottom="48dp">
 
-        <!-- sum stats of all seasons -->
-        <include
-            android:id="@+id/include"
-            layout="@layout/view_table3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:viewmodel="@{viewModel}" />
-
-        <TextView
-            android:id="@+id/alltimePointsLabel"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginVertical="5dp"
-            android:text="foobar"
-            app:layout_constraintBottom_toTopOf="@+id/seasons_sum_stats"
-            app:layout_constraintStart_toStartOf="@+id/seasons_sum_stats"
-            app:layout_constraintTop_toBottomOf="@+id/include" />
+            android:layout_height="match_parent"
+            android:scrollbars="vertical">
 
-        <include
-            android:id="@+id/seasons_sum_stats"
-            layout="@layout/pie_chart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/alltimePointsLabel"
-            app:viewmodel="@{viewModel}" />
+            <!-- sum stats of all seasons -->
+            <include
+                android:id="@+id/include"
+                layout="@layout/view_table3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:viewmodel="@{viewModel}" />
 
-        <!-- stats of seasons -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/seasons_stats_recyclerView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/seasons_sum_stats"
-            tools:listitem="@layout/season_stats" />
+            <TextView
+                android:id="@+id/alltimePointsLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="5dp"
+                android:text="foobar"
+                app:layout_constraintBottom_toTopOf="@+id/seasons_sum_stats"
+                app:layout_constraintStart_toStartOf="@+id/seasons_sum_stats"
+                app:layout_constraintTop_toBottomOf="@+id/include" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <include
+                android:id="@+id/seasons_sum_stats"
+                layout="@layout/pie_chart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/alltimePointsLabel"
+                app:viewmodel="@{viewModel}" />
+
+            <!-- stats of seasons -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/seasons_stats_recyclerView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/seasons_sum_stats"
+                tools:listitem="@layout/season_stats" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
 </layout>

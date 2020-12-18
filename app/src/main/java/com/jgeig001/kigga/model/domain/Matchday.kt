@@ -105,4 +105,22 @@ data class Matchday(
         return "Matchday: ($matchdayIndex.) matches:$matchesStr"
     }
 
+    fun getBetPoints(): Int {
+        return matches.sumBy { match -> match.getBetPoints() ?: 0 }
+    }
+
+    fun getSplitedBetPoints(): Pair<Float, Float> {
+        var correctOutome = 0
+        var correctResult = 0
+        for (match in matches) {
+            if (!match.hasBet())
+                continue
+            when (match.getBet().getBetPoints()) {
+                BetPoints.RIGHT_OUTCOME -> correctOutome += BetPoints.RIGHT_OUTCOME.points
+                BetPoints.RIGHT_RESULT -> correctResult += BetPoints.RIGHT_RESULT.points
+            }
+        }
+        return Pair(correctOutome.toFloat(), correctResult.toFloat())
+    }
+
 }
