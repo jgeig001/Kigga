@@ -22,7 +22,7 @@
 
             <!-- sum stats of all seasons -->
             <include
-                android:id="@+id/include"
+                android:id="@+id/includeFavClubOverview"
                 layout="@layout/view_table3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -30,15 +30,25 @@
                 app:viewmodel="@{viewModel}" />
 
             <TextView
-                android:id="@+id/alltimePointsLabel"
+                android:id="@+id/alltimePointsTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginVertical="5dp"
-                android:text="foobar"
-                app:layout_constraintBottom_toTopOf="@+id/seasons_sum_stats"
+                android:fontFamily="@font/comfortaa_bold"
+                android:text="Zusammenfassung:"
+                android:textSize="17sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/includeFavClubOverview" />
+
+            <include
+                android:id="@+id/inlude_pointsCalcuAllTime"
+                layout="@layout/view_points_calculation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp"
                 app:layout_constraintStart_toStartOf="@+id/seasons_sum_stats"
-                app:layout_constraintTop_toBottomOf="@+id/include" />
+                app:layout_constraintTop_toBottomOf="@+id/alltimePointsTitle" />
 
             <include
                 android:id="@+id/seasons_sum_stats"
@@ -48,7 +58,7 @@
                 android:layout_marginVertical="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/alltimePointsLabel"
+                app:layout_constraintTop_toBottomOf="@+id/inlude_pointsCalcuAllTime"
                 app:viewmodel="@{viewModel}" />
 
             <!-- stats of seasons -->

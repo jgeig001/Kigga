@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import com.jgeig001.kigga.R
 import com.jgeig001.kigga.model.domain.Club
 import com.jgeig001.kigga.model.domain.LigaClass
+import com.jgeig001.kigga.model.exceptions.ClubExistenceException
 
 
 object FavClubChooser {
@@ -53,6 +54,14 @@ object FavClubChooser {
         val spinnerView = LayoutInflater.from(context).inflate(R.layout.favclub_spinner, null)
         val spinner = spinnerView.findViewById<Spinner>(R.id.favClubSpinner)
         spinner.adapter = adapter
+        // set preselection of spinner
+        val curFavClubIndex: Int = try {
+            val favClubName = this.getFavClub(context, liga).clubName
+            clubList.indexOf(favClubName)
+        } catch (ex: ClubExistenceException) {
+            0
+        }
+        spinner.setSelection(curFavClubIndex)
 
         builder.setView(spinnerView)
 

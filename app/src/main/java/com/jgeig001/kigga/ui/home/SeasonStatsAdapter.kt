@@ -2,7 +2,9 @@ package com.jgeig001.kigga.ui.home
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.CombinedChart
 import com.github.mikephil.charting.components.XAxis
@@ -15,6 +17,10 @@ import com.jgeig001.kigga.model.domain.Matchday
 import com.jgeig001.kigga.model.domain.ModelWrapper
 import com.jgeig001.kigga.model.domain.Season
 import com.jgeig001.kigga.utils.FloatRounder.round2D
+import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.pie_chart.*
+import kotlinx.android.synthetic.main.season_stats.*
+import kotlinx.android.synthetic.main.season_stats.view.*
 import kotlin.math.roundToInt
 
 class LineValueFomatter(private val maxValue: Float) : ValueFormatter() {
@@ -30,6 +36,7 @@ class SeasonStatsViewHolder(var binding: SeasonStatsBinding, private var context
     private lateinit var thisSeason: Season
 
     private val black_n_light_COLOR = context.resources.getColor(R.color.black_n_light)
+    private val black_n_light_disbaled_COLOR = context.resources.getColor(R.color.black_n_light_disabled)
 
     fun setThisSeason(season: Season) {
         thisSeason = season
@@ -68,9 +75,19 @@ class SeasonStatsViewHolder(var binding: SeasonStatsBinding, private var context
         data.setData(generateLineData(thisSeason))
         data.setData(generateBarData(thisSeason))
 
-        chart.setData(data)
-        chart.invalidate()
+        val isEmpty = data.barData.entryCount == 0 && data.lineData.entryCount == 0
+        if (isEmpty) {
+            binding.lableNoData.visibility = View.VISIBLE
+            chart.getXAxis().textColor = black_n_light_disbaled_COLOR
+            chart.getXAxis().gridColor = black_n_light_disbaled_COLOR
+            chart.getXAxis().axisLineColor = black_n_light_disbaled_COLOR
+            chart.getAxisLeft().textColor = black_n_light_disbaled_COLOR
+        } else {
+            binding.lableNoData.visibility = View.INVISIBLE
+        }
 
+        chart.data = data
+        chart.invalidate()
     }
 
     private fun generateLineData(thisSeason: Season): LineData {
@@ -134,25 +151,37 @@ class SeasonStatsViewHolder(var binding: SeasonStatsBinding, private var context
     fun fillPieChart(model: ModelWrapper) {
         val view = binding.seasonPieChart
         val matchesWithBet = model.matchesWithBetAllTime()
-        Matchday.MAX_MATCHDAYS * Matchday.MAX_MATCHES * model.getListOfSeasons().size
-        val seasonsDistributionMap = model.getBetDistribution(thisSeason)
 
-        val co = seasonsDistributionMap[BetPoints.RIGHT_OUTCOME] ?: 0 / matchesWithBet
-        view.correctOutcomeAmount.text = "($co)"
-        val co_p = round2D((co.toDouble() / matchesWithBet.toDouble()) * 100)
-        view.correctOutcomePercentage.text = "$co_p%"
-        view.chartBlue.progress = co_p.roundToInt()
+        if (matchesWithBet > 0) {
+            Matchday.MAX_MATCHDAYS * Matchday.MAX_MATCHES * model.getListOfSeasons().size
+            val seasonsDistributionMap = model.getBetDistribution(thisSeason)
 
-        val cr = seasonsDistributionMap[BetPoints.RIGHT_RESULT] ?: 0 / matchesWithBet
-        view.correctResultAmount.text = "($cr)"
-        val cr_p = round2D((cr.toDouble() / matchesWithBet.toDouble()) * 100)
-        view.correctResultPercentage.text = "$cr_p%"
-        view.chartGreen.progress = cr_p.roundToInt() + co_p.roundToInt()
+            val co = seasonsDistributionMap[BetPoints.RIGHT_OUTCOME] ?: 0 / matchesWithBet
+            view.correctOutcomeAmount.text = "($co)"
+            val co_p = round2D((co.toDouble() / matchesWithBet.toDouble()) * 100)
+            view.correctOutcomePercentage.text = "$co_p%"
+            view.chartBlue.progress = co_p.roundToInt()
 
-        val wr = seasonsDistributionMap[BetPoints.WRONG] ?: 0 / matchesWithBet
-        view.wrongAmount.text = "($wr)"
-        val wr_p = round2D((wr.toDouble() / matchesWithBet.toDouble()) * 100)
-        view.wrongPercentage.text = "$wr_p%"
+            val cr = seasonsDistributionMap[BetPoints.RIGHT_RESULT] ?: 0 / matchesWithBet
+            view.correctResultAmount.text = "($cr)"
+            val cr_p = round2D((cr.toDouble() / matchesWithBet.toDouble()) * 100)
+            view.correctResultPercentage.text = "$cr_p%"
+            view.chartGreen.progress = cr_p.roundToInt() + co_p.roundToInt()
+
+            val wr = seasonsDistributionMap[BetPoints.WRONG] ?: 0 / matchesWithBet
+            view.wrongAmount.text = "($wr)"
+            val wr_p = round2D((wr.toDouble() / matchesWithBet.toDouble()) * 100)
+            view.wrongPercentage.text = "$wr_p%"
+        } else {
+            view.apply {
+                correctOutcomeAmount.text = "(0)"
+                correctOutcomePercentage.text = "0%"
+                correctResultAmount.text = "(0)"
+                correctResultPercentage.text = "0%"
+                wrongAmount.text = "(0)"
+                wrongPercentage.text = "0%"
+            }
+        }
     }
 
     fun setSeasonHeader(context: Context) {
@@ -163,6 +192,24 @@ class SeasonStatsViewHolder(var binding: SeasonStatsBinding, private var context
 
     private fun getRandom(range: Float, start: Float): Float {
         return (Math.random() * range).toFloat() + start
+    }
+
+    fun setupPointsCalculation(model: ModelWrapper) {
+        val matchesWithBet = model.matchesWithBetAllTime()
+        val allSeasonsDistributionMap = model.getAllSeasonsDistributionMap()
+
+        val co = allSeasonsDistributionMap[BetPoints.RIGHT_OUTCOME] ?: 0 / matchesWithBet
+        val cr = allSeasonsDistributionMap[BetPoints.RIGHT_RESULT] ?: 0 / matchesWithBet
+
+        val includeLayout = binding.inludePointsCalculation
+        // 2 points
+        binding.inludePointsCalculation.x2pointsLabel.text = "$co × "
+        // 5 points
+        binding.inludePointsCalculation.x5pointsLabel.text = " + $cr × "
+        // sum
+        val sum = co * 2 + cr * 5
+        binding.inludePointsCalculation.pointsSumLabel.text =
+            String.format(context.getString(R.string.pointsCalculationTemplate), sum)
     }
 }
 
@@ -192,6 +239,8 @@ class SeasonStatsAdapter(
         holder.fillPieChart(model)
 
         holder.buildStatsGraph()
+
+        holder.setupPointsCalculation(model)
     }
 
 }

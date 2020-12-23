@@ -16,4 +16,5 @@
     <color name="twitter">#26A2E7</color>
     <color name="dark_stroke">#1F1E1E</color>
     <color name="black_n_light">#FAFAFA</color>
+    <color name="black_n_light_disabled">#969696</color>
 </resources>

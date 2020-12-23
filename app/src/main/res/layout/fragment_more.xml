@@ -1,24 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <variable
-            name="settingsviewmodel"
+            name="moreviewmodel"
             type="com.jgeig001.kigga.ui.more.MoreViewModel" />
     </data>
 
-    <TextView
-        android:id="@+id/favourite_club"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="79dp"
-        android:layout_marginStart="54dp"
-        android:layout_marginTop="83dp"
-        android:layout_marginEnd="54dp"
-        android:layout_marginBottom="32dp"
-        android:gravity="center"
-        android:text="more..."
-        android:textAllCaps="false"
-        android:textSize="18sp" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <!-- fav club -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp">
+
+            <TextView
+                android:id="@+id/more_favouriteClubLable"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:layout_marginBottom="5dp"
+                android:text="@string/your_club"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/more_favouriteClub"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:autoSizeMaxTextSize="16sp"
+                android:autoSizeMinTextSize="12sp"
+                android:autoSizeTextType="uniform"
+                android:singleLine="false"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/more_selec_fav_btn"
+                app:layout_constraintTop_toTopOf="@+id/more_selec_fav_btn" />
+
+            <Button
+                android:id="@+id/more_selec_fav_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/corners_green"
+                android:elevation="5dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="@string/choose_label"
+                android:textColor="?attr/light"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/more_favouriteClubLable" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- email -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/feedback_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/contact" />
+
+        </RelativeLayout>
+
+        <!-- email -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/nightModel_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingEnd="15dp"
+                android:text="Dark Mode:"
+                android:textSize="16dp" />
+
+            <Button
+                android:id="@+id/displayMode_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="Ändern"
+                android:onClick="onOpenDisplayModeAlertDialog"
+                android:textColor="?attr/light"
+                android:background="@drawable/corners_green" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:fontFamily="@font/comfortaa_light"
+                android:lineSpacingMultiplier="1.1"
+                android:text="@string/ref_openligadb" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/comfortaa_bold"
+                android:text="@string/data_protection_header"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/comfortaa_light"
+                android:textSize="13sp"
+                android:lineSpacingMultiplier="1.05"
+                android:text="@string/data_protection" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
 
 </layout>

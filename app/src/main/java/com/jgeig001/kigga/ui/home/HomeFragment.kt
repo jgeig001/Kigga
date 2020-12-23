@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
+import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -21,6 +21,7 @@ import com.jgeig001.kigga.utils.FloatRounder.round2D
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.pie_chart.*
+import kotlinx.android.synthetic.main.season_stats.*
 import kotlinx.android.synthetic.main.view_table3.*
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -77,28 +78,55 @@ class HomeFragment : Fragment() {
     }
 
     private fun setAllTimeValues() {
-        alltimePointsLabel.text = "Alle gesammelten Punkte: ${model.getPointsAllTime()}"
-
         val matchesWithBet = model.matchesWithBetAllTime()
-        Matchday.MAX_MATCHDAYS * Matchday.MAX_MATCHES * model.getListOfSeasons().size
-        val allSeasonsDistributionMap = model.getAllSeasonsDistributionMap()
 
-        val co = allSeasonsDistributionMap[BetPoints.RIGHT_OUTCOME] ?: 0 / matchesWithBet
-        correct_outcome_amount.text = "($co)"
-        val co_p = round2D((co.toDouble() / matchesWithBet.toDouble()) * 100)
-        correct_outcome_percentage.text = "$co_p%"
-        chart_blue.progress = co_p.roundToInt()
+        if (matchesWithBet > 0) {
+            Matchday.MAX_MATCHDAYS * Matchday.MAX_MATCHES * model.getListOfSeasons().size
+            val allSeasonsDistributionMap = model.getAllSeasonsDistributionMap()
+            val co = allSeasonsDistributionMap[BetPoints.RIGHT_OUTCOME] ?: 0 / matchesWithBet
+            correct_outcome_amount.text = "($co)"
+            val co_p = round2D((co.toDouble() / matchesWithBet.toDouble()) * 100)
+            correct_outcome_percentage.text = "$co_p%"
+            chart_blue.progress = co_p.roundToInt()
 
-        val cr = allSeasonsDistributionMap[BetPoints.RIGHT_RESULT] ?: 0 / matchesWithBet
-        correct_result_amount.text = "($cr)"
-        val cr_p = round2D((cr.toDouble() / matchesWithBet.toDouble()) * 100)
-        correct_result_percentage.text = "$cr_p%"
-        chart_green.progress = cr_p.roundToInt() + co_p.roundToInt()
+            val cr = allSeasonsDistributionMap[BetPoints.RIGHT_RESULT] ?: 0 / matchesWithBet
+            correct_result_amount.text = "($cr)"
+            val cr_p = round2D((cr.toDouble() / matchesWithBet.toDouble()) * 100)
+            correct_result_percentage.text = "$cr_p%"
+            chart_green.progress = cr_p.roundToInt() + co_p.roundToInt()
 
-        val wr = allSeasonsDistributionMap[BetPoints.WRONG] ?: 0 / matchesWithBet
-        wrong_amount.text = "($wr)"
-        val wr_p = round2D((wr.toDouble() / matchesWithBet.toDouble()) * 100)
-        wrong_percentage.text = "$wr_p%"
+            val wr = allSeasonsDistributionMap[BetPoints.WRONG] ?: 0 / matchesWithBet
+            wrong_amount.text = "($wr)"
+            val wr_p = round2D((wr.toDouble() / matchesWithBet.toDouble()) * 100)
+            wrong_percentage.text = "$wr_p%"
+
+            // 2 points
+            inlude_pointsCalcuAllTime.findViewById<TextView>(R.id.x_2points_label).text = "$co × "
+            // 5 points
+            inlude_pointsCalcuAllTime.findViewById<TextView>(R.id.x_5points_label).text =
+                " + $cr × "
+            // sum
+            val sum = co * 2 + cr * 5
+            inlude_pointsCalcuAllTime.findViewById<TextView>(R.id.pointsSum_label).text =
+                String.format(requireContext().getString(R.string.pointsCalculationTemplate), sum)
+
+        } else {
+            correct_outcome_amount.text = "(0)"
+            correct_outcome_percentage.text = "0%"
+            correct_result_amount.text = "(0)"
+            correct_result_percentage.text = "0%"
+            wrong_amount.text = "(0)"
+            wrong_percentage.text = "0%"
+            // 2 points
+            inlude_pointsCalcuAllTime.findViewById<TextView>(R.id.x_2points_label).text = "0 × "
+            // 5 points
+            inlude_pointsCalcuAllTime.findViewById<TextView>(R.id.x_5points_label).text =
+                " + 0 × "
+            // sum
+            inlude_pointsCalcuAllTime.findViewById<TextView>(R.id.pointsSum_label).text =
+                String.format(requireContext().getString(R.string.pointsCalculationTemplate), 0)
+        }
+
     }
 
     private fun observeLiveData() {

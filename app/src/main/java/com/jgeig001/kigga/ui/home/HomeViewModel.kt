@@ -14,7 +14,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 
 class HomeViewModel @ViewModelInject constructor(
     private var model: ModelWrapper,
-    @ApplicationContext private var context: Context,
+    @ApplicationContext private val context: Context,
     @Assisted private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -52,21 +52,23 @@ class HomeViewModel @ViewModelInject constructor(
     private fun calc3Table(): List<RankedTableElement> {
         model.getRunningSeason()?.let { season ->
             val table = season.getTable()
-            // if no fav club: show TOP3
-            val favClub: Club = model.getFavouriteClub(context) ?: table.getTeam(0).club
-            val teams = when {
-                table.isLeader(favClub) -> {
-                    table.getTop3()
+            if (table.isNotEmpty()) {
+                // if no fav club: show TOP3
+                val favClub: Club = model.getFavouriteClub(context) ?: table.getTeam(0).club
+                val teams = when {
+                    table.isLeader(favClub) -> {
+                        table.getTop3()
+                    }
+                    table.isLast(favClub) -> {
+                        table.getFlop3()
+                    }
+                    else -> {
+                        table.getClubsAround(favClub)
+                    }
                 }
-                table.isLast(favClub) -> {
-                    table.getFlop3()
-                }
-                else -> {
-                    table.getClubsAround(favClub)
-                }
+                // transform Pairs to RankedTableElements
+                return teams.map { pair -> RankedTableElement(pair.first, pair.second) }
             }
-            // transform Pairs to RankedTableElements
-            return teams.map { pair -> RankedTableElement(pair.first, pair.second) }
         }
         return emptyList()
     }

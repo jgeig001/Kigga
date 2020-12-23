@@ -23,8 +23,14 @@
     <string name="Sat">Samstag</string>
     <string name="Sun">Sonntag</string>
 
+    <string name="mode_label">Optik</string>
+    <string name="mode_radio_system">Systemeinstellung</string>
+    <string name="mode_radio_dark">Dunkel</string>
+    <string name="mode_radio_light">Hell</string>
+    <string name="mode_dialog_title">Wie soll deine App aussehen?</string>
+
     <string name="twitter_hashtag_link">https://twitter.com/hashtag/%s?src=hashtag_click</string>
-    <string name="seasonString">Saison%d/%d</string>
+    <string name="seasonString">Saison %d/%d</string>
     <string name="matchdayString">%d. Spieltag</string>
     <string name="spieltag">Spieltag</string>
     <string name="clock">%sUhr</string>
@@ -38,5 +44,15 @@
     <string name="no_internet_message">Wir können leider keine Verbindung zum Server herstellen. Schaue, ob du eine funktionierende Internetverbindung hast und versuche es erneut.</string>
     <string name="kickoff">Anpfiff: </string>
     <string name="seasonStatsTemplate">%d%(%d)</string>
+    <string name="pointsCalculationTemplate">= %d Punkte</string>
+    <string name="choose_label">auswählen</string>
+    <string name="your_club">Dein Club:</string>
+    <string name="support_mail">kigga.feedback@gmail.com</string>
+    <string name="feedback_mail_start">Hey,\nich habe folgendes Feedback oder Problem...\n\n</string>
+    <string name="contact">Kontakt</string>
+    <string name="no_data">noch keine Daten</string>
+    <string name="ref_openligadb">Diese App verwendet als Quelle die kostenfreie Datenbank: OpenLigaDB. Mehr Informationen unter: www.openligadb.de</string>
+    <string name="data_protection">Die Application erhebt keinerlei personenbezogene Daten. Alle Daten bleiben lokal auf de Gerät gespeichert. Es werden keine Daten hochgeladen oder geteilt.</string>
+    <string name="data_protection_header">Datenschutz:</string>
 
 </resources>

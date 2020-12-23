@@ -61,6 +61,10 @@ class Table : BaseObservable(), Serializable {
         return tableList.isEmpty()
     }
 
+    fun isNotEmpty(): Boolean {
+        return tableList.isNotEmpty()
+    }
+
     /**
      * adds a team to the table
      * return true if successful

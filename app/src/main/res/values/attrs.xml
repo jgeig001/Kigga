@@ -18,6 +18,7 @@
         <attr name="twitter" format="color" />
         <attr name="dark_stroke" format="color" />
         <attr name="black_n_light" format="color" />
+        <attr name="black_n_light_disabled" format="color" />
     </declare-styleable>
 
 </resources>
