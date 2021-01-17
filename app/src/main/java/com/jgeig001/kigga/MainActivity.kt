@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         Log.d("123", "onCreate()")
+        Log.d("111", "this.Activity === $this")
 
         setContentView(R.layout.activity_main)
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
@@ -51,7 +52,7 @@ class MainActivity : AppCompatActivity() {
 
         // only on first app start
         persistenceManager.setFavClubCallback { liga: LigaClass ->
-            if (startCounter == SharedPreferencesManager.DEFAULT_INT) {
+            if (startCounter == 0) {
                 // open alert dialog
                 GlobalScope.launch {
                     delay(6000)

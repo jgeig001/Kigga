@@ -8,6 +8,7 @@
         <item name="colorPrimaryDarkWhite">@color/colorPrimaryDarkWhite</item>
         <item name="light">@color/light</item>
         <item name="darker_light">@color/darker_light</item>
+        <item name="adaptive_light">@color/adaptive_light</item>
         <item name="dark">@color/dark</item>
         <item name="black">@color/black</item>
         <item name="colorPrimary_inverted">@color/colorPrimary_inverted</item>
@@ -19,6 +20,8 @@
         <item name="dark_stroke">@color/dark_stroke</item>
         <item name="black_n_light">@color/black_n_light</item>
         <item name="black_n_light_disabled">@color/black_n_light_disabled</item>
+        <item name="dark_n_black">@color/dark_n_black</item>
+        <item name="yellow_live">@color/yellow_live</item>
 
         <item name="android:fontFamily">@font/comfortaa_regular</item>
         <item name="fontFamily">@font/comfortaa_regular</item> <!-- target android sdk versions < 26 and > 14 if theme other than AppCompat -->
@@ -37,5 +40,23 @@
     <style name="MyAppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="MyAppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="TwitterStyle" parent="android:Widget.TextView">
+        <item name="fontFamily">@font/helvetica_neue_thin</item>
+        <item name="android:fontFamily">@font/helvetica_neue_light</item>
+        <item name="android:textColor">?attr/twitter</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="ResultStyle" parent="android:Widget.TextView">
+        <item name="fontFamily">@font/helvetica_neue_thin</item>
+        <item name="android:fontFamily">@font/helvetica_neue_light</item>
+        <item name="android:textColor">#E3CB0B</item>
+    </style>
+
+    <style name="LightFontStyle" parent="android:Widget.TextView">
+        <item name="fontFamily">@font/comfortaa_light</item>
+        <item name="android:fontFamily">@font/comfortaa_light</item>
+    </style>
 
 </resources>

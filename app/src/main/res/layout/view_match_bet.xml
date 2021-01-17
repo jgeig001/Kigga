@@ -36,7 +36,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:fontFamily="@font/comfortaa_light"
-                android:hint="20:30 Uhr"
                 android:textAlignment="textEnd"
                 android:textSize="13sp"
                 app:layout_constraintStart_toEndOf="@+id/textView"
@@ -57,7 +56,6 @@
                     android:autoSizeMinTextSize="12sp"
                     android:autoSizeTextType="uniform"
                     android:fontFamily="@font/comfortaa_light"
-                    android:hint="#wobsvw"
                     android:textAlignment="textEnd"
                     android:textColor="?attr/twitter"
                     android:textColorHint="?attr/twitter" />
@@ -95,8 +93,7 @@
                         android:id="@+id/btn_plus_home"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:background="@drawable/btn_plus_light"
-                        android:contentDescription="TODO" />
+                        android:background="@drawable/btn_plus" />
 
                     <TextView
                         android:id="@+id/goals_bet_home"
@@ -109,7 +106,7 @@
                         android:id="@+id/btn_minus_home"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:background="@drawable/btn_minus_light" />
+                        android:background="@drawable/btn_minus" />
 
                 </LinearLayout>
 
@@ -122,7 +119,7 @@
                         android:id="@+id/btn_plus_away"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:background="@drawable/btn_plus_light" />
+                        android:background="@drawable/btn_plus" />
 
                     <TextView
                         android:id="@+id/goals_bet_away"
@@ -135,7 +132,7 @@
                         android:id="@+id/btn_minus_away"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:background="@drawable/btn_minus_light" />
+                        android:background="@drawable/btn_minus" />
 
                 </LinearLayout>
 
@@ -151,7 +148,6 @@
                     android:id="@+id/home_team"
                     android:layout_width="match_parent"
                     android:layout_height="21dp"
-                    android:hint="home team"
                     android:textSize="13sp" />
 
                 <TextView
@@ -159,7 +155,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="21dp"
                     android:gravity="center_vertical"
-                    android:hint="away team"
                     android:textSize="13sp" />
 
             </LinearLayout>

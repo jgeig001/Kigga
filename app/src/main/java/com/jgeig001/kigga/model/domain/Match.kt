@@ -59,8 +59,12 @@ class Match(
         return this.matchResult.isFinished()
     }
 
+    fun isNotFinished(): Boolean {
+        return !this.matchResult.isFinished()
+    }
+
     fun isRunning(): Boolean {
-        return this.hasStarted() && !this.isFinished()
+        return this.hasStarted() && this.isNotFinished()
     }
 
     fun getKickoff(): Long {
@@ -121,8 +125,12 @@ class Match(
      * returns the points user gets
      * if there was no bet made, it returns
      */
-    fun getBetPoints(): Int? {
+    fun getPoints(): Int? {
         return this.bet.points
+    }
+
+    fun getBetPoints(): BetPoints? {
+        return this.bet.getBetPoints()
     }
 
     fun getBetResultDrawableResId(): Int? {
@@ -132,7 +140,7 @@ class Match(
     /**
      * initializes [this.bet] and returns it, but beacause of shitty optionals you can not 100% sure
      */
-    fun getBet(): Bet {
+    private fun getBet(): Bet {
         return this.bet
     }
 
@@ -159,7 +167,7 @@ class Match(
             home_team.shortName,
             away_team.shortName,
             this.getKickoffClock(),
-            this.matchResult.getRepr(),
+            this.matchResult.getReprWithHT(),
             this.kickoff
         )
     }
@@ -191,5 +199,32 @@ class Match(
         return bet.isAvtive()
     }
 
+    fun hasNoBet(): Boolean {
+        return !this.hasBet()
+    }
+
+    fun playedBy(club: Club): Boolean {
+        return club == home_team || club == away_team
+    }
+
+    fun getOtherClub(club: Club): Club {
+        return if (home_team == club) away_team else home_team
+    }
+
+    fun getHomeGoalsStr(): String {
+        return getBet().getHomeGoalsStr()
+    }
+
+    fun getAwayGoalsStr(): String {
+        return getBet().getAwayGoalsStr()
+    }
+
+    fun setHomeGoals(goals: Int) {
+        getBet().setHomeGoals(goals)
+    }
+
+    fun setAwayGoals(goals: Int) {
+        getBet().setAwayGoals(goals)
+    }
 
 }

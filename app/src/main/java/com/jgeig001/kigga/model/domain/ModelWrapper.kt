@@ -31,7 +31,7 @@ class ModelWrapper @Inject constructor(
     private fun getPointsOf(season: Season): Int {
         var sum = 0
         for (match in season.getAllMatches()) {
-            sum += match.getBetPoints() ?: 0
+            sum += match.getPoints() ?: 0
         }
         return sum
     }
@@ -104,7 +104,7 @@ class ModelWrapper @Inject constructor(
             BetPoints.WRONG to 0
         )
         for (match in season.getFinishedMatches()) {
-            when (match.getBet().getBetPoints()) {
+            when (match.getBetPoints()) {
                 BetPoints.RIGHT_RESULT -> incMap(map, BetPoints.RIGHT_RESULT)
                 BetPoints.RIGHT_OUTCOME -> incMap(map, BetPoints.RIGHT_OUTCOME)
                 BetPoints.WRONG -> incMap(map, BetPoints.WRONG)
@@ -130,7 +130,7 @@ class ModelWrapper @Inject constructor(
     }
 
     fun getHistory(): History {
-        return this.history;
+        return this.history
     }
 
 }

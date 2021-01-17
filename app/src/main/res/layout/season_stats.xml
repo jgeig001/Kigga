@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:fontFamily="@font/comfortaa_bold"
-            android:hint="Saison"
+            android:hint="@string/season"
             android:textSize="17sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -56,7 +56,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/season_pie_chart" />
 
             <TextView
-                android:id="@+id/lable_no_data"
+                android:id="@+id/label_no_data"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

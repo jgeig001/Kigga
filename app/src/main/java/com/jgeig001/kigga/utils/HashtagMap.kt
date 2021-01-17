@@ -7,6 +7,7 @@ object HashtagMap {
      * with using the method Club.setHastagAgain() you can fix the data object
      */
     val hashtagMap = mutableMapOf(
+        // 1. Liga
         "FC Bayern" to "FCB",
         "Bayern" to "FCB",
         "Dortmund" to "BVB",
@@ -28,13 +29,32 @@ object HashtagMap {
         "Hertha" to "BSC",
         "SC Freiburg" to "SCF",
         "Freiburg" to "SCF",
+        "1. FSV Mainz" to "M05",
         "FSV Mainz" to "M05",
         "Mainz" to "M05",
         "Bielefeld" to "DSC",
         "1. FC Köln" to "KOE",
         "Köln" to "KOE",
         "Schalke 04" to "S04",
-        "Schalke" to "S04"
+        "Schalke" to "S04",
+        // 2. Liga
+        "Eintracht Braunschweig" to "EBS",
+        "Fortuna Düsseldorf" to "F95",
+        "SV Sandhausen" to "SVS",
+        "FC St. Pauli" to "FCSP",
+        "Holstein Kiel" to "KSV",
+        "1. FC Heidenheim 1846" to "FCH",
+        "Karlsruher SC" to "KSC",
+        "Hamburger SV" to "HSV",
+        "VfL Bochum" to "BOC",
+        "Erzgebirge Aue" to "AUE",
+        "SV Darmstadt 98" to "SVD",
+        "SpVgg Greuther Fürth" to "SGF",
+        "Jahn Regensburg" to "SSV",
+        "Hannover 96" to "H96",
+        "Würzburger Kickers" to "FWK",
+        "1. FC Nürnberg" to "FCN",
+        "VfL Osnabrück" to "OSN"
     )
 
 }

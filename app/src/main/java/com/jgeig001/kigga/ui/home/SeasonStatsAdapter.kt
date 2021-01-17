@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.CombinedChart
 import com.github.mikephil.charting.components.XAxis
@@ -17,10 +16,6 @@ import com.jgeig001.kigga.model.domain.Matchday
 import com.jgeig001.kigga.model.domain.ModelWrapper
 import com.jgeig001.kigga.model.domain.Season
 import com.jgeig001.kigga.utils.FloatRounder.round2D
-import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.pie_chart.*
-import kotlinx.android.synthetic.main.season_stats.*
-import kotlinx.android.synthetic.main.season_stats.view.*
 import kotlin.math.roundToInt
 
 class LineValueFomatter(private val maxValue: Float) : ValueFormatter() {
@@ -36,7 +31,8 @@ class SeasonStatsViewHolder(var binding: SeasonStatsBinding, private var context
     private lateinit var thisSeason: Season
 
     private val black_n_light_COLOR = context.resources.getColor(R.color.black_n_light)
-    private val black_n_light_disbaled_COLOR = context.resources.getColor(R.color.black_n_light_disabled)
+    private val black_n_light_disbaled_COLOR =
+        context.resources.getColor(R.color.black_n_light_disabled)
 
     fun setThisSeason(season: Season) {
         thisSeason = season
@@ -46,22 +42,23 @@ class SeasonStatsViewHolder(var binding: SeasonStatsBinding, private var context
 
         val chart = binding.statsGraph
 
-        chart.setDrawOrder(arrayOf(CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE))
-        chart.getDescription().isEnabled = false
+        chart.drawOrder = arrayOf(CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE)
+        chart.description.isEnabled = false
         chart.onTouchListener = null
         chart.extraBottomOffset = 5f
 
-        chart.getAxisLeft().apply {
+        chart.axisLeft.apply {
             setDrawGridLines(true)
             axisMinimum = 0f // this replaces setStartAtZero(true)
             textColor = black_n_light_COLOR
             textSize = 13f
+            granularity = 1f
         }
 
         chart.axisRight.isEnabled = false
         chart.legend.isEnabled = false
 
-        chart.getXAxis().apply {
+        chart.xAxis.apply {
             position = XAxis.XAxisPosition.BOTTOM
             axisMinimum = 0f
             granularity = 1f
@@ -77,13 +74,13 @@ class SeasonStatsViewHolder(var binding: SeasonStatsBinding, private var context
 
         val isEmpty = data.barData.entryCount == 0 && data.lineData.entryCount == 0
         if (isEmpty) {
-            binding.lableNoData.visibility = View.VISIBLE
-            chart.getXAxis().textColor = black_n_light_disbaled_COLOR
-            chart.getXAxis().gridColor = black_n_light_disbaled_COLOR
-            chart.getXAxis().axisLineColor = black_n_light_disbaled_COLOR
-            chart.getAxisLeft().textColor = black_n_light_disbaled_COLOR
+            binding.labelNoData.visibility = View.VISIBLE
+            chart.xAxis.textColor = black_n_light_disbaled_COLOR
+            chart.xAxis.gridColor = black_n_light_disbaled_COLOR
+            chart.xAxis.axisLineColor = black_n_light_disbaled_COLOR
+            chart.axisLeft.textColor = black_n_light_disbaled_COLOR
         } else {
-            binding.lableNoData.visibility = View.INVISIBLE
+            binding.labelNoData.visibility = View.INVISIBLE
         }
 
         chart.data = data
@@ -128,8 +125,8 @@ class SeasonStatsViewHolder(var binding: SeasonStatsBinding, private var context
         var pointsCorrectResult = 0f
         thisSeason.getMatchdaysWithBets().forEachIndexed { index, matchday: Matchday? ->
             val pair: Pair<Float, Float> = matchday?.getSplitedBetPoints() ?: Pair(0f, 0f)
-            pointsCorrectOutcome += pair.first
-            pointsCorrectResult += pair.second
+            pointsCorrectOutcome += pair.first // blue part
+            pointsCorrectResult += pair.second // green part
             val entry = BarEntry(
                 index.toFloat() + 0.8f,
                 floatArrayOf(pointsCorrectOutcome, pointsCorrectResult)

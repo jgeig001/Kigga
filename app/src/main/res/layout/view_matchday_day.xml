@@ -9,8 +9,13 @@
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="2dp"
         android:background="@drawable/corners_stroke"
-        android:orientation="vertical"
-        android:paddingBottom="6dp">
+        android:orientation="vertical">
+        <!--
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            set padding and other attributes of this linear layout in the [BetAdapter] programmatically
+            the background is set in code too, so the attributes defined here will be overridden
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        -->
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -23,8 +28,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_marginStart="18dp"
-                android:hint="Freitag"
                 android:textSize="18sp" />
 
             <TextView
@@ -32,21 +35,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="18dp"
                 android:fontFamily="@font/comfortaa_light"
-                android:hint="11.11.2020"
                 android:textSize="14sp" />
 
         </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/matchday_day_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#4CBEDE"
-            android:gravity="center_horizontal"
-            android:orientation="vertical" />
-        <!-- programmatically inject here: list of matches on a specific day of the matchday -->
 
     </LinearLayout>
 

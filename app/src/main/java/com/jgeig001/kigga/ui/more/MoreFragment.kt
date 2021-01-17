@@ -1,15 +1,10 @@
 package com.jgeig001.kigga.ui.more
 
-import android.app.Dialog
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,12 +12,9 @@ import androidx.lifecycle.Observer
 import com.jgeig001.kigga.R
 import com.jgeig001.kigga.databinding.FragmentMoreBinding
 import com.jgeig001.kigga.model.domain.ModelWrapper
-import com.jgeig001.kigga.utils.DisplayModeState
 import com.jgeig001.kigga.utils.FavClubChooser
-import com.jgeig001.kigga.utils.SharedPreferencesManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_more.*
-import kotlinx.android.synthetic.main.view_table3.*
 import javax.inject.Inject
 
 
@@ -83,7 +75,14 @@ class MoreFragment : Fragment() {
         moreViewModel.favClubLiveData.observe(
             viewLifecycleOwner,
             Observer {
-                more_favouriteClub.text = FavClubChooser.getFavClubName(requireContext())
+                val club_string = FavClubChooser.getFavClubName(requireContext())
+                if (club_string != "") {
+                    more_favouriteClub.text = club_string
+                    more_favouriteClub.visibility = View.VISIBLE
+                } else {
+                    more_favouriteClub.text = ""
+                    more_favouriteClub.visibility = View.GONE
+                }
             }
         )
     }

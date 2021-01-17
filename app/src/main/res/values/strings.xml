@@ -48,11 +48,19 @@
     <string name="choose_label">auswählen</string>
     <string name="your_club">Dein Club:</string>
     <string name="support_mail">kigga.feedback@gmail.com</string>
-    <string name="feedback_mail_start">Hey,\nich habe folgendes Feedback oder Problem...\n\n</string>
+    <string name="feedback_mail_start">Hey,\nich habe folgendes Feedback oder Problem…\n\n</string>
     <string name="contact">Kontakt</string>
     <string name="no_data">noch keine Daten</string>
     <string name="ref_openligadb">Diese App verwendet als Quelle die kostenfreie Datenbank: OpenLigaDB. Mehr Informationen unter: www.openligadb.de</string>
     <string name="data_protection">Die Application erhebt keinerlei personenbezogene Daten. Alle Daten bleiben lokal auf de Gerät gespeichert. Es werden keine Daten hochgeladen oder geteilt.</string>
     <string name="data_protection_header">Datenschutz:</string>
+    <string name="next_match">Gegner:</string>
+    <string name="empty_sign">-</string>
+    <string name="double_dot">:</string>
+    <string name="season">Saison</string>
+    <string name="match_result_empty">-:-(-:-)</string>
+    <string name="correct_result_string">richtiges Ergebnis</string>
+    <string name="correct_outcome_string">richtiger Ausgang</string>
+    <string name="wrong_string">falsch</string>
 
 </resources>

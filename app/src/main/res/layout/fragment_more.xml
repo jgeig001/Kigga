@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -10,132 +9,144 @@
             type="com.jgeig001.kigga.ui.more.MoreViewModel" />
     </data>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:layout_marginBottom="48dp">
 
-        <!-- fav club -->
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp">
+            android:orientation="vertical"
+            android:padding="10dp">
 
-            <TextView
-                android:id="@+id/more_favouriteClubLable"
-                android:layout_width="wrap_content"
-                android:layout_height="28dp"
-                android:layout_marginBottom="5dp"
-                android:text="@string/your_club"
-                android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/more_favouriteClub"
-                android:layout_width="wrap_content"
+            <!-- fav club -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:autoSizeMaxTextSize="16sp"
-                android:autoSizeMinTextSize="12sp"
-                android:autoSizeTextType="uniform"
-                android:singleLine="false"
-                android:textAlignment="center"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/more_selec_fav_btn"
-                app:layout_constraintTop_toTopOf="@+id/more_selec_fav_btn" />
+                android:layout_marginBottom="20dp"
+                android:orientation="vertical">
 
-            <Button
-                android:id="@+id/more_selec_fav_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/corners_green"
-                android:elevation="5dp"
-                android:paddingStart="5dp"
-                android:paddingEnd="5dp"
-                android:text="@string/choose_label"
-                android:textColor="?attr/light"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/more_favouriteClubLable" />
+                <TextView
+                    android:id="@+id/more_favouriteClubLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:text="@string/your_club"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/more_favouriteClub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:textSize="17dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/more_selec_fav_btn"
+                    app:layout_constraintTop_toTopOf="@+id/more_selec_fav_btn" />
 
-        <!-- email -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:gravity="center">
+                <Button
+                    android:id="@+id/more_selec_fav_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/corners_green"
+                    android:elevation="5dp"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:text="@string/choose_label"
+                    android:textColor="?attr/light"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/more_favouriteClubLabel" />
 
-            <Button
-                android:id="@+id/feedback_btn"
-                android:layout_width="wrap_content"
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/contact" />
+                android:layout_margin="10dp"
+                android:gravity="center">
 
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/nightModel_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingEnd="15dp"
+                    android:text="Displaymode:"
+                    android:textSize="16dp" />
 
-        <!-- email -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:gravity="center">
+                <Button
+                    android:id="@+id/displayMode_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:background="@drawable/corners_green"
+                    android:onClick="onOpenDisplayModeAlertDialog"
+                    android:text="Ändern"
+                    android:textColor="?attr/light" />
 
-            <TextView
-                android:id="@+id/nightModel_label"
-                android:layout_width="wrap_content"
+            </LinearLayout>
+
+            <!-- email -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="15dp"
                 android:gravity="center"
-                android:paddingEnd="15dp"
-                android:text="Dark Mode:"
-                android:textSize="16dp" />
+                android:orientation="vertical">
 
-            <Button
-                android:id="@+id/displayMode_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:text="Ändern"
-                android:onClick="onOpenDisplayModeAlertDialog"
-                android:textColor="?attr/light"
-                android:background="@drawable/corners_green" />
+                <Button
+                    android:id="@+id/feedback_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="?attr/adaptive_light"
+                    android:background="@drawable/corners_blue"
+                    android:text="@string/contact" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/support_mail" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="25dp"
+                    android:fontFamily="@font/comfortaa_light"
+                    android:lineSpacingMultiplier="1.1"
+                    android:text="@string/ref_openligadb" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/comfortaa_bold"
+                    android:text="@string/data_protection_header"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/comfortaa_light"
+                    android:lineSpacingMultiplier="1.05"
+                    android:text="@string/data_protection"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:fontFamily="@font/comfortaa_light"
-                android:lineSpacingMultiplier="1.1"
-                android:text="@string/ref_openligadb" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/comfortaa_bold"
-                android:text="@string/data_protection_header"
-                android:textSize="16sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/comfortaa_light"
-                android:textSize="13sp"
-                android:lineSpacingMultiplier="1.05"
-                android:text="@string/data_protection" />
-
-        </LinearLayout>
-
-
-    </LinearLayout>
+    </ScrollView>
 
 </layout>

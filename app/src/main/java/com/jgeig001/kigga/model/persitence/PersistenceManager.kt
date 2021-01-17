@@ -7,7 +7,10 @@ import com.jgeig001.kigga.model.database.entites.*
 import com.jgeig001.kigga.model.domain.*
 import com.jgeig001.kigga.model.exceptions.DatabaseEmptyWarning
 import com.jgeig001.kigga.model.repository.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 
@@ -107,7 +110,6 @@ class PersistenceManager @Inject constructor(private var context: Context, val d
                         val listOfMatches = mutableListOf<Match>()
                         val matchdayID = matchdayEntity.matchdayID
 
-                        var match_index = 0
                         for (matchEntity in matchRepo.getMatchesOfMatchday(matchdayID)) {
                             // MatchEntity to Match
                             val match = Match(
@@ -123,14 +125,10 @@ class PersistenceManager @Inject constructor(private var context: Context, val d
                                     matchEntity.isFinished
                                 )
                             )
-                            val bet = match.getBet()
-                            bet.setHomeGoals(matchEntity.bet_home_goals ?: Match.NO_BET)
-                            bet.setAwayGoals(matchEntity.bet_away_goals ?: Match.NO_BET)
-                            match.setBet(bet)
+                            match.setHomeGoals(matchEntity.bet_home_goals ?: Match.NO_BET)
+                            match.setAwayGoals(matchEntity.bet_away_goals ?: Match.NO_BET)
 
                             listOfMatches.add(match)
-
-                            match_index += 1
                         }
 
                         val matchday = Matchday(listOfMatches, index)
@@ -169,7 +167,7 @@ class PersistenceManager @Inject constructor(private var context: Context, val d
 
         Log.d(DB_TAG, "exec dumpDatabase()")
 
-        var startTime = System.nanoTime()
+        val startTime = System.nanoTime()
 
         val clubRepo = ClubRepository(db)
         val seasonRepo = SeasonRepository(db)
@@ -240,17 +238,10 @@ class PersistenceManager @Inject constructor(private var context: Context, val d
             }
         }
 
-        var t = (System.nanoTime() - startTime) / 1000000
+        val t = (System.nanoTime() - startTime) / 1000000
 
         Log.e(DB_TAG, "t = $t ms")
 
-    }
-
-    /**
-     * adds an callback which gets called when the model got initialised
-     */
-    fun addFirstLoadFinishedCallback(callback: () -> Unit) {
-        //dataPoller.addFirstLoadFinishedCallback(callback)
     }
 
     fun setFavClubCallback(callback: (liga: LigaClass) -> Unit) {

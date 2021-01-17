@@ -9,13 +9,12 @@
     </data>
 
     <LinearLayout
-        android:layout_width="160dp"
-        android:layout_height="22dp"
-        android:paddingStart="5dp">
+        android:layout_width="wrap_content"
+        android:layout_height="22dp">
 
         <TextView
             android:id="@+id/miniRank"
-            android:layout_width="20dp"
+            android:layout_width="17dp"
             android:layout_height="22dp"
             android:text="@{tableElement.rankString}"
             android:textAlignment="viewEnd" />
@@ -26,7 +25,7 @@
 
         <TextView
             android:id="@+id/miniName"
-            android:layout_width="100dp"
+            android:layout_width="103dp"
             android:layout_height="22dp"
             android:text="@{tableElement.clubNameShort}"
             android:textAlignment="viewStart" />
@@ -35,6 +34,7 @@
             android:id="@+id/miniPoints"
             android:layout_width="25dp"
             android:layout_height="22dp"
+            android:layout_marginEnd="2dp"
             android:text="@{tableElement.pointsString}"
             android:textAlignment="viewEnd" />
 

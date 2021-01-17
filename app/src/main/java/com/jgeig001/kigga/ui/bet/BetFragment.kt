@@ -1,7 +1,6 @@
 package com.jgeig001.kigga.ui.bet
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jgeig001.kigga.R
 import com.jgeig001.kigga.databinding.FragmentBetBinding
-import com.jgeig001.kigga.model.domain.*
+import com.jgeig001.kigga.model.domain.History
+import com.jgeig001.kigga.model.domain.ModelWrapper
+import com.jgeig001.kigga.model.domain.Season
 import com.jgeig001.kigga.model.persitence.PersistenceManager
 import com.jgeig001.kigga.utils.SharedPreferencesManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,7 +28,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class BetFragment : Fragment(R.layout.fragment_bet) {
+class BetFragment : Fragment() {
 
     private lateinit var binding: FragmentBetBinding
 
@@ -127,6 +128,9 @@ class BetFragment : Fragment(R.layout.fragment_bet) {
     }
 
     private fun setupSpinner() {
+        if (!isAdded) {
+            return
+        }
         // adapter for spinner
         val seasonAdapter: ArrayAdapter<Season> = ArrayAdapter(
             this.requireActivity(),

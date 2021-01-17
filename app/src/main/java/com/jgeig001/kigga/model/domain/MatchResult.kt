@@ -48,7 +48,7 @@ class MatchResult(
         this.away_fulltime = away
     }
 
-    fun getRepr(): String {
+    fun getReprWithHT(): String {
         if (listOf(home_halftime, away_halftime, home_fulltime, away_fulltime)
                 .all { it == GOALS_NULL }
         ) {
@@ -64,8 +64,16 @@ class MatchResult(
         )
     }
 
+    fun getReprFT(): String {
+        return if (this.isFinished) {
+            String.format("%s:%s", home_fulltime, away_halftime)
+        } else {
+            "-:-"
+        }
+    }
+
     override fun toString(): String {
-        return this.getRepr()
+        return this.getReprWithHT()
     }
 
     fun getHalftimeAway(): Int {

@@ -2,7 +2,6 @@ package com.jgeig001.kigga.model.domain
 
 import androidx.databinding.BaseObservable
 import java.io.Serializable
-import java.lang.IndexOutOfBoundsException
 
 data class Season(private var matchdays: List<Matchday>, private val year: Int) : Serializable,
     BaseObservable() {
@@ -51,40 +50,6 @@ data class Season(private var matchdays: List<Matchday>, private val year: Int) 
 
     fun getTable(): Table {
         return this.table
-    }
-
-    @Deprecated("use [this.setNewTableList()] instead")
-    fun addTeamToTable(
-        club: Club,
-        points: Int,
-        goals: Int,
-        opponentGoals: Int,
-        won: Int,
-        draw: Int,
-        loss: Int,
-        matches: Int
-    ): Boolean {
-        return this.table.addTeam(club, points, goals, opponentGoals, won, draw, loss, matches)
-    }
-
-    /**
-     * return map of matches which are not finished, the list size is max. [n] elements
-     */
-    fun get_n_unfinishedMatches(n: Int): Map<Int, Match> {
-        var counter = 0
-        val matchMap = mutableMapOf<Int, Match>()
-        for (match in this.getAllMatches()) {
-            if (match.isFinished()) {
-            }
-            continue
-            matchMap[match.matchID] = match
-            counter++
-            if (counter == n) {
-
-            }
-            return matchMap
-        }
-        return matchMap
     }
 
     /**
@@ -153,6 +118,10 @@ data class Season(private var matchdays: List<Matchday>, private val year: Int) 
                 break
         }
         return lis.dropLast(delCounter)
+    }
+
+    fun getMatchesOfClub(club: Club): List<Match> {
+        return matchdays.map { md -> md.matchWith(club) }
     }
 
 }

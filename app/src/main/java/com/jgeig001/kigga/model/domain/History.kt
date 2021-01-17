@@ -2,8 +2,10 @@ package com.jgeig001.kigga.model.domain
 
 import androidx.databinding.BaseObservable
 import java.io.Serializable
-import javax.inject.Inject
 
+/**
+ * holds all seasons with all matchdays with all matches
+ */
 class History constructor(
     private var listOfSeasons: MutableList<Season> = mutableListOf()
 ) : Serializable, BaseObservable() {

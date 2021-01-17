@@ -8,6 +8,7 @@
         <attr name="colorPrimaryDarkWhite" format="color" />
         <attr name="light" format="color" />
         <attr name="darker_light" format="color" />
+        <attr name="adaptive_light" format="color" />
         <attr name="dark" format="color" />
         <attr name="black" format="color" />
         <attr name="colorPrimary_inverted" format="color" />
@@ -19,6 +20,8 @@
         <attr name="dark_stroke" format="color" />
         <attr name="black_n_light" format="color" />
         <attr name="black_n_light_disabled" format="color" />
+        <attr name="dark_n_black" format="color" />
+        <attr name="yellow_live" format="color" />
     </declare-styleable>
 
 </resources>

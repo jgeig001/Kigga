@@ -31,8 +31,11 @@ class Bet(
 ) :
     Serializable, BaseObservable() {
 
+    /**
+     * return bet result as BetPoints object
+     */
     fun getBetPoints(): BetPoints? {
-        if (goals_home == Match.NO_BET && goals_away == Match.NO_BET)
+        if (match.isNotFinished() || (goals_home == Match.NO_BET && goals_away == Match.NO_BET))
             return null
         if (goals_home == this.match.fulltimeHome() && goals_away == this.match.fulltimeAway()) {
             return BetPoints.RIGHT_RESULT
@@ -48,11 +51,13 @@ class Bet(
         } else BetPoints.WRONG
     }
 
+    /**
+     * returns earned points as Integer
+     */
     val points: Int?
         get() {
             getBetPoints()?.let { return it.points } ?: return null
         }
-
 
     fun betCorrectResult(): Boolean {
         return points == BetPoints.RIGHT_RESULT.points

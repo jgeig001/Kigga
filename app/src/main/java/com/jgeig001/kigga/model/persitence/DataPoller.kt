@@ -1,6 +1,5 @@
 package com.jgeig001.kigga.model.persitence
 
-import android.util.Log
 import com.jgeig001.kigga.model.domain.History
 import com.jgeig001.kigga.model.domain.LigaClass
 import com.jgeig001.kigga.model.domain.Season
@@ -42,10 +41,6 @@ class DataPoller(
         }
     }
 
-    fun addFirstLoadFinishedCallback(callback: () -> Unit) {
-        //this.initCallbacks.add(callback)
-    }
-
     fun callbackNOTset(): Boolean {
         // may change if further callbacks are added
         val dumpDBCallbackIsInit = dumpDBCallback != null
@@ -70,7 +65,7 @@ class DataPoller(
     fun poll() {
         GlobalScope.launch(Dispatchers.IO) {
 
-            var lastUpdate: Long = 0L
+            var lastUpdate = 0L
 
             // check internet connection
             if (!ping()) {

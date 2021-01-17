@@ -106,21 +106,28 @@ data class Matchday(
     }
 
     fun getBetPoints(): Int {
-        return matches.sumBy { match -> match.getBetPoints() ?: 0 }
+        return matches.sumBy { match -> match.getPoints() ?: 0 }
     }
 
+    /**
+     * returns a pair of the cumulated points for correct outcome and correct result for this matchday
+     */
     fun getSplitedBetPoints(): Pair<Float, Float> {
         var correctOutome = 0
         var correctResult = 0
         for (match in matches) {
-            if (!match.hasBet())
+            if (match.hasNoBet())
                 continue
-            when (match.getBet().getBetPoints()) {
+            when (match.getBetPoints()) {
                 BetPoints.RIGHT_OUTCOME -> correctOutome += BetPoints.RIGHT_OUTCOME.points
                 BetPoints.RIGHT_RESULT -> correctResult += BetPoints.RIGHT_RESULT.points
             }
         }
         return Pair(correctOutome.toFloat(), correctResult.toFloat())
+    }
+
+    fun matchWith(club: Club): Match {
+        return matches.filter { m -> m.playedBy(club) }.first()
     }
 
 }

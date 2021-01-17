@@ -10,8 +10,10 @@ import com.jgeig001.kigga.databinding.ViewTableElementFavClubBinding
 import com.jgeig001.kigga.model.domain.Club
 import com.jgeig001.kigga.model.domain.Table
 
-abstract class TableRowHolder(private var binding: ViewDataBinding) :
+abstract class TableRowHolder(binding: ViewDataBinding) :
     RecyclerView.ViewHolder(binding.root) {
+
+    val bottomLineIndexList = listOf(0, 3, 4, 5, 14, 15, 17)
 
     abstract fun setData(table: Table, position: Int)
 }
@@ -37,7 +39,6 @@ class TableRowHolderFavClub(private var binding: ViewTableElementFavClubBinding)
         binding.eleDiff.text = diffStr
         binding.elePoints.text = tableElement.points.toString()
         // after these positions a separator line is visible
-        val bottomLineIndexList = listOf(0, 3, 4, 5, 14, 15)
         if (position in bottomLineIndexList)
             binding.tableBottomLine.visibility = View.VISIBLE
         else
@@ -66,7 +67,6 @@ class TableRowHolderAnyClub(private var binding: ViewTableElementBinding) :
         binding.eleDiff.text = diffStr
         binding.elePoints.text = tableElement.points.toString()
         // after these positions a separator line is visible
-        val bottomLineIndexList = listOf(0, 3, 4, 5, 14, 15)
         if (position in bottomLineIndexList)
             binding.tableBottomLine.visibility = View.VISIBLE
         else

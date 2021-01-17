@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.jgeig001.kigga.model.domain.Club
+import com.jgeig001.kigga.model.domain.Matchday
 import com.jgeig001.kigga.model.domain.ModelWrapper
 import com.jgeig001.kigga.model.domain.TableElement
 import com.jgeig001.kigga.utils.FavClubChooser
@@ -22,19 +23,41 @@ class HomeViewModel @ViewModelInject constructor(
         MutableLiveData(FavClubChooser.getFavClubName(context) ?: "")
 
     var miniTableLiveDataObjects: MutableList<MutableLiveData<RankedTableElement>> = mutableListOf()
+    var nextOpponent: MutableList<MutableLiveData<String>> = mutableListOf(
+        MutableLiveData(""), MutableLiveData(""), MutableLiveData("")
+    )
 
-    var points_curSeason: MutableLiveData<String>
-    var points_allSeasons: MutableLiveData<String>
+    var pointsCurSeason: MutableLiveData<String>
+    var pointsAllSeasons: MutableLiveData<String>
 
     init {
         try {
-            points_curSeason = MutableLiveData(model.getPointsCurSeason().toString())
-            points_allSeasons = MutableLiveData(model.getPointsAllTime().toString())
+            pointsCurSeason = MutableLiveData(model.getPointsCurSeason().toString())
+            pointsAllSeasons = MutableLiveData(model.getPointsAllTime().toString())
         } catch (ex: Exception) {
-            points_curSeason = MutableLiveData("")
-            points_allSeasons = MutableLiveData("")
+            pointsCurSeason = MutableLiveData("")
+            pointsAllSeasons = MutableLiveData("")
         }
         this.fillMiniTable()
+        this.fillNextOpponents()
+    }
+
+    fun fillNextOpponents() {
+        if (FavClubChooser.hasNoFavouriteClub(context))
+            return
+        val favClub = FavClubChooser.getFavClub(context, model.getLiga())
+        val favClubMatches = model.getHistory().getRunningSeason()
+            ?.getMatchesOfClub(favClub)
+        favClubMatches?.forEachIndexed { index, match ->
+            if (match.isRunning() || match.hasNotStarted()) {
+                nextOpponent[0].postValue("• " + match.getOtherClub(favClub).shortName)
+                if ((index + 1) < Matchday.MAX_MATCHDAYS)
+                    nextOpponent[1].postValue("• " + favClubMatches[index + 1].getOtherClub(favClub).shortName)
+                if ((index + 2) < Matchday.MAX_MATCHDAYS)
+                    nextOpponent[2].postValue("• " + favClubMatches[index + 2].getOtherClub(favClub).shortName)
+                return
+            }
+        }
     }
 
     fun fillMiniTable() {

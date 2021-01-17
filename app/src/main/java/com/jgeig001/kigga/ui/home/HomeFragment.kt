@@ -21,8 +21,7 @@ import com.jgeig001.kigga.utils.FloatRounder.round2D
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.pie_chart.*
-import kotlinx.android.synthetic.main.season_stats.*
-import kotlinx.android.synthetic.main.view_table3.*
+import kotlinx.android.synthetic.main.view_home_fav_club_overview.*
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -135,10 +134,13 @@ class HomeFragment : Fragment() {
             Observer {
                 if (FavClubChooser.hasFavouriteClub(requireContext())) {
                     selec_fav_btn.visibility = View.INVISIBLE
+                    nextOpponentLabel.visibility = View.VISIBLE
                 } else {
                     selec_fav_btn.visibility = View.VISIBLE
+                    nextOpponentLabel.visibility = View.INVISIBLE
                 }
                 homeViewModel.updateMiniTable()
+                homeViewModel.fillNextOpponents()
                 favouriteClub.text = FavClubChooser.getFavClubName(requireContext())
             }
         )

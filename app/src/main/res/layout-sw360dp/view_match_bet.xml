@@ -1,94 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/match_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="42dp"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
         android:layout_margin="4dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="0dp"
         android:layout_marginTop="4dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="0dp"
         android:layout_marginBottom="4dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
-        android:paddingStart="4dp"
-        android:paddingEnd="4dp">
+        android:paddingHorizontal="55dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp">
 
-        <LinearLayout
-            android:layout_width="58dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="1dp"
-            android:orientation="vertical">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/box1"
+            android:layout_width="57dp"
+            android:layout_height="44dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/box2"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
 
             <LinearLayout
-                android:layout_width="58dp"
-                android:layout_height="20dp"
-                android:orientation="horizontal">
+                android:id="@+id/plus_buttons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <ImageButton
                     android:id="@+id/btn_plus_home"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:background="@drawable/btn_plus_light"
-                    android:contentDescription="TODO" />
-
-                <TextView
-                    android:id="@+id/goals_bet_home"
-                    android:layout_width="18dp"
-                    android:layout_height="20dp"
-                    android:text="-"
-                    android:textAlignment="center" />
-
-                <ImageButton
-                    android:id="@+id/btn_minus_home"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:background="@drawable/btn_minus_light" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="58dp"
-                android:layout_height="20dp"
-                android:orientation="horizontal">
+                    android:layout_gravity="center"
+                    android:background="@drawable/btn_plus" />
 
                 <ImageButton
                     android:id="@+id/btn_plus_away"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:background="@drawable/btn_plus_light" />
+                    android:background="@drawable/btn_plus" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/goals_display"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintStart_toEndOf="@+id/plus_buttons"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/goals_bet_home"
+                    android:layout_width="17dp"
+                    android:layout_height="20dp"
+                    android:paddingBottom="1dp"
+                    android:text="@string/empty_sign"
+                    android:textAlignment="center" />
 
                 <TextView
                     android:id="@+id/goals_bet_away"
-                    android:layout_width="18dp"
+                    android:layout_width="17dp"
                     android:layout_height="20dp"
-                    android:text="-"
+                    android:text="@string/empty_sign"
                     android:textAlignment="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/minus_buttons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/goals_display"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageButton
+                    android:id="@+id/btn_minus_home"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/btn_minus" />
 
                 <ImageButton
                     android:id="@+id/btn_minus_away"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:background="@drawable/btn_minus_light" />
-
+                    android:background="@drawable/btn_minus" />
             </LinearLayout>
 
-        </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
-            android:layout_width="92dp"
+            android:id="@+id/box2"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:layout_marginStart="5dp"
-            android:orientation="vertical">
+            android:layout_marginStart="4dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/box3"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/box1"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/home_team"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:hint="home team"
                 android:textSize="13sp" />
 
             <TextView
@@ -96,15 +129,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
                 android:gravity="center_vertical"
-                android:hint="away team"
                 android:textSize="13sp" />
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/box3"
             android:layout_width="19dp"
             android:layout_height="40dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/box4"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/box2"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/rank_home"
@@ -127,9 +165,14 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="29dp"
+            android:id="@+id/box4"
+            android:layout_width="24dp"
             android:layout_height="40dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/box5"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/box3">
 
             <ImageView
                 android:id="@+id/trend_arrow_home"
@@ -137,7 +180,7 @@
                 android:layout_height="20dp"
                 android:layout_gravity="center"
                 android:padding="2dp"
-                android:rotation="0"
+                android:rotation="90"
                 android:src="@drawable/ic_asset_arrow_green" />
 
             <ImageView
@@ -146,15 +189,21 @@
                 android:layout_height="20dp"
                 android:layout_gravity="center"
                 android:padding="2dp"
-                android:rotation="0"
-                android:src="@drawable/ic_asset_arrow_green" />
+                android:rotation="90"
+                android:src="@drawable/ic_asset_arrow_blue" />
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/box5"
             android:layout_width="29dp"
             android:layout_height="40dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/box6"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/box4"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/trend_home"
@@ -175,51 +224,59 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="66dp"
+            android:id="@+id/box6"
+            android:layout_width="68dp"
             android:layout_height="40dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/box5"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/kickoff"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
                 android:fontFamily="@font/comfortaa_light"
-                android:hint="20:30 Uhr"
                 android:textAlignment="textEnd"
                 android:textSize="13sp" />
 
-            <FrameLayout
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/twitter_hashtag"
                     android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:autoSizeMaxTextSize="13sp"
-                    android:autoSizeMinTextSize="12sp"
-                    android:autoSizeTextType="uniform"
-                    android:fontFamily="@font/comfortaa_light"
-                    android:hint="#wobsvw"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentBottom="true"
+                    android:text="#BuLi"
                     android:textAlignment="textEnd"
-                    android:textColor="?attr/twitter"
-                    android:textColorHint="?attr/twitter" />
+                    android:textColorHint="?attr/twitter"
+                    android:theme="@style/TwitterStyle"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
                 <TextView
                     android:id="@+id/twitter_link"
                     android:layout_width="match_parent"
-                    android:layout_height="20dp"
+                    android:layout_height="match_parent"
                     android:autoLink="web"
-                    android:fontFamily="@font/comfortaa_light"
                     android:textAlignment="textEnd"
                     android:textColorLink="#00B11E1E"
-                    android:visibility="visible" />
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            </FrameLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </LinearLayout>

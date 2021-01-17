@@ -12,12 +12,12 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="6dp">
+        android:layout_margin="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout3"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -70,119 +70,167 @@
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:layout_marginStart="15dp"
-            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="@+id/constraintLayout3"
             app:layout_constraintStart_toEndOf="@+id/constraintLayout3"
             app:layout_constraintTop_toTopOf="@+id/constraintLayout3">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:id="@+id/green_dot"
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:background="@drawable/dot"
+                    android:backgroundTint="@color/green"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    app:layout_constraintStart_toEndOf="@+id/green_dot"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/correctResultabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/correct_result_string"
+                        app:layout_constraintStart_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/correct_result_percentage"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/correct_result_percentage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent" />
+
+                    <TextView
+                        android:id="@+id/correct_result_amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginTop="18dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/correct_result_percentage"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="3dp">
+
+                <View
+                    android:id="@+id/blue_dot"
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:background="@drawable/dot"
+                    android:backgroundTint="@color/blue"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    app:layout_constraintStart_toEndOf="@+id/blue_dot"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/correctOutcomeLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/correct_outcome_string"
+                        app:layout_constraintStart_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/correct_outcome_percentage"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/correct_outcome_percentage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent" />
+
+                    <TextView
+                        android:id="@+id/correct_outcome_amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginTop="18dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/correct_outcome_percentage"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginVertical="3dp"
                 android:orientation="horizontal">
 
                 <View
+                    android:id="@+id/black_dot"
                     android:layout_width="13dp"
                     android:layout_height="13dp"
-                    android:layout_gravity="center_vertical"
                     android:background="@drawable/dot"
-                    android:backgroundTint="@color/green" />
+                    android:backgroundTint="@color/black"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/correct_result_percentage"
-                    android:layout_width="41dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:textAlignment="textEnd" />
-
-                <TextView
-                    android:id="@+id/correct_result_amount"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="4dp"
-                    android:textAlignment="textStart" />
+                    android:layout_marginStart="10dp"
+                    app:layout_constraintStart_toEndOf="@+id/black_dot"
+                    app:layout_constraintTop_toTopOf="parent">
 
+                    <TextView
+                        android:id="@+id/wrongLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/wrong_string"
+                        app:layout_constraintStart_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/wrong_percentage"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="richtiges Ergebnis" />
+                    <TextView
+                        android:id="@+id/wrong_percentage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent" />
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/wrong_amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginTop="18dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/wrong_percentage"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginVertical="3dp"
-                android:orientation="horizontal">
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <View
-                    android:layout_width="13dp"
-                    android:layout_height="13dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="@drawable/dot"
-                    android:backgroundTint="@color/blue" />
-
-                <TextView
-                    android:id="@+id/correct_outcome_percentage"
-                    android:layout_width="41dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:textAlignment="textEnd" />
-
-                <TextView
-                    android:id="@+id/correct_outcome_amount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="4dp"
-                    android:textAlignment="textStart" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="richtiger Ausgang" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginVertical="3dp"
-                android:orientation="horizontal">
-
-                <View
-                    android:layout_width="13dp"
-                    android:layout_height="13dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="@drawable/dot"
-                    android:backgroundTint="@color/colorPrimary_inverted" />
-
-                <TextView
-                    android:id="@+id/wrong_percentage"
-                    android:layout_width="41dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:textAlignment="textEnd" />
-
-                <TextView
-                    android:id="@+id/wrong_amount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="4dp"
-                    android:textAlignment="textStart" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="falsch" />
-
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
 

@@ -17,13 +17,13 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:scrollbars="vertical">
 
             <!-- sum stats of all seasons -->
             <include
                 android:id="@+id/includeFavClubOverview"
-                layout="@layout/view_table3"
+                layout="@layout/view_home_fav_club_overview"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

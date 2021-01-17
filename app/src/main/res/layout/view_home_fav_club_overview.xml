@@ -12,10 +12,10 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="15dp">
+        android:padding="10dp">
 
         <TextView
-            android:id="@+id/favouriteClubLable"
+            android:id="@+id/favouriteClubLabel"
             android:layout_width="wrap_content"
             android:layout_height="28dp"
             android:layout_marginBottom="10dp"
@@ -31,11 +31,13 @@
             android:autoSizeMaxTextSize="16sp"
             android:autoSizeMinTextSize="12sp"
             android:autoSizeTextType="uniform"
+            android:paddingStart="2dp"
             android:singleLine="false"
-            android:textAlignment="center"
-            app:layout_constraintBottom_toBottomOf="@+id/favouriteClubLable"
-            app:layout_constraintStart_toEndOf="@+id/favouriteClubLable"
-            app:layout_constraintTop_toTopOf="@+id/favouriteClubLable" />
+            android:textStyle="bold"
+            android:textAlignment="viewStart"
+            app:layout_constraintBottom_toBottomOf="@+id/favouriteClubLabel"
+            app:layout_constraintStart_toEndOf="@+id/favouriteClubLabel"
+            app:layout_constraintTop_toTopOf="@+id/favouriteClubLabel" />
 
         <Button
             android:id="@+id/selec_fav_btn"
@@ -60,6 +62,7 @@
             android:layout_marginHorizontal="5dp"
             android:gravity="center"
             android:orientation="vertical"
+            android:paddingTop="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/selec_fav_btn">
@@ -102,6 +105,46 @@
                 android:layout_height="1dp"
                 android:layout_margin="1dp"
                 android:background="?attr/colorPrimary_inverted" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@+id/table3Linearlayout"
+            app:layout_constraintTop_toTopOf="@+id/table3Linearlayout"
+            android:orientation="vertical"
+            android:layout_marginStart="15dp">
+
+            <TextView
+                android:id="@+id/nextOpponentLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:singleLine="false"
+                android:text="@string/next_match" />
+
+            <TextView
+                android:id="@+id/nextMatch1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/LightFontStyle"
+                android:text="@{viewmodel.nextOpponent[0]}" />
+
+            <TextView
+                android:id="@+id/nextMatch2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/LightFontStyle"
+                android:text="@{viewmodel.nextOpponent[1]}" />
+
+            <TextView
+                android:id="@+id/nextMatch3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/LightFontStyle"
+                android:text="@{viewmodel.nextOpponent[2]}" />
+
 
         </LinearLayout>
 

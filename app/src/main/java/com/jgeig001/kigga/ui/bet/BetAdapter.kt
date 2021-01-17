@@ -112,9 +112,6 @@ class BetAdapter(
             if (!isCurMatchday) {
                 matchday_Day_View.background =
                     ContextCompat.getDrawable(context, R.drawable.corners_stroke_other_matchdays)
-                // setting another background resets the padding
-                matchday_Day_View.setPadding(0, 0, 0, dpToPx(6))
-
             } else {
                 holder.binding.matchdayX.setTextColor(
                     ContextCompat.getColor(
@@ -123,6 +120,8 @@ class BetAdapter(
                     )
                 )
             }
+            // setting another background resets the padding
+            matchday_Day_View.setPadding(dpToPx(15), 0, dpToPx(15), dpToPx(6))
             matchday_Day_View.elevation = 8f
 
             // loop over all matches of e.g. saturday
@@ -130,22 +129,26 @@ class BetAdapter(
 
                 var matchView: LinearLayout
                 // create view element for a match
-                if (match.hasStarted()) {
+                if (match.isFinished()) {
                     matchView = LayoutInflater.from(parent!!.context)
-                        .inflate(R.layout.view_match, parent, false) as LinearLayout
+                        .inflate(R.layout.view_match_finished, parent, false) as LinearLayout
                     // and add data to it
                     matchView.findViewById<TextView>(R.id.home_team).text =
                         match.home_team.shortName
                     matchView.findViewById<TextView>(R.id.away_team).text =
                         match.away_team.shortName
-                    matchView.findViewById<TextView>(R.id.result).text =
-                        match.getMatchResult().getRepr()
+
+                    matchView.findViewById<TextView>(R.id.result_home).text =
+                        match.getMatchResult().getFulltimeHome().toString()
+                    matchView.findViewById<TextView>(R.id.result_away).text =
+                        match.getMatchResult().getFulltimeAway().toString()
+
                     val betResultViewHome = matchView.findViewById<TextView>(R.id.done_bet_home)
                     val betResultViewAway = matchView.findViewById<TextView>(R.id.done_bet_away)
                     betResultViewHome.visibility = View.VISIBLE
-                    betResultViewHome.text = "[" + match.getBet().getHomeGoalsStr()
+                    betResultViewHome.text = "[${match.getHomeGoalsStr()}"
                     betResultViewAway.visibility = View.VISIBLE
-                    betResultViewAway.text = ":" + match.getBet().getAwayGoalsStr() + "]"
+                    betResultViewAway.text = ":${match.getAwayGoalsStr()}]"
 
                     // display earned points...
                     val earnedPointsView = matchView.findViewById<ImageView>(R.id.earned_points)
@@ -154,11 +157,32 @@ class BetAdapter(
                             earnedPointsView.visibility = View.VISIBLE
                             earnedPointsView.background =
                                 ContextCompat.getDrawable(context, imageID)
-                        } ?: run { earnedPointsView.visibility = View.GONE }
+                        } ?: run { earnedPointsView.visibility = View.VISIBLE }
 
                     } else {
                         earnedPointsView.visibility = View.INVISIBLE
                     }
+
+                } else if (match.isRunning()) {
+                    // • LIVE
+                    matchView = LayoutInflater.from(parent!!.context)
+                        .inflate(R.layout.view_match_live, parent, false) as LinearLayout
+
+                    // and add data to it
+                    matchView.findViewById<TextView>(R.id.home_team).text =
+                        match.home_team.shortName
+                    matchView.findViewById<TextView>(R.id.away_team).text =
+                        match.away_team.shortName
+
+                    val betResultViewHome = matchView.findViewById<TextView>(R.id.done_bet_home)
+                    val betResultViewAway = matchView.findViewById<TextView>(R.id.done_bet_away)
+                    betResultViewHome.visibility = View.VISIBLE
+                    betResultViewHome.text = "[${match.getHomeGoalsStr()}"
+                    betResultViewAway.visibility = View.VISIBLE
+                    betResultViewAway.text = ":${match.getAwayGoalsStr()}]"
+
+                    matchView.findViewById<TextView>(R.id.result_layout).text =
+                        match.getMatchResult().getReprWithHT()
 
                 } else {
 
@@ -233,22 +257,29 @@ class BetAdapter(
                     (matchView.findViewById<View>(R.id.goals_bet_away) as TextView).text =
                         match.getBetAwayGoalsStr()
 
-                    val homeHashtag = match.home_team.twitterHashtag
+                    val homeHashtag = match.home_team.twitterHashtag//.toLowerCase()
                     if (homeHashtag.isBlank())
                         match.home_team.setHastagAgain()
-                    val awayHashtag = match.away_team.twitterHashtag
+                    val awayHashtag = match.away_team.twitterHashtag//.toLowerCase()
                     if (awayHashtag.isBlank())
                         match.away_team.setHastagAgain()
-                    matchView.findViewById<TextView>(R.id.twitter_hashtag).text =
-                        context.getString(
-                            R.string.twitter_hashtag_template,
-                            homeHashtag,
-                            awayHashtag
-                        )
-                    matchView.findViewById<TextView>(R.id.twitter_link).text = context.getString(
-                        R.string.twitter_hashtag_link,
-                        match.home_team.twitterHashtag + match.away_team.twitterHashtag
-                    )
+                    if (homeHashtag != "" || awayHashtag != "") {
+                        matchView.findViewById<TextView>(R.id.twitter_hashtag).text =
+                            context.getString(
+                                R.string.twitter_hashtag_template,
+                                homeHashtag,
+                                awayHashtag
+                            )
+                        matchView.findViewById<TextView>(R.id.twitter_link).text =
+                            context.getString(
+                                R.string.twitter_hashtag_link,
+                                match.home_team.twitterHashtag + match.away_team.twitterHashtag
+                            )
+                    } else {
+                        matchView.findViewById<TextView>(R.id.twitter_link).text =
+                            context.getString(R.string.twitter_hashtag_link, "BuLi")
+                    }
+
                 }
 
                 // add matchView matchday_Day_View

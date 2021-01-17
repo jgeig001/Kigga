@@ -6,6 +6,7 @@
     <color name="colorPrimaryDarkWhite">#EDECEC</color>
     <color name="light">#FAFAFA</color>
     <color name="darker_light">#D2D2D2</color>
+    <color name="adaptive_light">#FAFAFA</color>
     <color name="dark">#1F1E1E</color>
     <color name="black">#050505</color>
     <color name="colorPrimary_inverted">#1F1E1E</color>
@@ -17,4 +18,6 @@
     <color name="dark_stroke">#B4B4B4</color>
     <color name="black_n_light">#1F1E1E</color>
     <color name="black_n_light_disabled">#969696</color>
+    <color name="dark_n_black">#1F1E1E</color>
+    <color name="yellow_live">#E3CB0B</color>
 </resources>

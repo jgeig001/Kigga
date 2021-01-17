@@ -5,6 +5,9 @@ import com.jgeig001.kigga.model.exceptions.ClubExistenceException
 import java.io.Serializable
 
 // TODO: substitutable with sql db
+/**
+ * manage all club object
+ */
 class LigaClass : Serializable, BaseObservable() {
 
     // key: full clubName, value: club itself
@@ -16,7 +19,7 @@ class LigaClass : Serializable, BaseObservable() {
 
     @Throws(ClubExistenceException::class)
     fun getClubBy(name: String): Club {
-        var club: Club? = this.listOfClubs[name]
+        val club: Club? = this.listOfClubs[name]
         if (club != null) {
             return club
         }
