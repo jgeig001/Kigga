@@ -40,9 +40,9 @@
     <style name="MyAppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="MyAppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
+<!-- helvetica_neue_thin -->
     <style name="TwitterStyle" parent="android:Widget.TextView">
-        <item name="fontFamily">@font/helvetica_neue_thin</item>
+        <item name="fontFamily">@font/helvetica_neue_light</item>
         <item name="android:fontFamily">@font/helvetica_neue_light</item>
         <item name="android:textColor">?attr/twitter</item>
         <item name="android:textSize">14sp</item>

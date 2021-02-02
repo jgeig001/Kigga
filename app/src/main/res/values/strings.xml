@@ -60,7 +60,7 @@
     <string name="contact">Kontakt</string>
     <string name="no_data">noch keine Daten</string>
     <string name="ref_openligadb">Diese App verwendet als Quelle die kostenfreie Datenbank: OpenLigaDB. Mehr Informationen unter: www.openligadb.de</string>
-    <string name="data_protection">Die Application erhebt keinerlei personenbezogene Daten. Alle Daten bleiben lokal auf de Gerät gespeichert. Es werden keine Daten hochgeladen oder geteilt.</string>
+    <string name="data_protection">Die Application erhebt keinerlei personenbezogene Daten. Alle Daten bleiben lokal auf de Gerät gespeichert. Es werden keine Daten hochgeladen oder an Dritte weitergegeben.</string>
     <string name="data_protection_header">Datenschutz:</string>
     <string name="next_match">Gegner:</string>
     <string name="empty_sign">-</string>
