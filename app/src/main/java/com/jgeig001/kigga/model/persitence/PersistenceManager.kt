@@ -1,7 +1,6 @@
 package com.jgeig001.kigga.model.persitence
 
 import android.content.Context
-import android.util.Log
 import com.jgeig001.kigga.database.LocalDatabase
 import com.jgeig001.kigga.model.database.entites.*
 import com.jgeig001.kigga.model.domain.*
@@ -28,8 +27,6 @@ interface Persistent {
 
 class PersistenceManager @Inject constructor(private var context: Context, val db: LocalDatabase) :
     Persistent {
-
-    val DB_TAG = "localdb"
 
     private var dataPoller: DataPoller
     private var model: ModelWrapper
@@ -74,10 +71,6 @@ class PersistenceManager @Inject constructor(private var context: Context, val d
     @Throws(DatabaseEmptyWarning::class)
     override fun loadFromDatabase(model: ModelWrapper) {
         runBlocking {
-            val startTime = System.nanoTime()
-            Log.d("123", "startTime: $startTime")
-            val TAG = "TAG"
-            Log.d(TAG, "loadDatabase()")
             val clubRepo = ClubRepository(db)
             val seasonRepo = SeasonRepository(db)
             val matchdayRepo = MatchdayRepository(db)
@@ -165,10 +158,6 @@ class PersistenceManager @Inject constructor(private var context: Context, val d
      */
     override suspend fun dumpDatabase() {
 
-        Log.d(DB_TAG, "exec dumpDatabase()")
-
-        val startTime = System.nanoTime()
-
         val clubRepo = ClubRepository(db)
         val seasonRepo = SeasonRepository(db)
         val matchdayRepo = MatchdayRepository(db)
@@ -237,10 +226,6 @@ class PersistenceManager @Inject constructor(private var context: Context, val d
                 tableElementRepo.upsertTableElement(tableElementEntity)
             }
         }
-
-        val t = (System.nanoTime() - startTime) / 1000000
-
-        Log.e(DB_TAG, "t = $t ms")
 
     }
 

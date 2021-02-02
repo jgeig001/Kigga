@@ -2,7 +2,6 @@ package com.jgeig001.kigga.utils
 
 import android.app.AlertDialog
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.ArrayAdapter
 import android.widget.Spinner
@@ -69,7 +68,6 @@ object FavClubChooser {
 
         builder.setPositiveButton(R.string.ok) { dialog, _ ->
             // update object held by livedata
-            Log.d("123", "which: ${spinner.selectedItemPosition}")
             val choosenClubName = clubList[spinner.selectedItemPosition]
             if (choosenClubName == context.getString(R.string.no_club)) {
                 // user has no favourite club

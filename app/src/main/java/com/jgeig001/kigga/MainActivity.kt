@@ -3,7 +3,6 @@ package com.jgeig001.kigga
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
@@ -38,9 +37,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        Log.d("123", "onCreate()")
-        Log.d("111", "this.Activity === $this")
 
         setContentView(R.layout.activity_main)
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
@@ -141,7 +137,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        Log.d("localdb", "onStop()")
         GlobalScope.launch { persistenceManager.dumpDatabase() }
     }
 
@@ -193,7 +188,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onThemeSelection(position: Int) {
-        Log.d("123", "onThemeSelection DO show me!")
         val defaultNightMode = getDefaultNightMode()
         when (position) {
             0 -> {
@@ -233,7 +227,6 @@ class MainActivity : AppCompatActivity() {
                 setDefaultNightMode(MODE_NIGHT_NO)
             }
         }
-        Log.d("123", "onThemeSelection do NOT show me!")
     }
 
     private fun supportsSystemDarkMode(): Boolean {
