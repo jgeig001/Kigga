@@ -23,6 +23,14 @@
     <string name="Sat">Samstag</string>
     <string name="Sun">Sonntag</string>
 
+
+    <string name="plus_sign">+</string>
+    <string name="minus_sign">-</string>
+    <string name="no_rank">0.</string>
+    <string name="zero_float">0.</string>
+    <string name="default_hastag">#BuLi</string>
+    <string name="arrow_">&amp;gt</string>
+
     <string name="mode_label">Optik</string>
     <string name="mode_radio_system">Systemeinstellung</string>
     <string name="mode_radio_dark">Dunkel</string>
@@ -37,7 +45,7 @@
     <string name="twitter_hashtag_template">#%s%s</string>
     <string name="dialog_title_club_chooser">Lieblingsverein</string>
     <string name="cancel">abbrechen</string>
-    <string name="ok">ok</string>
+    <string name="ok">OK</string>
     <string name="no_club">keiner</string>
     <string name="dialog_message_club_chooser">Wähle deinen Lieblingsverein aus. Du kannst ihn jederzeit ändern.</string>
     <string name="no_internet_title">Foul !!!</string>

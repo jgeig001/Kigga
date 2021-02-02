@@ -32,6 +32,7 @@
             android:autoSizeMinTextSize="12sp"
             android:autoSizeTextType="uniform"
             android:paddingStart="2dp"
+            android:paddingEnd="0dp"
             android:singleLine="false"
             android:textStyle="bold"
             android:textAlignment="viewStart"
@@ -128,21 +129,21 @@
                 android:id="@+id/nextMatch1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:theme="@style/LightFontStyle"
+                style="@style/LightFontStyle"
                 android:text="@{viewmodel.nextOpponent[0]}" />
 
             <TextView
                 android:id="@+id/nextMatch2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:theme="@style/LightFontStyle"
+                style="@style/LightFontStyle"
                 android:text="@{viewmodel.nextOpponent[1]}" />
 
             <TextView
                 android:id="@+id/nextMatch3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:theme="@style/LightFontStyle"
+                style="@style/LightFontStyle"
                 android:text="@{viewmodel.nextOpponent[2]}" />
 
 
