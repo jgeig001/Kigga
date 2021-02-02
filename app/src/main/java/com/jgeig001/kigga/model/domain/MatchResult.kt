@@ -11,7 +11,6 @@ class MatchResult(
     private var isFinished: Boolean = false
 ) : Serializable {
 
-    // TODO: simplify it
     companion object {
         val GOALS_NULL: Int = -1
     }

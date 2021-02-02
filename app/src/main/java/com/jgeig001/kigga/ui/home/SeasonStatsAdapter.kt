@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.CombinedChart
 import com.github.mikephil.charting.components.XAxis
@@ -30,9 +31,9 @@ class SeasonStatsViewHolder(var binding: SeasonStatsBinding, private var context
 
     private lateinit var thisSeason: Season
 
-    private val black_n_light_COLOR = context.resources.getColor(R.color.black_n_light)
+    private val black_n_light_COLOR = ContextCompat.getColor(context, R.color.black_n_light)
     private val black_n_light_disbaled_COLOR =
-        context.resources.getColor(R.color.black_n_light_disabled)
+        ContextCompat.getColor(context, R.color.black_n_light_disabled)
 
     fun setThisSeason(season: Season) {
         thisSeason = season
@@ -138,8 +139,8 @@ class SeasonStatsViewHolder(var binding: SeasonStatsBinding, private var context
         set.highLightAlpha = 100
         set.setDrawValues(false)
         set.setColors(
-            context.resources.getColor(R.color.blue),
-            context.resources.getColor(R.color.green)
+            ContextCompat.getColor(context, R.color.blue),
+            ContextCompat.getColor(context, R.color.green)
         )
 
         return BarData(set)
@@ -198,7 +199,6 @@ class SeasonStatsViewHolder(var binding: SeasonStatsBinding, private var context
         val co = allSeasonsDistributionMap[BetPoints.RIGHT_OUTCOME] ?: 0 / matchesWithBet
         val cr = allSeasonsDistributionMap[BetPoints.RIGHT_RESULT] ?: 0 / matchesWithBet
 
-        val includeLayout = binding.inludePointsCalculation
         // 2 points
         binding.inludePointsCalculation.x2pointsLabel.text = "$co × "
         // 5 points

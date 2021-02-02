@@ -121,6 +121,7 @@ data class Matchday(
             when (match.getBetPoints()) {
                 BetPoints.RIGHT_OUTCOME -> correctOutome += BetPoints.RIGHT_OUTCOME.points
                 BetPoints.RIGHT_RESULT -> correctResult += BetPoints.RIGHT_RESULT.points
+                else -> correctResult += 0
             }
         }
         return Pair(correctOutome.toFloat(), correctResult.toFloat())

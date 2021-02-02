@@ -1,4 +1,4 @@
-package com.jgeig001.kigga.model.persitence;
+package com.jgeig001.kigga.model.persitence
 
 import android.util.Log
 import com.jgeig001.kigga.model.domain.*
@@ -8,9 +8,10 @@ import com.jgeig001.kigga.model.exceptions.ClubExistenceException
 import com.jgeig001.kigga.model.exceptions.NotLoadableException
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.*
-import java.net.HttpURLConnection
-import java.net.SocketTimeoutException
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStream
+import java.io.InputStreamReader
 import java.net.URL
 import java.net.UnknownHostException
 import java.nio.charset.Charset
@@ -47,14 +48,14 @@ class DataLoader(private var history: History, private var liga: LigaClass) : Up
             lastLoadedSeasonYear = lastLoadedSeason.getYear()
         }
         var year = lastLoadedSeasonYear
-        var loadedSeason: Season?
+        var loadedSeason: Season
 
         // ----------------- load every whole season after curYear -----------------
         if (lastLoadedSeasonYear < this.getCurYear() || emptyHistory) {
             while (true) {
                 try {
                     loadedSeason = getSeason(year)
-                    history.addSeason(loadedSeason!!) // TODO: remove crash operator
+                    history.addSeason(loadedSeason)
                 } catch (e: NotLoadableException) {
                     // no new data to load
                     break
@@ -66,7 +67,7 @@ class DataLoader(private var history: History, private var liga: LigaClass) : Up
         // ----------------- load new match results -----------------
         // last matchday with loaded results
         val tup = history.getFirstMatchdayWithMissingResults()
-        var matchday_index: Int
+        val matchday_index: Int
         if (tup != null) {
             val firstSeasonWithMissingResults = tup.component1()
             val lastLoadedMatchday = tup.component2()
@@ -137,7 +138,7 @@ class DataLoader(private var history: History, private var liga: LigaClass) : Up
                         // TODO: better hide TableElement type in Table class, use some caching foobar
                         tmpTableLis.add(
                             TableElement(
-                                club!!,
+                                club,
                                 jsonTeamObj.getInt("Points"),
                                 jsonTeamObj.getInt("Goals"),
                                 jsonTeamObj.getInt("OpponentGoals"),
@@ -188,7 +189,7 @@ class DataLoader(private var history: History, private var liga: LigaClass) : Up
             )
             val jsonArrayOfMatches = JSON_Reader.readJsonFromUrl(url)
             if (jsonArrayOfMatches != null) {
-                for (i in 0 until jsonArrayOfMatches!!.length()) {
+                for (i in 0 until jsonArrayOfMatches.length()) {
                     val json_match = jsonArrayOfMatches.getJSONObject(i)
                     var matchID: Int
                     matchID = json_match.getInt("MatchID")
@@ -231,7 +232,7 @@ class DataLoader(private var history: History, private var liga: LigaClass) : Up
      * @throws NotLoadableException
      */
     @Throws(NotLoadableException::class)
-    private fun getSeason(year: Int): Season? {
+    private fun getSeason(year: Int): Season {
         // get json as string
         val url = "https://www.openligadb.de/api/getmatchdata/bl1/$year"
         // parse json
@@ -249,7 +250,7 @@ class DataLoader(private var history: History, private var liga: LigaClass) : Up
                 var match: Match
 
                 // matchId...
-                var matchID: Int = json_match.getInt("MatchID")
+                val matchID: Int = json_match.getInt("MatchID")
 
                 // Clubs...
                 val homeTeam = getClubFrom(json_match.getJSONObject("Team1"))
@@ -262,7 +263,7 @@ class DataLoader(private var history: History, private var liga: LigaClass) : Up
                 val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                 val date = formatter.parse(kickoffString)
                 kickoff = date.time
-                match = Match(matchID, homeTeam!!, awayTeam!!, kickoff, MatchResult())
+                match = Match(matchID, homeTeam, awayTeam, kickoff, MatchResult())
 
                 // what about the result...?
                 val jsonMatchResult = json_match.getJSONArray("MatchResults")
@@ -336,11 +337,10 @@ class DataLoader(private var history: History, private var liga: LigaClass) : Up
         } finally {
             inputStream?.close()
         }
-        return Date(Long.MIN_VALUE)
     }
 
     @Throws(JSONException::class)
-    private fun getClubFrom(teamObject: JSONObject): Club? {
+    private fun getClubFrom(teamObject: JSONObject): Club {
         return try {
             liga.getClubBy(teamObject.getString("TeamName"))
         } catch (e: ClubExistenceException) {
