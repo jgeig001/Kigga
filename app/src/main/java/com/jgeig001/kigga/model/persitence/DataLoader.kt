@@ -91,19 +91,29 @@ class DataLoader(private var history: History, private var liga: LigaClass) : Up
             try {
                 incompletMatchdaysIterForCurSeason =
                     curSeason.getMatchdaysSinceIndex(matchday_index)
-                // check results for all unfinished matchdays
+                // check results and kickoffs for all unfinished matchdays
                 for ((matchday, i) in incompletMatchdaysIterForCurSeason.zip(matchday_index until MAX_MATCHDAYS)) {
+
                     val matchday_number = i + 1
+                    val matchesAsJSONObjectList =
+                        getJsonObjectsOfMatchday(curSeason.getYear(), matchday_number)
+
+                    // update kickoff data
+                    val newKickoffData = refreshKickoffData(matchesAsJSONObjectList, matchday)
+
                     // load results of the matchday number [matchday_number]
-                    loadedResults = loadNewResults(curSeason.getYear(), matchday_number)
-                    if (loadedResults.isEmpty()) {
-                        // if there are no new results: you are finished
+                    loadedResults = createMatchResultObjsFromJSON(matchesAsJSONObjectList)
+
+                    if (loadedResults.isEmpty() && !newKickoffData) {
+                        // if there are no new results or kickoffs data: you are finished
                         return
                     }
+
                     // pass the loaded results to the associated matches
                     for ((matchID, matchResult) in loadedResults) {
                         matchday.setResult(matchID, matchResult)
                     }
+
                 }
             } catch (e: Exception) {
                 // something went wrong ?!
@@ -135,7 +145,7 @@ class DataLoader(private var history: History, private var liga: LigaClass) : Up
                         if (season.getTable().isComplete()) {
                             season.getTable().clearTable()
                         }
-                        // TODO: better hide TableElement type in Table class, use some caching foobar
+                        // TODO: better hide TableElement type in Table class, use some caching foobar #cleancode
                         tmpTableLis.add(
                             TableElement(
                                 club,
@@ -171,57 +181,93 @@ class DataLoader(private var history: History, private var liga: LigaClass) : Up
     }
 
     /**
-     * returns a list of ALL results of the [matchday_number]. matchday of the season of [year]
+     * updates kickoff data: concrete kickoff data is just released iteratively by 'DFL'
+     * @param matchesAsJSONObjectList: list of JSONObjects repr a match
+     * @returns true if any update was made, false if this concrete data was set already
+     */
+    private fun refreshKickoffData(
+        matchesAsJSONObjectList: List<JSONObject>,
+        matchday: Matchday
+    ): Boolean {
+        var changeDone = false
+        if (matchday.kickoffDiff()) {
+            // return if matches have different kickoffs
+            return changeDone
+        }
+        val matchIdList = mutableListOf<Int>()
+        for (jsonMatchObj in matchesAsJSONObjectList) {
+            val matchID = jsonMatchObj.getInt("MatchID")
+            matchIdList.add(matchID)
+            val kickoffString = jsonMatchObj.getString("MatchDateTime").replace('T', ' ')
+            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            val date = formatter.parse(kickoffString)
+            val kickoff = date.time
+            if (matchday.updateKickoff(matchID, kickoff)) {
+                changeDone = true
+            }
+        }
+        return changeDone
+    }
+
+    /**
+     * downloads data and returns a list of JSONObject, each representing a match
+     */
+    private fun getJsonObjectsOfMatchday(year: Int, matchday_number: Int): List<JSONObject> {
+        val matchObjectList = mutableListOf<JSONObject>()
+        val url = String.format(
+            "https://www.openligadb.de/api/getmatchdata/bl1/%d/%d", year, matchday_number
+        )
+        // array of match objects: [jsonObj, jsonObj, jsonObj,...]
+        val jsonArrayOfMatches = JSON_Reader.readJsonFromUrl(url)
+        if (jsonArrayOfMatches != null) {
+            for (i in 0 until jsonArrayOfMatches.length()) {
+                // get i_th matchObject out of array
+                val jsonMatchObj = jsonArrayOfMatches.getJSONObject(i)
+                matchObjectList.add(jsonMatchObj)
+            }
+        }
+        return matchObjectList
+    }
+
+    /**
      *
-     * @param year
-     * @param matchday_number
-     * @return
-     * @throws NotLoadableException
      */
     @Throws(NotLoadableException::class)
-    private fun loadNewResults(year: Int, matchday_number: Int): Map<Int, MatchResult> {
+    private fun createMatchResultObjsFromJSON(matchObjectList: List<JSONObject>): Map<Int, MatchResult> {
         val map = mutableMapOf<Int, MatchResult>()
-        try {
-            val url = String.format(
-                "https://www.openligadb.de/api/getmatchdata/bl1/%d/%d",
-                year,
-                matchday_number
-            )
-            val jsonArrayOfMatches = JSON_Reader.readJsonFromUrl(url)
-            if (jsonArrayOfMatches != null) {
-                for (i in 0 until jsonArrayOfMatches.length()) {
-                    val json_match = jsonArrayOfMatches.getJSONObject(i)
-                    var matchID: Int
-                    matchID = json_match.getInt("MatchID")
-                    val jsonMatchResult = json_match.getJSONArray("MatchResults")
-                    if (jsonMatchResult.length() != 0) {
-                        // match has started and a result
-                        val halfTimeTeam1 = jsonMatchResult.getJSONObject(1).getInt("PointsTeam1")
-                        val halfTimeTeam2 = jsonMatchResult.getJSONObject(1).getInt("PointsTeam2")
-                        val fullTimeTeam1 = jsonMatchResult.getJSONObject(0).getInt("PointsTeam1")
-                        val fullTimeTeam2 = jsonMatchResult.getJSONObject(0).getInt("PointsTeam2")
-                        val matchIsFinished = json_match.getBoolean("MatchIsFinished")
-                        val matchResult = MatchResult(
-                            halfTimeTeam1,
-                            halfTimeTeam2,
-                            fullTimeTeam1,
-                            fullTimeTeam2,
-                            matchIsFinished
-                        )
-                        map[matchID] = matchResult
-                    }
-                }
+        for (jsonMatchObj in matchObjectList) {
+            val matchResult = getResultOf(jsonMatchObj)
+            if (matchResult != null) {
+                val matchID = jsonMatchObj.getInt("MatchID")
+                map[matchID] = matchResult
             }
-            return map
-        } catch (e: NotLoadableException) {
-            // no data available
-            throw NotLoadableException("no more results for matchday number: $matchday_number")
-        } catch (e: JSONException) {
-            e.printStackTrace()
-            throw NotLoadableException("no more results for matchday number: $matchday_number")
-        } catch (e: IOException) {
-            throw NotLoadableException("no more results for matchday number: $matchday_number")
         }
+        return map
+    }
+
+    /**
+     * returns a MatchResult object of the match represented by the [json_matchObj]
+     * returns null if no result available
+     */
+    private fun getResultOf(json_matchObj: JSONObject): MatchResult? {
+        val jsonMatchResult = json_matchObj.getJSONArray("MatchResults")
+        if (jsonMatchResult.length() != 0) {
+            val FULLTIME_INDEX = 1
+            val halfTimeTeam1 = jsonMatchResult.getJSONObject(FULLTIME_INDEX).getInt("PointsTeam1")
+            val halfTimeTeam2 = jsonMatchResult.getJSONObject(FULLTIME_INDEX).getInt("PointsTeam2")
+            val HALFTIME_INDEX = 0
+            val fullTimeTeam1 = jsonMatchResult.getJSONObject(HALFTIME_INDEX).getInt("PointsTeam1")
+            val fullTimeTeam2 = jsonMatchResult.getJSONObject(HALFTIME_INDEX).getInt("PointsTeam2")
+            val matchIsFinished = json_matchObj.getBoolean("MatchIsFinished")
+            return MatchResult(
+                halfTimeTeam1,
+                halfTimeTeam2,
+                fullTimeTeam1,
+                fullTimeTeam2,
+                matchIsFinished
+            )
+        }
+        return null
     }
 
     /**

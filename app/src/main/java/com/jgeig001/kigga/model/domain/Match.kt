@@ -10,7 +10,7 @@ class Match(
     val matchID: Int,
     val home_team: Club,
     val away_team: Club,
-    private val kickoff: Long,
+    private var kickoff: Long,
     private var matchResult: MatchResult
 ) : Serializable, BaseObservable() {
 
@@ -67,6 +67,19 @@ class Match(
         return this.hasStarted() && this.isNotFinished()
     }
 
+    /**
+     * setter for kickoff
+     * @returns true if kickoff was changed else false
+     */
+    fun updateKickoff(newKickoff: Long): Boolean {
+        if (this.kickoff != newKickoff) {
+            this.kickoff = newKickoff
+            return true
+        }
+        return false
+    }
+
+    @Bindable
     fun getKickoff(): Long {
         return this.kickoff
     }

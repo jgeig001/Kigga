@@ -1,5 +1,6 @@
 package com.jgeig001.kigga.model.domain
 
+import com.jgeig001.kigga.BR
 import java.io.Serializable
 
 /**
@@ -65,7 +66,15 @@ data class Matchday(
 
     override fun setResult(matchID: Int, matchResult: MatchResult) {
         super.setResult(matchID, matchResult)
-        matches.first { it.matchID == matchID }.setResult(matchResult)
+        val match = matches.filter { it.matchID == matchID }.first()
+        match.setResult(matchResult)
+    }
+
+    fun updateKickoff(matchID: Int, kickoff: Long): Boolean {
+        val match = matches.filter { it.matchID == matchID }.first()
+        val returnValue = match.updateKickoff(kickoff)
+        notifyPropertyChanged(BR.kickoff) // if returnValue==true
+        return returnValue
     }
 
     /**
@@ -76,10 +85,15 @@ data class Matchday(
     fun matchday_day_iter(): MutableList<MutableList<Match>> {
         val listOfLists: MutableList<MutableList<Match>> = ArrayList()
         listOfLists.add(mutableListOf())
-        var prev: Match = this.matches[0]
+        val sortedMatches = if (this.kickoffDiff()) {
+            matches.sortedBy { match -> match.getKickoff() }
+        } else {
+            matches
+        }
+        var prev: Match = sortedMatches[0]
         listOfLists[0].add(prev)
         // loop over all matches except the first(:=prev)
-        val lis: List<Match> = this.matches.subList(1, this.matches.size)
+        val lis: List<Match> = sortedMatches.subList(1, sortedMatches.size)
         for (match in lis) {
             // compare current matchdayDay with prev
             if (match.getMatchdayDate() == prev.getMatchdayDate()) {
@@ -93,6 +107,8 @@ data class Matchday(
             }
             prev = match
         }
+        // sort by day
+        listOfLists.sortBy { sublis -> sublis.first().getKickoff() }
         return listOfLists
     }
 
@@ -130,5 +146,37 @@ data class Matchday(
     fun matchWith(club: Club): Match {
         return matches.filter { m -> m.playedBy(club) }.first()
     }
+
+    /**
+     * returns true if all matches do not have same kickoff, else false
+     */
+    fun kickoffDiff(): Boolean {
+        val set = mutableSetOf<Long>()
+        for (match in matches) {
+            set.add(match.getKickoff())
+        }
+        return set.size > 1
+    }
+
+    /*
+    // unused
+    fun updateOrder(matchIdList: List<Int>) {
+        if (matchIdList.zip(this.matches).all { (shouldID, match) -> shouldID == match.matchID }) {
+            // order is equal: sorting not necessary
+            return
+        }
+        // create tmp array
+        val matchArray = arrayOfNulls<Match>(matchIdList.size)
+        for (i in matchIdList.indices) {
+            // sort matches into array
+            val searchedMatchID = matchIdList[i]
+            val searchedMatch = this.matches.first { match -> match.matchID == searchedMatchID }
+            matchArray[i] = searchedMatch
+        }
+        // convert array to list and assign it as new match list
+        this.matches = matchArray.toMutableList() as MutableList<Match>
+        notifyChange()
+    }
+    */
 
 }

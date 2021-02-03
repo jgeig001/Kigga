@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
             if (startCounter == 0) {
                 // open alert dialog
                 GlobalScope.launch {
-                    delay(6000)
+                    delay(6000) // wait 6 seconds
                     runOnUiThread {
                         val dialog = FavClubChooser.getClubChooserDialog(this@MainActivity, liga)
                         dialog.show()

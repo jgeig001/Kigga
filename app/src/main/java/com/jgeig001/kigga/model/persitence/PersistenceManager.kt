@@ -149,7 +149,6 @@ class PersistenceManager @Inject constructor(private var context: Context, val d
             }
 
             model.getHistory().setListOfSeasons(listOfSeasons)
-            //delay(2000)
         }
     }
 
