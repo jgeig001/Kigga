@@ -13,3 +13,4 @@ Future Features:
 * datail ansicht jedes Spiels: in allen Zuständen: prematch, live, danach
 * torschützen inkl. Zeitpunkt <= goals data
 * Speicheroptimierungen
+* customize background image

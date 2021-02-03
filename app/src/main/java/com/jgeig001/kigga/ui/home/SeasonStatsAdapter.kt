@@ -19,10 +19,19 @@ import com.jgeig001.kigga.model.domain.Season
 import com.jgeig001.kigga.utils.FloatRounder.round2D
 import kotlin.math.roundToInt
 
-class LineValueFomatter(private val maxValue: Float) : ValueFormatter() {
-    /** only show the peak value */
+/**
+ * this formatter only shows elements marked with a small float value
+ */
+class CustomLineValueFormatter : ValueFormatter() {
+    companion object {
+        const val LAST_ELE_MARKER = 0.0001f
+    }
+
+    /** only show the last value marked with [LAST_ELE_MARKER] */
     override fun getFormattedValue(value: Float): String {
-        return if (value == maxValue) value.toInt().toString() else ""
+        val integerPart = value.toInt()
+        val decimalPart = value - integerPart
+        return if (decimalPart > 0) integerPart.toString() else ""
     }
 }
 
@@ -93,13 +102,20 @@ class SeasonStatsViewHolder(var binding: SeasonStatsBinding, private var context
         val entries = mutableListOf<Entry>()
         var pointsCumulative = 0
         val relevantMatchdays = thisSeason.getMatchdaysWithBets()
-        relevantMatchdays.forEachIndexed { index, matchday: Matchday? ->
+        var index = 0
+        relevantMatchdays.forEach { matchday: Matchday? ->
             if (matchday != null) {
                 val pointsOfMatchday = matchday.getBetPoints()
                 pointsCumulative += pointsOfMatchday
-                val entry = Entry(index.toFloat() + 0.8f, pointsCumulative.toFloat())
+                var value = pointsCumulative.toFloat()
+                if (index == relevantMatchdays.size - 1) {
+                    // mark this number with a small float if last element
+                    value += CustomLineValueFormatter.LAST_ELE_MARKER
+                }
+                val entry = Entry(index.toFloat() + 0.8f, value)
                 entries.add(entry)
             }
+            index += 1
         }
 
         val set = LineDataSet(entries, "lines").apply {
@@ -110,7 +126,7 @@ class SeasonStatsViewHolder(var binding: SeasonStatsBinding, private var context
             lineWidth = 1.5f
             circleRadius = 3.6f
             circleHoleRadius = 5f
-            valueFormatter = LineValueFomatter(pointsCumulative.toFloat())
+            valueFormatter = CustomLineValueFormatter()
             valueTextSize = 10f
             valueTextColor = black_n_light_COLOR
         }
@@ -186,10 +202,6 @@ class SeasonStatsViewHolder(var binding: SeasonStatsBinding, private var context
         val year = thisSeason.getYear()
         binding.seasonHeader.text =
             String.format(context.getString(R.string.seasonString), year, year + 1)
-    }
-
-    private fun getRandom(range: Float, start: Float): Float {
-        return (Math.random() * range).toFloat() + start
     }
 
     fun setupPointsCalculation(model: ModelWrapper) {
