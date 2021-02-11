@@ -55,10 +55,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:textAlignment="viewEnd"
-                app:layout_constraintEnd_toStartOf="@+id/result_part2" />
+                app:layout_constraintEnd_toStartOf="@+id/result_seperator" />
 
             <TextView
-                android:id="@+id/result_part2"
+                android:id="@+id/result_seperator"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="@string/double_dot"
@@ -70,7 +70,7 @@
                 android:id="@+id/result_away"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                app:layout_constraintStart_toEndOf="@+id/result_part2" />
+                app:layout_constraintStart_toEndOf="@+id/result_seperator" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

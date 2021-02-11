@@ -6,7 +6,7 @@ import java.io.Serializable
 /**
  * holds all seasons with all matchdays with all matches
  */
-class History constructor(
+class History (
     private var listOfSeasons: MutableList<Season> = mutableListOf()
 ) : Serializable, BaseObservable() {
 
@@ -33,7 +33,6 @@ class History constructor(
     fun getLatestSeason(): Season {
         return this.listOfSeasons.last()
     }
-
 
     fun getMatchdayOf(year: Int, matchdayNumber: Int): Matchday? {
         return this.getSeasonOf(year)?.getMatchdayAtNumber(matchdayNumber)
@@ -68,7 +67,7 @@ class History constructor(
         for (season in this.listOfSeasons.reversed()) {
             var prev: Matchday = season.getMatchdays().last()
             for (matchday in season.getMatchdays().reversed()) {
-                if (matchday.isFinished()) {
+                if (matchday.isDone()) {
                     return Pair(season, prev)
                 }
                 prev = matchday
@@ -96,7 +95,7 @@ class History constructor(
 
     fun getRunningSeason(): Season? {
         listOfSeasons.reversed().forEachIndexed { index, season ->
-            if (!season.isFished()) {
+            if (!season.isFinished()) {
                 return get_nth_season(index - 1) ?: season
             }
         }
@@ -119,8 +118,11 @@ class History constructor(
     }
 
     fun getUnfinishedSeasons(): List<Season> {
-        val lis = listOfSeasons
-        return lis.filter { s -> !s.isFished() }
+        return listOfSeasons.filter { season -> !season.isFinished() }
+    }
+
+    fun getFinishedSeasons(): List<Season> {
+        return listOfSeasons.filter { season -> season.isFinished() }
     }
 
     /**

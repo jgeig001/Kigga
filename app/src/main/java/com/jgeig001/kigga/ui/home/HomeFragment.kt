@@ -76,10 +76,14 @@ class HomeFragment : Fragment() {
         this.recyclerView.adapter = seasonStatsAdapter
     }
 
+    /**
+     * sets the values of the view displaying the statistics summary of all seasons
+     */
     private fun setAllTimeValues() {
         val matchesWithBet = model.matchesWithBetAllTime()
 
         if (matchesWithBet > 0) {
+
             Matchday.MAX_MATCHDAYS * Matchday.MAX_MATCHES * model.getListOfSeasons().size
             val allSeasonsDistributionMap = model.getAllSeasonsDistributionMap()
             val co = allSeasonsDistributionMap[BetPoints.RIGHT_OUTCOME] ?: 0 / matchesWithBet
@@ -110,6 +114,7 @@ class HomeFragment : Fragment() {
                 String.format(requireContext().getString(R.string.pointsCalculationTemplate), sum)
 
         } else {
+
             correct_outcome_amount.text = "(0)"
             correct_outcome_percentage.text = "0%"
             correct_result_amount.text = "(0)"

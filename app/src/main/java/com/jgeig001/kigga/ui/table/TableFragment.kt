@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
@@ -14,12 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jgeig001.kigga.R
 import com.jgeig001.kigga.databinding.FragmentTableBinding
-import com.jgeig001.kigga.model.domain.History
 import com.jgeig001.kigga.model.domain.ModelWrapper
 import com.jgeig001.kigga.model.domain.Season
-import com.jgeig001.kigga.ui.home.SeasonStatsViewHolder
 import com.jgeig001.kigga.utils.SeasonSelect
-import com.jgeig001.kigga.utils.SharedPreferencesManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_table.*
 import javax.inject.Inject
@@ -73,7 +69,7 @@ class TableFragment : Fragment() {
 
         tableViewModel.tableLiveData.observe(
             viewLifecycleOwner,
-            Observer { table ->
+            { table ->
                 table?.let { t ->
                     tableAdapter.updateData(t)
                 }

@@ -13,9 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.jgeig001.kigga.R
 import com.jgeig001.kigga.databinding.MatchdayCardBinding
-import com.jgeig001.kigga.model.domain.Match
-import com.jgeig001.kigga.model.domain.Matchday
-import com.jgeig001.kigga.model.domain.ModelWrapper
+import com.jgeig001.kigga.model.domain.*
 import com.jgeig001.kigga.utils.ArrowFunctions
 import com.jgeig001.kigga.utils.SeasonSelect
 import com.jgeig001.kigga.utils.TrendCalculator
@@ -34,7 +32,7 @@ class MatchdayViewHolder(var binding: MatchdayCardBinding) :
         itemView.findViewById<TextView>(R.id.matchday_x).text = String.format(s, i + 1)
     }
 
-    fun thisMatchday() {
+    fun markAsCurMatchday() {
         this.binding.matchdayCard.setBackgroundResource(R.drawable.corners_gradient)
     }
 
@@ -85,7 +83,7 @@ class BetAdapter(
         val curMatchday = model.getCurrentMatchday(selectedSeasonIndex)
         val isCurMatchday: Boolean = curMatchday == thisMatchday
         if (isCurMatchday)
-            holder.thisMatchday()
+            holder.markAsCurMatchday() // activate special background
 
         val iter: MutableList<MutableList<Match>> =
             matchdayList[position]?.matchday_day_iter() ?: return
@@ -127,158 +125,27 @@ class BetAdapter(
             // loop over all matches of e.g. saturday
             for (match in matchdayDay) {
 
-                var matchView: LinearLayout
                 // create view element for a match
-                if (match.isFinished()) {
-                    matchView = LayoutInflater.from(parent!!.context)
-                        .inflate(R.layout.view_match_finished, parent, false) as LinearLayout
-                    // and add data to it
-                    matchView.findViewById<TextView>(R.id.home_team).text =
-                        match.home_team.shortName
-                    matchView.findViewById<TextView>(R.id.away_team).text =
-                        match.away_team.shortName
 
-                    matchView.findViewById<TextView>(R.id.result_home).text =
-                        match.getMatchResult().getFulltimeHome().toString()
-                    matchView.findViewById<TextView>(R.id.result_away).text =
-                        match.getMatchResult().getFulltimeAway().toString()
+                val matchView: LinearLayout = if (match.isFinished()) {
 
-                    val betResultViewHome = matchView.findViewById<TextView>(R.id.done_bet_home)
-                    val betResultViewAway = matchView.findViewById<TextView>(R.id.done_bet_away)
-                    betResultViewHome.visibility = View.VISIBLE
-                    betResultViewHome.text = "[${match.getHomeGoalsStr()}"
-                    betResultViewAway.visibility = View.VISIBLE
-                    betResultViewAway.text = ":${match.getAwayGoalsStr()}]"
+                    // after match
+                    buildFinishedLayout(match)
 
-                    // display earned points...
-                    val earnedPointsView = matchView.findViewById<ImageView>(R.id.earned_points)
-                    if (match.isFinished()) {
-                        match.getBetResultDrawableResId()?.let { imageID ->
-                            earnedPointsView.visibility = View.VISIBLE
-                            earnedPointsView.background =
-                                ContextCompat.getDrawable(context, imageID)
-                        } ?: run { earnedPointsView.visibility = View.VISIBLE }
+                } else if (match.isLive() || match.wasSuspended()) {
 
-                    } else {
-                        earnedPointsView.visibility = View.INVISIBLE
-                    }
-
-                } else if (match.isRunning()) {
                     // • LIVE
-                    matchView = LayoutInflater.from(parent!!.context)
-                        .inflate(R.layout.view_match_live, parent, false) as LinearLayout
+                    buildLiveLayout(match)
 
-                    // and add data to it
-                    matchView.findViewById<TextView>(R.id.home_team).text =
-                        match.home_team.shortName
-                    matchView.findViewById<TextView>(R.id.away_team).text =
-                        match.away_team.shortName
+                } else if (match.isRescheduled()) {
 
-                    val betResultViewHome = matchView.findViewById<TextView>(R.id.done_bet_home)
-                    val betResultViewAway = matchView.findViewById<TextView>(R.id.done_bet_away)
-                    betResultViewHome.visibility = View.VISIBLE
-                    betResultViewHome.text = "[${match.getHomeGoalsStr()}"
-                    betResultViewAway.visibility = View.VISIBLE
-                    betResultViewAway.text = ":${match.getAwayGoalsStr()}]"
-
-                    matchView.findViewById<TextView>(R.id.result_layout).text =
-                        match.getMatchResult().getReprWithHT()
+                    // user can bet on match AGAIN
+                    buildBetLayout(match, table, thisMatchday)
 
                 } else {
 
                     /** user can bet on match */
-
-                    matchView = LayoutInflater.from(parent!!.context)
-                        .inflate(R.layout.view_match_bet, parent, false) as LinearLayout
-
-                    matchView.gravity = Gravity.CENTER_HORIZONTAL
-
-                    table?.getRankOf(match.home_team)
-                    matchView.findViewById<TextView>(R.id.rank_home).text =
-                        "${table?.getRankOf(match.home_team)}."
-                    matchView.findViewById<TextView>(R.id.rank_away).text =
-                        "${table?.getRankOf(match.away_team)}."
-
-                    matchView.findViewById<TextView>(R.id.home_team).text =
-                        match.home_team.shortName
-                    matchView.findViewById<TextView>(R.id.away_team).text =
-                        match.away_team.shortName
-
-                    // calc trend
-                    (model.get_nth_season(SeasonSelect.getSelectedSeasonIndex(context))
-                        ?: model.getRunningSeason())?.let {
-                        val trendHome = TrendCalculator.calcTrend(
-                            it,
-                            model.getHistory(),
-                            match.home_team
-                        )
-                        matchView.findViewById<TextView>(R.id.trend_home).text =
-                            trendHome.toString()
-                        matchView.findViewById<ImageView>(R.id.trend_arrow_home).rotation =
-                            ArrowFunctions.trendArrow(trendHome)
-                        matchView.findViewById<ImageView>(R.id.trend_arrow_home)
-                            .setImageDrawable(
-                                context.getDrawable(ArrowFunctions.getArrowDrawable(trendHome))
-                            )
-                        val trendAway = TrendCalculator.calcTrend(
-                            it,
-                            model.getHistory(),
-                            match.away_team
-                        )
-                        matchView.findViewById<TextView>(R.id.trend_away).text =
-                            trendAway.toString()
-                        matchView.findViewById<ImageView>(R.id.trend_arrow_away).rotation =
-                            ArrowFunctions.trendArrow(trendAway)
-                        matchView.findViewById<ImageView>(R.id.trend_arrow_away)
-                            .setImageDrawable(
-                                context.getDrawable(ArrowFunctions.getArrowDrawable(trendAway))
-                            )
-                    }
-
-
-                    matchView.findViewById<TextView>(R.id.kickoff).text =
-                        context.getString(
-                            R.string.clock, SimpleDateFormat("HH:mm").format(
-                                Date(match.getKickoff())
-                            )
-                        )
-
-                    val home_plus = matchView.findViewById<ImageButton>(R.id.btn_plus_home)
-                    val home_minus = matchView.findViewById<ImageButton>(R.id.btn_minus_home)
-                    val away_plus = matchView.findViewById<ImageButton>(R.id.btn_plus_away)
-                    val away_minus = matchView.findViewById<ImageButton>(R.id.btn_minus_away)
-                    home_plus.setOnClickListener { thisMatchday.addHomeGoal(match) }
-                    home_minus.setOnClickListener { thisMatchday.removeHomeGoal(match) }
-                    away_plus.setOnClickListener { thisMatchday.addAwayGoal(match) }
-                    away_minus.setOnClickListener { thisMatchday.removeAwayGoal(match) }
-                    // tipp textfield: set text
-                    (matchView.findViewById<View>(R.id.goals_bet_home) as TextView).text =
-                        match.getBetHomeGoalsStr()
-                    (matchView.findViewById<View>(R.id.goals_bet_away) as TextView).text =
-                        match.getBetAwayGoalsStr()
-
-                    val homeHashtag = match.home_team.twitterHashtag//.toLowerCase()
-                    if (homeHashtag.isBlank())
-                        match.home_team.setHastagAgain()
-                    val awayHashtag = match.away_team.twitterHashtag//.toLowerCase()
-                    if (awayHashtag.isBlank())
-                        match.away_team.setHastagAgain()
-                    if (homeHashtag != "" || awayHashtag != "") {
-                        matchView.findViewById<TextView>(R.id.twitter_hashtag).text =
-                            context.getString(
-                                R.string.twitter_hashtag_template,
-                                homeHashtag,
-                                awayHashtag
-                            )
-                        matchView.findViewById<TextView>(R.id.twitter_link).text =
-                            context.getString(
-                                R.string.twitter_hashtag_link,
-                                match.home_team.twitterHashtag + match.away_team.twitterHashtag
-                            )
-                    } else {
-                        matchView.findViewById<TextView>(R.id.twitter_link).text =
-                            context.getString(R.string.twitter_hashtag_link, "BuLi")
-                    }
+                    buildBetLayout(match, table, thisMatchday)
 
                 }
 
@@ -316,4 +183,168 @@ class BetAdapter(
         val scale = context.resources.displayMetrics.density
         return (dp * scale + 0.5f).toInt()
     }
+
+    /* build layout... */
+
+    private fun buildLiveLayout(match: Match): LinearLayout {
+        val matchView = LayoutInflater.from(parent!!.context)
+            .inflate(R.layout.view_match_live, parent, false) as LinearLayout
+
+        // and add data to it
+        matchView.findViewById<TextView>(R.id.home_team).text =
+            match.home_team.shortName
+        matchView.findViewById<TextView>(R.id.away_team).text =
+            match.away_team.shortName
+
+        val betResultViewHome = matchView.findViewById<TextView>(R.id.done_bet_home)
+        val betResultViewAway = matchView.findViewById<TextView>(R.id.done_bet_away)
+        betResultViewHome.visibility = View.VISIBLE
+        betResultViewHome.text = "[${match.getHomeGoalsStr()}"
+        betResultViewAway.visibility = View.VISIBLE
+        betResultViewAway.text = ":${match.getAwayGoalsStr()}]"
+
+        matchView.findViewById<TextView>(R.id.result_layout).text =
+            match.getReprWithHalfTime()
+
+        // activate canceled-label if match is suspended
+        matchView.findViewById<TextView>(R.id.match_canceled_overlay_live).visibility =
+            when (match.getSuspendionState()) {
+                SuspensionState.REGULAR -> View.GONE
+                SuspensionState.SUSPENDED -> View.VISIBLE
+                SuspensionState.RESCHEDULED -> View.GONE
+            }
+
+        return matchView
+    }
+
+    private fun buildBetLayout(match: Match, table: Table?, thisMatchday: Matchday): LinearLayout {
+        val matchView = LayoutInflater.from(parent!!.context)
+            .inflate(R.layout.view_match_bet, parent, false) as LinearLayout
+
+        matchView.gravity = Gravity.CENTER_HORIZONTAL
+
+        table?.getRankOf(match.home_team)
+        matchView.findViewById<TextView>(R.id.rank_home).text =
+            "${table?.getRankOf(match.home_team)}."
+        matchView.findViewById<TextView>(R.id.rank_away).text =
+            "${table?.getRankOf(match.away_team)}."
+
+        matchView.findViewById<TextView>(R.id.home_team).text =
+            match.home_team.shortName
+        matchView.findViewById<TextView>(R.id.away_team).text =
+            match.away_team.shortName
+
+        // calc trend
+        (model.get_nth_season(SeasonSelect.getSelectedSeasonIndex(context))
+            ?: model.getRunningSeason())?.let {
+            val trendHome = TrendCalculator.calcTrend(
+                it,
+                model.getHistory(),
+                match.home_team
+            )
+            matchView.findViewById<TextView>(R.id.trend_home).text =
+                trendHome.toString()
+            matchView.findViewById<ImageView>(R.id.trend_arrow_home).rotation =
+                ArrowFunctions.trendArrow(trendHome)
+            matchView.findViewById<ImageView>(R.id.trend_arrow_home)
+                .setImageDrawable(
+                    context.getDrawable(ArrowFunctions.getArrowDrawable(trendHome))
+                )
+            val trendAway = TrendCalculator.calcTrend(
+                it,
+                model.getHistory(),
+                match.away_team
+            )
+            matchView.findViewById<TextView>(R.id.trend_away).text =
+                trendAway.toString()
+            matchView.findViewById<ImageView>(R.id.trend_arrow_away).rotation =
+                ArrowFunctions.trendArrow(trendAway)
+            matchView.findViewById<ImageView>(R.id.trend_arrow_away)
+                .setImageDrawable(
+                    context.getDrawable(ArrowFunctions.getArrowDrawable(trendAway))
+                )
+        }
+
+        matchView.findViewById<TextView>(R.id.kickoff).text =
+            context.getString(
+                R.string.clock, SimpleDateFormat("HH:mm").format(
+                    Date(match.getKickoff())
+                )
+            )
+
+        val home_plus = matchView.findViewById<ImageButton>(R.id.btn_plus_home)
+        val home_minus = matchView.findViewById<ImageButton>(R.id.btn_minus_home)
+        val away_plus = matchView.findViewById<ImageButton>(R.id.btn_plus_away)
+        val away_minus = matchView.findViewById<ImageButton>(R.id.btn_minus_away)
+        home_plus.setOnClickListener { thisMatchday.addHomeGoal(match) }
+        home_minus.setOnClickListener { thisMatchday.removeHomeGoal(match) }
+        away_plus.setOnClickListener { thisMatchday.addAwayGoal(match) }
+        away_minus.setOnClickListener { thisMatchday.removeAwayGoal(match) }
+        // tipp textfield: set text
+        (matchView.findViewById<View>(R.id.goals_bet_home) as TextView).text =
+            match.getBetHomeGoalsStr()
+        (matchView.findViewById<View>(R.id.goals_bet_away) as TextView).text =
+            match.getBetAwayGoalsStr()
+
+        val homeHashtag = match.home_team.twitterHashtag
+        if (homeHashtag.isBlank())
+            match.home_team.setHastagAgain()
+        val awayHashtag = match.away_team.twitterHashtag
+        if (awayHashtag.isBlank())
+            match.away_team.setHastagAgain()
+        if (homeHashtag != "" || awayHashtag != "") {
+            matchView.findViewById<TextView>(R.id.twitter_hashtag).text =
+                context.getString(
+                    R.string.twitter_hashtag_template,
+                    homeHashtag,
+                    awayHashtag
+                )
+            matchView.findViewById<TextView>(R.id.twitter_link).text =
+                context.getString(
+                    R.string.twitter_hashtag_link,
+                    match.home_team.twitterHashtag + match.away_team.twitterHashtag
+                )
+        } else {
+            matchView.findViewById<TextView>(R.id.twitter_link).text =
+                context.getString(R.string.twitter_hashtag_link, "BuLi")
+        }
+        return matchView
+    }
+
+    private fun buildFinishedLayout(match: Match): LinearLayout {
+        val matchView = LayoutInflater.from(parent!!.context)
+            .inflate(R.layout.view_match_finished, parent, false) as LinearLayout
+        // and add data to it
+        matchView.findViewById<TextView>(R.id.home_team).text =
+            match.home_team.shortName
+        matchView.findViewById<TextView>(R.id.away_team).text =
+            match.away_team.shortName
+
+        matchView.findViewById<TextView>(R.id.result_home).text =
+            match.getFulltimeHome().toString()
+        matchView.findViewById<TextView>(R.id.result_away).text =
+            match.getFulltimeAway().toString()
+
+        val betResultViewHome = matchView.findViewById<TextView>(R.id.done_bet_home)
+        val betResultViewAway = matchView.findViewById<TextView>(R.id.done_bet_away)
+        betResultViewHome.visibility = View.VISIBLE
+        betResultViewHome.text = "[${match.getHomeGoalsStr()}"
+        betResultViewAway.visibility = View.VISIBLE
+        betResultViewAway.text = ":${match.getAwayGoalsStr()}]"
+
+        // display earned points...
+        val earnedPointsView = matchView.findViewById<ImageView>(R.id.earned_points)
+        if (match.isFinished()) {
+            match.getBetResultDrawableResId()?.let { imageID ->
+                earnedPointsView.visibility = View.VISIBLE
+                earnedPointsView.background =
+                    ContextCompat.getDrawable(context, imageID)
+            } ?: run { earnedPointsView.visibility = View.VISIBLE }
+
+        } else {
+            earnedPointsView.visibility = View.INVISIBLE
+        }
+        return matchView
+    }
+
 }

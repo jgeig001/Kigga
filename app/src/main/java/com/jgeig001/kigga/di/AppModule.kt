@@ -40,10 +40,9 @@ object AppModule {
     @Singleton
     @Provides
     fun providePersistanceManager(
-        @ApplicationContext context: Context,
         db: LocalDatabase
     ): PersistenceManager {
-        return PersistenceManager(context, db)
+        return PersistenceManager(db)
     }
 
     @Singleton

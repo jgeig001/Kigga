@@ -10,9 +10,12 @@ class Match(
     val matchID: Int,
     val home_team: Club,
     val away_team: Club,
+    @Bindable
     private var kickoff: Long,
-    private var matchResult: MatchResult
-) : Serializable, BaseObservable() {
+    @Bindable
+    private var matchResult: MatchResult = FootballMatchResult(),
+    private var suspensionState: SuspensionState = SuspensionState.REGULAR
+) : MatchResult, Serializable, BaseObservable() {
 
     companion object {
         const val NULL_REPR = "[-:-]"
@@ -22,21 +25,50 @@ class Match(
     @Bindable
     private var bet: Bet = Bet(this)
 
-    @Bindable
-    fun getMatchResult(): MatchResult {
-        return this.matchResult
+    init {
+        // try to mark SUSPENDED matches as RESCHEDULED => user can bet again
+        if (this.wasSuspended()) {
+            if (afterHours24() && !kickoffDone())
+                suspensionState = SuspensionState.RESCHEDULED
+        }
     }
 
-    fun setResult(matchResult: MatchResult) {
-        this.matchResult = matchResult
+    private fun afterHours24(): Boolean {
+        val now: Long = Calendar.getInstance().time.time
+        val hours12: Long = 24 * 3600
+        return kickoff + hours12 < now
+    }
+
+    fun markAsRescheduled() {
+        suspensionState = SuspensionState.RESCHEDULED
+    }
+
+    fun markAsSuspended() {
+        suspensionState = SuspensionState.SUSPENDED
+    }
+
+    fun getSuspendionState(): SuspensionState {
+        return suspensionState
+    }
+
+    fun regularKickoff(): Boolean {
+        return suspensionState == SuspensionState.REGULAR
+    }
+
+    fun wasSuspended(): Boolean {
+        return suspensionState == SuspensionState.SUSPENDED
+    }
+
+    fun isRescheduled(): Boolean {
+        return suspensionState == SuspensionState.RESCHEDULED
+    }
+
+    fun setResult(footballMatchResult: FootballMatchResult) {
+        this.matchResult = footballMatchResult
     }
 
     fun matchOf(club: Club): Boolean {
         return home_team == club || away_team == club
-    }
-
-    fun hasNotStarted(): Boolean {
-        return !this.isFinished() && !this.isRunning()
     }
 
     fun fulltimeHome(): Int {
@@ -47,39 +79,37 @@ class Match(
         return matchResult.getFulltimeAway()
     }
 
-    /**
-     * return true if NOW is after [kickoff]
-     */
-    fun hasStarted(): Boolean {
-        val now: Long = Calendar.getInstance().time.time
-        return now > this.kickoff
-    }
-
-    fun isFinished(): Boolean {
-        return this.matchResult.isFinished()
-    }
-
     fun isNotFinished(): Boolean {
         return !this.matchResult.isFinished()
     }
 
-    fun isRunning(): Boolean {
-        return this.hasStarted() && this.isNotFinished()
+    fun hasNotStarted(): Boolean {
+        return !this.resultExists()
+    }
+
+    fun kickoffDone(): Boolean {
+        return resultExists()
+    }
+
+    fun isLive(): Boolean {
+        return kickoffDone() && isNotFinished()
     }
 
     /**
-     * setter for kickoff
+     * use for exact termination of the match by DFL
      * @returns true if kickoff was changed else false
      */
-    fun updateKickoff(newKickoff: Long): Boolean {
+    fun specifyKickoff(newKickoff: Long): Boolean {
         if (this.kickoff != newKickoff) {
             this.kickoff = newKickoff
+            if (wasSuspended())
+            // match was suspended and got a new appointment
+                suspensionState = SuspensionState.RESCHEDULED
             return true
         }
         return false
     }
 
-    @Bindable
     fun getKickoff(): Long {
         return this.kickoff
     }
@@ -151,7 +181,7 @@ class Match(
     }
 
     /**
-     * initializes [this.bet] and returns it, but beacause of shitty optionals you can not 100% sure
+     * initializes [this.bet] and returns it, but because of shitty optionals you can not 100% sure
      */
     private fun getBet(): Bet {
         return this.bet
@@ -180,7 +210,7 @@ class Match(
             home_team.shortName,
             away_team.shortName,
             this.getKickoffClock(),
-            this.matchResult.getReprWithHT(),
+            this.matchResult.getReprWithHalfTime(),
             this.kickoff
         )
     }
@@ -188,20 +218,24 @@ class Match(
     fun ligaPointsFor(club: Club): Int? {
         if (!this.matchOf(club))
             return null
-        if (matchResult.isDraw)
-            return 1
-        if (club == home_team) {
-            if (matchResult.isHomeWin) {
-                return 3
+        when {
+            matchResult.isDraw() -> {
+                return 1
             }
-            return 0
-        } else if (club == away_team) {
-            if (matchResult.isAwayWin) {
-                return 3
+            club == home_team -> {
+                if (matchResult.isHomeWin()) {
+                    return 3
+                }
+                return 0
             }
-            return 0
+            club == away_team -> {
+                if (matchResult.isAwayWin()) {
+                    return 3
+                }
+                return 0
+            }
+            else -> return null
         }
-        return null
     }
 
     fun setBet(bet: Bet) {
@@ -238,6 +272,75 @@ class Match(
 
     fun setAwayGoals(goals: Int) {
         getBet().setAwayGoals(goals)
+    }
+
+    override fun isHomeWin(): Boolean {
+        return matchResult.isHomeWin()
+    }
+
+    override fun isDraw(): Boolean {
+        return matchResult.isDraw()
+    }
+
+    override fun isAwayWin(): Boolean {
+        return matchResult.isAwayWin()
+    }
+
+    override fun isFinished(): Boolean {
+        return this.matchResult.isFinished()
+    }
+
+    override fun finishIt() {
+        matchResult.finishIt()
+    }
+
+    override fun resultExists(): Boolean {
+        return matchResult.resultExists()
+    }
+
+    override fun setResults(
+        home_halftime: Int,
+        away_halftime: Int,
+        home_fulltime: Int,
+        away_fulltime: Int
+    ) {
+        matchResult.setResults(home_halftime, away_halftime, home_fulltime, away_fulltime)
+    }
+
+    override fun setHalftimeResult(home: Int, away: Int) {
+        matchResult.setHalftimeResult(home, away)
+    }
+
+    override fun setFulltimeResult(home: Int, away: Int) {
+        matchResult.setFulltimeResult(home, away)
+    }
+
+    override fun getReprWithHalfTime(): String {
+        return matchResult.getReprWithHalfTime()
+    }
+
+    override fun getReprFullTime(): String {
+        return matchResult.getReprFullTime()
+    }
+
+    override fun getHalftimeAway(): Int {
+        return matchResult.getHalftimeAway()
+    }
+
+    override fun getHalftimeHome(): Int {
+        return matchResult.getHalftimeHome()
+    }
+
+    override fun getFulltimeAway(): Int {
+        return matchResult.getFulltimeAway()
+    }
+
+    override fun getFulltimeHome(): Int {
+        return matchResult.getFulltimeHome()
+    }
+
+    fun setMatchResult(matchResult: MatchResult) {
+        this.matchResult = matchResult
     }
 
 }

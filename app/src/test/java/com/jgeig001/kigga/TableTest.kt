@@ -7,7 +7,7 @@ import org.junit.Test
 class TableTest {
 
     @Test
-    fun testTable3() {
+    fun testLeagueTable() {
         val table = Table()
         val clubs = mutableListOf<Club>()
         for (i in 1..Table.MAX_TEAMS) {

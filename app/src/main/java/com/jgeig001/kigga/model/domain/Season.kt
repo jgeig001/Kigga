@@ -2,6 +2,7 @@ package com.jgeig001.kigga.model.domain
 
 import androidx.databinding.BaseObservable
 import java.io.Serializable
+import java.util.*
 
 data class Season(private var matchdays: List<Matchday>, private val year: Int) : Serializable,
     BaseObservable() {
@@ -36,16 +37,15 @@ data class Season(private var matchdays: List<Matchday>, private val year: Int) 
 
     fun getCurrentMatchday(): Matchday? {
         for (matchday in matchdays) {
-            if (matchday.matches.any { !it.isFinished() }) {
+            if (matchday.isNotDone()) {
                 return matchday
             }
         }
         return null
     }
 
-    fun isFished(): Boolean {
-        // finished if the last matchday is finished
-        return matchdays.last().isFinished()
+    fun isFinished(): Boolean {
+        return matchdays.all { matchday -> matchday.isFinished() }
     }
 
     fun getTable(): Table {
@@ -69,11 +69,39 @@ data class Season(private var matchdays: List<Matchday>, private val year: Int) 
      * returns a list with all matchdays since index [i] (inclusive)
      */
     fun getMatchdaysSinceIndex(i: Int): List<Matchday> {
-        return matchdays.filter { it.matchdayIndex >= i }
+        return matchdays.subList(i, matchdays.size)
     }
 
     fun getFirstMatchday(): Matchday {
         return matchdays[0]
+    }
+
+    /**
+     * returns all suspended and rescheduled matches in the past as map
+     * {matchday_i: [match0, match1,...],...}
+     */
+    fun getOldSuspendedMatches(): Map<Matchday, List<Match>> {
+        val returnMap = mutableMapOf<Matchday, MutableList<Match>>()
+        val now: Long = Calendar.getInstance().time.time
+        for (matchday in matchdays) {
+            for (match in matchday.matches) {
+                if (match.getKickoff() > now)
+                    return returnMap
+                if (match.wasSuspended() || match.isRescheduled()) {
+                    if (returnMap.containsKey(matchday)) {
+                        // create new sublist and add match
+                        val lis: MutableList<Match>? = returnMap[matchday]
+                        lis?.add(match) ?: run {
+                            returnMap[matchday] = mutableListOf(match)
+                        }
+                    } else {
+                        // just add match to sublist
+                        returnMap[matchday] = mutableListOf(match)
+                    }
+                }
+            }
+        }
+        return returnMap
     }
 
     fun setTableList(lis: MutableList<TableElement>) {
@@ -108,7 +136,13 @@ data class Season(private var matchdays: List<Matchday>, private val year: Int) 
      * e.g. [md, md, null, md, null, md, md, md]
      */
     fun getMatchdaysWithBets(): List<Matchday?> {
-        val lis = matchdays.map { md -> if (md.matches.any { m -> m.hasBet() }) md else null }
+        val lis =
+            matchdays.map { matchday ->
+                if (matchday.matches.any { match ->
+                        match.hasBet() && match.isFinished()
+                    })
+                    matchday else null
+            }
         // delete all matchdays with no bets at the list end
         var delCounter = 0
         for (md in lis.reversed()) {
@@ -123,5 +157,26 @@ data class Season(private var matchdays: List<Matchday>, private val year: Int) 
     fun getMatchesOfClub(club: Club): List<Match> {
         return matchdays.map { md -> md.matchWith(club) }
     }
+
+    fun checkRescheduled() {
+        // try to mark SUSPENDED matches as RESCHEDULED
+        matchdays.forEachIndexed { index, matchday ->
+            for (match in matchday.matches) {
+                if (match.wasSuspended()) {
+                    // if the kickoff (eventually updated/rescheduled) lays behind the next matchday
+                    // ...the kickoff have to be rescheduled
+                    val nextMatchdayStart = try {
+                        matchdays[index + 1]
+                    } catch (e: IndexOutOfBoundsException) {
+                        matchdays.last()
+                    }.matches.first().getKickoff()
+                    if (match.getKickoff() > nextMatchdayStart) {
+                        match.markAsRescheduled()
+                    }
+                }
+            }
+        }
+    }
+
 
 }

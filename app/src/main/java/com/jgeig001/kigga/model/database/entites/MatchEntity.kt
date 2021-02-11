@@ -2,7 +2,6 @@ package com.jgeig001.kigga.model.database.entites
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.jgeig001.kigga.model.domain.Club
 
 @Entity(tableName = "match_table")
 data class MatchEntity(
@@ -12,6 +11,7 @@ data class MatchEntity(
     val homeTeamName: String,
     val awayTeamName: String,
     val kickoff: Long,
+    val rescheduled: Int,
     var home_halftime: Int,
     var away_halftime: Int,
     var home_fulltime: Int,

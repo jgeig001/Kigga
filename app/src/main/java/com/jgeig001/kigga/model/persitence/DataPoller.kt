@@ -3,34 +3,37 @@ package com.jgeig001.kigga.model.persitence
 import com.jgeig001.kigga.model.domain.History
 import com.jgeig001.kigga.model.domain.LigaClass
 import com.jgeig001.kigga.model.domain.Season
+import com.jgeig001.kigga.model.exceptions.ServerConnectionException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.BufferedReader
-import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.net.URL
 import java.nio.charset.Charset
 import java.util.*
 
+/**
+ * handles the polling of new data: WHEN and WHAT?
+ */
 class DataPoller(
     private val history: History,
     private val liga: LigaClass
 ) {
     // constants
-    private val SEC = 10L
+    private val POLLING_DELAY = 15L
 
     private var inetConnectionWorked = false
     private var firstLoadDone: Boolean = false
 
-    private var dataLoader: DataLoader = DataLoader(history, liga)
+    private var dataLoader: DataLoader = DataLoader(history, liga, OpenLigaDB_API())
 
     private var dumpDBCallback: (() -> Unit)? = null
     private var betFragmentCallback: (() -> Unit)? = null
     private var favClubCallBack: ((liga: LigaClass) -> Unit)? = null
-    private lateinit var openWarningDialogCallback: () -> Unit
+    private lateinit var checkInetConnectionCallback: () -> Unit
 
     fun firstLoadDone() {
         firstLoadDone = true
@@ -41,7 +44,7 @@ class DataPoller(
         }
     }
 
-    fun callbackNOTset(): Boolean {
+    fun callbacksNOTset(): Boolean {
         // may change if further callbacks are added
         val dumpDBCallbackIsInit = dumpDBCallback != null
         val betFragmentCallbackIsInit = betFragmentCallback != null
@@ -50,15 +53,15 @@ class DataPoller(
     }
 
     /**
-     * show an alertdialog if internet connection is difficult...
+     * check internet connection trouble and show an alertdialog
      */
-    fun showWarning() {
-        // small info dialog for user
-        while (true) { // TODO: optimize
-            if (this::openWarningDialogCallback.isInitialized) {
-                openWarningDialogCallback()
+    private suspend fun checkInetConnection() {
+        while (true) {
+            if (this::checkInetConnectionCallback.isInitialized) {
+                checkInetConnectionCallback()
                 return
             }
+            delay(25)
         }
     }
 
@@ -67,46 +70,50 @@ class DataPoller(
 
             var lastUpdate = 0L
 
-            // check internet connection
-            if (!ping()) {
-                showWarning()
-            }
+            GlobalScope.launch { checkInetConnection() }
 
             // load data at start
             dataLoader.loadNewClubs()
             dataLoader.updateData()
+            dataLoader.updateSuspendedMatches()
+            history.getRunningSeason()?.checkRescheduled()
             if (!firstLoadDone) {
-                while (callbackNOTset()) {
+                while (callbacksNOTset()) {
                     // wait until fragment(VIEW) set callback
                     delay(25)
                 }
                 firstLoadDone()
             }
             dataLoader.loadTable()
-            delay(SEC * 1000)
+            delay(POLLING_DELAY * 1000)
 
             /* ------------------------------ LOOP ------------------------------ */
             // constantly check for updates
             while (true) {
-                val tuple: Pair<Boolean, Long> = try {
-                    newDataAvailable(lastUpdate)
-                } catch (ex: IOException) {
+                // is data available and last update timestamp
+                var dataSourceState: Pair<Boolean, Long>
+                try {
+                    dataLoader.updateSuspendedMatches()
+                    dataSourceState = newDataAvailable(lastUpdate)
+                    inetConnectionWorked = true
+                } catch (ex: ServerConnectionException) {
                     // some trouble with internet or db connection
-                    if (inetConnectionWorked)
-                    // connection worked once since app start: show warning
-                    // avoid showing warning multiple times
-                    // is set to true if connection was used successfully
-                        showWarning()
+                    if (inetConnectionWorked) {
+                        // connection worked once since app start: show warning
+                        // avoid showing warning multiple times
+                        // is set to true if connection was used successfully
+                        checkInetConnection()
+                    }
                     inetConnectionWorked = false
-                    Pair(false, -1L)
+                    dataSourceState = Pair(false, -1L) // prevent updating data
                 }
-                lastUpdate = tuple.second
-                if (tuple.first || lastUpdate == 0L) {
+                lastUpdate = dataSourceState.second
+                val newData = dataSourceState.first
+                if (newData || lastUpdate == 0L) {
                     dataLoader.updateData()
                     dataLoader.loadTable()
-                    inetConnectionWorked = true
                 }
-                delay(SEC * 1000)
+                delay(POLLING_DELAY * 1000)
             }
             /* ------------------------------ LOOP ------------------------------ */
 
@@ -117,7 +124,8 @@ class DataPoller(
      * returns a pair<Boolean, Long>
      * if new data is available
      *      the pair.first is true and pair.second is the timestamp of last update
-     *      else pair.first is false and pair.second is the timestamp of last update
+     *  else
+     *      pair.first is false and pair.second is the timestamp of last update
      */
     private fun newDataAvailable(lastUpdate: Long): Pair<Boolean, Long> {
         val latestSeason: Season? = try {
@@ -126,10 +134,10 @@ class DataPoller(
             null
         }
         latestSeason?.let { season ->
-            val last_db_update = dataLoader.getLastUpdateOf(
-                season,
-                season.getCurrentMatchday() ?: season.getFirstMatchday()
-            )
+            val matchdayNumber =
+                season.getCurrentMatchday()?.getMatchdayNumber() ?: season.getFirstMatchday()
+                    .getMatchdayNumber()
+            val last_db_update = dataLoader.getLastUpdateOf(season.getYear(), matchdayNumber)
             return if (last_db_update.after(Date(lastUpdate))) {
                 return Pair(true, last_db_update.time)
             } else {
@@ -144,7 +152,7 @@ class DataPoller(
      * check if the database service is available and internet connection works
      * returns true if yes
      */
-    fun ping(): Boolean {
+    private fun pingServer(): Boolean {
         var inputStream: InputStream? = null
         return try {
             val url = "https://www.openligadb.de/api/getlastchangedate/bl1/2020/1"
@@ -153,7 +161,6 @@ class DataPoller(
             inputStream = connection.getInputStream()
             val rd = BufferedReader(InputStreamReader(inputStream, Charset.forName("UTF-8")))
             val jsonText = JSON_Reader.readAll(rd)
-            inputStream.close()
             jsonText.isNotEmpty()
         } catch (ex: Exception) {
             false
@@ -162,8 +169,8 @@ class DataPoller(
         }
     }
 
-    fun internetWarningDialog(openDialog: () -> Unit) {
-        openWarningDialogCallback = openDialog
+    fun setInternetWarningDialogCallback(openDialog: () -> Unit) {
+        checkInetConnectionCallback = openDialog
     }
 
     fun setFavClubCallback(callback: (liga: LigaClass) -> Unit) {

@@ -12,22 +12,22 @@ class TestTrendCalculator {
         val myClub = Club("MyClub", "clb")
         val otherClub = Club("other", "otr")
 
-        val result0 = MatchResult()
+        val result0 = FootballMatchResult()
         result0.finishIt()
         val match0 = Match(0, myClub, otherClub, 0, result0)
-        val result1 = MatchResult()
+        val result1 = FootballMatchResult()
         result1.finishIt()
         val match1 = Match(0, myClub, otherClub, 0, result1)
-        val result2 = MatchResult()
+        val result2 = FootballMatchResult()
         result2.finishIt()
         val match2 = Match(0, myClub, otherClub, 0, result2)
-        val result3 = MatchResult()
+        val result3 = FootballMatchResult()
         result3.finishIt()
         val match3 = Match(0, myClub, otherClub, 0, result3)
-        val result4 = MatchResult()
+        val result4 = FootballMatchResult()
         result4.finishIt()
         val match4 = Match(0, myClub, otherClub, 0, result4)
-        val result5 = MatchResult()
+        val result5 = FootballMatchResult()
         result5.finishIt()
         val match5 = Match(0, myClub, otherClub, 0, result5)
 
@@ -59,19 +59,19 @@ class TestTrendCalculator {
         val myClub = Club("MyClub", "clb")
         val otherClub = Club("other", "otr")
 
-        val result1 = MatchResult()
+        val result1 = FootballMatchResult()
         result1.finishIt()
         val match1 = Match(0, myClub, otherClub, 0, result1)
-        val result2 = MatchResult()
+        val result2 = FootballMatchResult()
         result2.finishIt()
         val match2 = Match(0, myClub, otherClub, 0, result2)
-        val result3 = MatchResult()
+        val result3 = FootballMatchResult()
         result3.finishIt()
         val match3 = Match(0, myClub, otherClub, 0, result3)
-        val result4 = MatchResult()
+        val result4 = FootballMatchResult()
         result4.finishIt()
         val match4 = Match(0, myClub, otherClub, 0, result4)
-        val result5 = MatchResult()
+        val result5 = FootballMatchResult()
         result5.finishIt()
         val match5 = Match(0, myClub, otherClub, 0, result5)
 
@@ -100,13 +100,13 @@ class TestTrendCalculator {
         val myClub = Club("MyClub", "clb")
         val otherClub = Club("other", "otr")
 
-        val result1 = MatchResult()
+        val result1 = FootballMatchResult()
         result1.finishIt()
         val match1 = Match(0, myClub, otherClub, 0, result1)
-        val result2 = MatchResult()
+        val result2 = FootballMatchResult()
         result2.finishIt()
         val match2 = Match(0, myClub, otherClub, 0, result2)
-        val result3 = MatchResult()
+        val result3 = FootballMatchResult()
         result3.finishIt()
         val match3 = Match(0, myClub, otherClub, 0, result3)
 
@@ -136,29 +136,29 @@ class TestTrendCalculator {
         val matchday_lis_0 = mutableListOf<Matchday>()
         var i = 1
         while (matchday_lis_0.size < Matchday.MAX_MATCHDAYS - 6) {
-            val result = MatchResult(1, 1, 1, 1, true)
+            val result = FootballMatchResult(1, 1, 1, 1, true)
             val match = Match(0, myClub, otherClub, 0, result)
 
             matchday_lis_0.add(0, Matchday(mutableListOf(match), i))
             i++
         }
         // needed matchdays
-        val result00 = MatchResult()
+        val result00 = FootballMatchResult()
         result00.finishIt()
         val match29 = Match(0, myClub, otherClub, 0, result00)
-        val result10 = MatchResult()
+        val result10 = FootballMatchResult()
         result10.finishIt()
         val match30 = Match(0, myClub, otherClub, 0, result10)
-        val result20 = MatchResult()
+        val result20 = FootballMatchResult()
         result20.finishIt()
         val match31 = Match(0, myClub, otherClub, 0, result20)
-        val result30 = MatchResult()
+        val result30 = FootballMatchResult()
         result30.finishIt()
         val match32 = Match(0, myClub, otherClub, 0, result30)
-        val result40 = MatchResult()
+        val result40 = FootballMatchResult()
         result40.finishIt()
         val match33 = Match(0, myClub, otherClub, 0, result40)
-        val result50 = MatchResult()
+        val result50 = FootballMatchResult()
         result50.finishIt()
         val match34 = Match(0, myClub, otherClub, 0, result50)
         matchday_lis_0.addAll(
@@ -175,18 +175,18 @@ class TestTrendCalculator {
         val season0 = Season(matchday_lis_0, 2019)
 
         // season1
-        val result0 = MatchResult()
+        val result0 = FootballMatchResult()
         result0.finishIt()
         val match1 = Match(0, myClub, otherClub, 0, result0)
-        val result1 = MatchResult()
+        val result1 = FootballMatchResult()
         result1.finishIt()
         val match2 = Match(0, myClub, otherClub, 0, result1)
-        val result2 = MatchResult()
+        val result2 = FootballMatchResult()
         result2.finishIt()
         val match3 = Match(0, myClub, otherClub, 0, result2)
 
         // last matchday
-        val result3 = MatchResult()
+        val result3 = FootballMatchResult()
         val match4 = Match(0, myClub, otherClub, 0, result3)
 
         val matchday_lis_1 = mutableListOf(
@@ -222,15 +222,15 @@ class TestTrendCalculator {
         val myClub = Club("MyClub", "clb")
         val otherClub = Club("other", "otr")
 
-        val result1 = MatchResult(1, 1, 10, 1, true)
+        val result1 = FootballMatchResult(1, 1, 10, 1, true)
         val match1 = Match(0, myClub, otherClub, 0, result1)
-        val result2 = MatchResult(1, 1, 10, 1, true)
+        val result2 = FootballMatchResult(1, 1, 10, 1, true)
         val match2 = Match(0, myClub, otherClub, 0, result2)
-        val result3 = MatchResult(1, 1, 10, 1, true)
+        val result3 = FootballMatchResult(1, 1, 10, 1, true)
         val match3 = Match(0, myClub, otherClub, 0, result3)
-        val result4 = MatchResult(1, 1, 10, 1, true)
+        val result4 = FootballMatchResult(1, 1, 10, 1, true)
         val match4 = Match(0, myClub, otherClub, 0, result4)
-        val result5 = MatchResult(1, 1, 10, 1, true)
+        val result5 = FootballMatchResult(1, 1, 10, 1, true)
         val match5 = Match(0, myClub, otherClub, 0, result5)
 
         val matchday_lis = mutableListOf(
@@ -254,19 +254,19 @@ class TestTrendCalculator {
         val myClub = Club("MyClub", "clb")
         val otherClub = Club("other", "otr")
 
-        val result1 = MatchResult(0, 0, 0, 1, true) // loss
+        val result1 = FootballMatchResult(0, 0, 0, 1, true) // loss
         val match1 = Match(0, myClub, otherClub, 0, result1)
 
-        val result2 = MatchResult(0, 0, 0, 2, true) // loss
+        val result2 = FootballMatchResult(0, 0, 0, 2, true) // loss
         val match2 = Match(0, myClub, otherClub, 0, result2)
 
-        val result3 = MatchResult(0, 0, 3, 3, true) // draw
+        val result3 = FootballMatchResult(0, 0, 3, 3, true) // draw
         val match3 = Match(0, myClub, otherClub, 0, result3)
 
-        val result4 = MatchResult(0, 0, 4, 0, true) // win
+        val result4 = FootballMatchResult(0, 0, 4, 0, true) // win
         val match4 = Match(0, myClub, otherClub, 0, result4)
 
-        val result5 = MatchResult(0, 0, 5, 0, true) // win
+        val result5 = FootballMatchResult(0, 0, 5, 0, true) // win
         val match5 = Match(0, myClub, otherClub, 0, result5)
 
         val matchday_lis = mutableListOf(

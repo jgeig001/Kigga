@@ -40,13 +40,13 @@ class Bet(
         if (goals_home == this.match.fulltimeHome() && goals_away == this.match.fulltimeAway()) {
             return BetPoints.RIGHT_RESULT
         }
-        if (goals_home > goals_away && match.getMatchResult().isHomeWin) {
+        if (goals_home > goals_away && match.isHomeWin()) {
             return BetPoints.RIGHT_OUTCOME
         }
-        if (goals_home == goals_away && match.getMatchResult().isDraw) {
+        if (goals_home == goals_away && match.isDraw()) {
             return BetPoints.RIGHT_OUTCOME
         }
-        return if (goals_home < goals_away && match.getMatchResult().isAwayWin) {
+        return if (goals_home < goals_away && match.isAwayWin()) {
             BetPoints.RIGHT_OUTCOME
         } else BetPoints.WRONG
     }

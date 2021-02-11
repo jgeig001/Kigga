@@ -1,94 +1,35 @@
 package com.jgeig001.kigga.model.domain
 
-import java.io.Serializable
+interface MatchResult {
 
+    fun isHomeWin(): Boolean
 
-class MatchResult(
-    private var home_halftime: Int = GOALS_NULL,
-    private var away_halftime: Int = GOALS_NULL,
-    private var home_fulltime: Int = GOALS_NULL,
-    private var away_fulltime: Int = GOALS_NULL,
-    private var isFinished: Boolean = false
-) : Serializable {
+    fun isDraw(): Boolean
 
-    companion object {
-        val GOALS_NULL: Int = -1
-    }
+    fun isAwayWin(): Boolean
 
-    val isHomeWin: Boolean
-        get() = this.home_fulltime > this.away_fulltime
+    fun isFinished(): Boolean
 
-    val isDraw: Boolean
-        get() = this.home_fulltime == this.away_fulltime
+    fun finishIt()
 
-    val isAwayWin: Boolean
-        get() = this.home_fulltime < this.away_fulltime
+    fun resultExists(): Boolean
 
-    fun isFinished(): Boolean {
-        return this.isFinished
-    }
+    fun setResults(home_halftime: Int, away_halftime: Int, home_fulltime: Int, away_fulltime: Int)
 
-    fun finishIt() {
-        this.isFinished = true
-    }
+    fun setHalftimeResult(home: Int, away: Int)
 
-    fun setResults(home_halftime: Int, away_halftime: Int, home_fulltime: Int, away_fulltime: Int) {
-        this.setHalftimeResult(home_halftime, away_halftime)
-        this.setFulltimeResult(home_fulltime, away_fulltime)
-    }
+    fun setFulltimeResult(home: Int, away: Int)
 
-    fun setHalftimeResult(home: Int, away: Int) {
-        this.home_halftime = home
-        this.away_halftime = away
-    }
+    fun getReprWithHalfTime(): String
 
-    fun setFulltimeResult(home: Int, away: Int) {
-        this.home_fulltime = home
-        this.away_fulltime = away
-    }
+    fun getReprFullTime(): String
 
-    fun getReprWithHT(): String {
-        if (listOf(home_halftime, away_halftime, home_fulltime, away_fulltime)
-                .all { it == GOALS_NULL }
-        ) {
-            // not started
-            return "-:-(-:-)"
-        }
-        return String.format(
-            "%s:%s(%s:%s)",
-            this.home_fulltime.toString(),
-            this.away_fulltime.toString(),
-            this.home_halftime.toString(),
-            this.away_halftime.toString()
-        )
-    }
+    fun getHalftimeAway(): Int
 
-    fun getReprFT(): String {
-        return if (this.isFinished) {
-            String.format("%s:%s", home_fulltime, away_halftime)
-        } else {
-            "-:-"
-        }
-    }
+    fun getHalftimeHome(): Int
 
-    override fun toString(): String {
-        return this.getReprWithHT()
-    }
+    fun getFulltimeAway(): Int
 
-    fun getHalftimeAway(): Int {
-        return away_halftime
-    }
-
-    fun getHalftimeHome(): Int {
-        return home_halftime
-    }
-
-    fun getFulltimeAway(): Int {
-        return away_fulltime
-    }
-
-    fun getFulltimeHome(): Int {
-        return home_fulltime
-    }
+    fun getFulltimeHome(): Int
 
 }

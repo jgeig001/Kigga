@@ -13,7 +13,7 @@ interface MatchdayInterface {
 
     fun removeAwayGoal(match: Match)
 
-    fun setResult(matchID: Int, matchResult: MatchResult)
+    fun setResult(matchID: Int, footballMatchResult: FootballMatchResult)
 
 }
 
@@ -35,7 +35,7 @@ abstract class ObservableMatchday : MatchdayInterface, BaseObservable() {
         notifyPropertyChanged(BR.bet)
     }
 
-    override fun setResult(matchID: Int, matchResult: MatchResult) {
+    override fun setResult(matchID: Int, footballMatchResult: FootballMatchResult) {
         notifyPropertyChanged(BR.matchResult)
     }
 

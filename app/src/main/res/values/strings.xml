@@ -50,11 +50,11 @@
     <string name="dialog_message_club_chooser">Wähle deinen Lieblingsverein aus. Du kannst ihn jederzeit ändern.</string>
     <string name="no_internet_title">Foul !!!</string>
     <string name="no_internet_message">Wir können leider keine Verbindung zum Server herstellen. Schaue, ob du eine funktionierende Internetverbindung hast und versuche es erneut.</string>
-    <string name="kickoff">Anpfiff: </string>
+    <string name="kickoff">Anpfiff:\u0020</string>
     <string name="seasonStatsTemplate">%d%(%d)</string>
     <string name="pointsCalculationTemplate">= %d Punkte</string>
     <string name="choose_label">auswählen</string>
-    <string name="your_club">Dein Club:</string>
+    <string name="your_club">Dein Club:\u0020</string>
     <string name="support_mail">kigga.feedback@gmail.com</string>
     <string name="feedback_mail_start">Hey,\nich habe folgendes Feedback oder Problem…\n\n</string>
     <string name="contact">Kontakt</string>
@@ -67,6 +67,7 @@
     <string name="double_dot">:</string>
     <string name="season">Saison</string>
     <string name="match_result_empty">-:-(-:-)</string>
+    <string name="match_canceled">abgs.</string>
     <string name="correct_result_string">richtiges Ergebnis</string>
     <string name="correct_outcome_string">richtiger Ausgang</string>
     <string name="wrong_string">falsch</string>

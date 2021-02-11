@@ -42,6 +42,10 @@ class HomeViewModel @ViewModelInject constructor(
         this.fillNextOpponents()
     }
 
+    /**
+     * If user selected a favorite club, the next 3 opponents of this club are displayed.
+     * This method updates the LiveData holding the next opponents.
+     */
     fun fillNextOpponents() {
         if (FavClubChooser.hasNoFavouriteClub(context))
             return
@@ -49,7 +53,7 @@ class HomeViewModel @ViewModelInject constructor(
         val favClubMatches = model.getHistory().getRunningSeason()
             ?.getMatchesOfClub(favClub)
         favClubMatches?.forEachIndexed { index, match ->
-            if (match.isRunning() || match.hasNotStarted()) {
+            if (match.hasNotStarted()) {
                 nextOpponent[0].postValue("• " + match.getOtherClub(favClub).shortName)
                 if ((index + 1) < Matchday.MAX_MATCHDAYS)
                     nextOpponent[1].postValue("• " + favClubMatches[index + 1].getOtherClub(favClub).shortName)

@@ -2,6 +2,7 @@ package com.jgeig001.kigga.model.persitence
 
 import org.json.JSONArray
 import org.json.JSONException
+import org.json.JSONObject
 import java.io.*
 import java.net.URL
 import java.nio.charset.Charset
@@ -34,7 +35,7 @@ object JSON_Reader {
      * @throws JSONException
      */
     @Throws(JSONException::class, IOException::class)
-    fun readJsonFromUrl(url: String?): JSONArray? {
+    fun readJsonArrayFromUrl(url: String?): JSONArray? {
         var inputStream: InputStream? = null
         return try {
             val connection = URL(url).openConnection()
@@ -42,9 +43,32 @@ object JSON_Reader {
             inputStream = connection.getInputStream()
             val rd = BufferedReader(InputStreamReader(inputStream, Charset.forName("UTF-8")))
             val jsonText: String = readAll(rd)
-            val json = JSONArray(jsonText)
-            inputStream.close()
-            json
+            JSONArray(jsonText)
+        } catch (e: IOException) {
+            null
+        } finally {
+            inputStream?.close()
+        }
+    }
+
+    /**
+     * Gets the JSON from the url and returns it as JSONObject
+     *
+     * @param url
+     * @return JSONObject with all data
+     * @throws IOException
+     * @throws JSONException
+     */
+    @Throws(JSONException::class, IOException::class)
+    fun readJsonObjectFromUrl(url: String?): JSONObject? {
+        var inputStream: InputStream? = null
+        return try {
+            val connection = URL(url).openConnection()
+            connection.readTimeout = 30000 // 30 sec
+            inputStream = connection.getInputStream()
+            val rd = BufferedReader(InputStreamReader(inputStream, Charset.forName("UTF-8")))
+            val jsonText: String = readAll(rd)
+            JSONObject(jsonText)
         } catch (e: IOException) {
             null
         } finally {

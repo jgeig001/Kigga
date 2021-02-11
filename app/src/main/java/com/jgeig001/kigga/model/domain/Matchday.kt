@@ -40,8 +40,19 @@ data class Matchday(
     }
 
     fun isFinished(): Boolean {
-        // finished if last match is finished
-        return this.matches.all { it.isFinished() }
+        return this.matches.all { match -> match.isFinished() }
+    }
+
+    fun isNotFinished(): Boolean {
+        return !isFinished()
+    }
+
+    fun isDone(): Boolean {
+        return matches.all { match -> match.isFinished() || match.wasSuspended() || match.isRescheduled() }
+    }
+
+    fun isNotDone(): Boolean {
+        return !isDone()
     }
 
     override fun addHomeGoal(match: Match) {
@@ -64,17 +75,26 @@ data class Matchday(
         match.removeAwayGoal()
     }
 
-    override fun setResult(matchID: Int, matchResult: MatchResult) {
-        super.setResult(matchID, matchResult)
-        val match = matches.filter { it.matchID == matchID }.first()
-        match.setResult(matchResult)
+    override fun setResult(matchID: Int, footballMatchResult: FootballMatchResult) {
+        super.setResult(matchID, footballMatchResult)
+        val match = matches.first { it.matchID == matchID }
+        match.setResult(footballMatchResult)
     }
 
-    fun updateKickoff(matchID: Int, kickoff: Long): Boolean {
-        val match = matches.filter { it.matchID == matchID }.first()
-        val returnValue = match.updateKickoff(kickoff)
+    /**
+     * use for exact termination of the match by DFL
+     * @returns true if kickoff was changed else false
+     */
+    fun specifyKickoff(matchID: Int, kickoff: Long): Boolean {
+        val match = matches.first { it.matchID == matchID }
+        val returnValue = match.specifyKickoff(kickoff)
         notifyPropertyChanged(BR.kickoff) // if returnValue==true
         return returnValue
+    }
+
+    fun markAsRescheduled(matchID: Int) {
+        val match = matches.first { it.matchID == matchID }
+        match.markAsSuspended()
     }
 
     /**
@@ -144,7 +164,7 @@ data class Matchday(
     }
 
     fun matchWith(club: Club): Match {
-        return matches.filter { m -> m.playedBy(club) }.first()
+        return matches.first { m -> m.playedBy(club) }
     }
 
     /**
@@ -158,25 +178,18 @@ data class Matchday(
         return set.size > 1
     }
 
-    /*
-    // unused
-    fun updateOrder(matchIdList: List<Int>) {
-        if (matchIdList.zip(this.matches).all { (shouldID, match) -> shouldID == match.matchID }) {
-            // order is equal: sorting not necessary
-            return
-        }
-        // create tmp array
-        val matchArray = arrayOfNulls<Match>(matchIdList.size)
-        for (i in matchIdList.indices) {
-            // sort matches into array
-            val searchedMatchID = matchIdList[i]
-            val searchedMatch = this.matches.first { match -> match.matchID == searchedMatchID }
-            matchArray[i] = searchedMatch
-        }
-        // convert array to list and assign it as new match list
-        this.matches = matchArray.toMutableList() as MutableList<Match>
-        notifyChange()
+    fun getMatchdayNumber(): Int {
+        return matchdayIndex + 1
     }
-    */
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is Matchday)
+            return false
+        val equalMatches = matches.all { match ->
+            other.matches.map { it.matchID }.contains(match.matchID)
+        }
+        val equalIndex = this.matchdayIndex == other.matchdayIndex
+        return equalMatches.and(equalIndex)
+    }
 
 }

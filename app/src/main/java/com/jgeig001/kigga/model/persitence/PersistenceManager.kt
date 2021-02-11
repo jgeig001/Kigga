@@ -1,6 +1,5 @@
 package com.jgeig001.kigga.model.persitence
 
-import android.content.Context
 import com.jgeig001.kigga.database.LocalDatabase
 import com.jgeig001.kigga.model.database.entites.*
 import com.jgeig001.kigga.model.domain.*
@@ -22,11 +21,10 @@ interface Persistent {
     /**
      * dumps whole model to room db
      */
-    suspend fun dumpDatabase()
+    suspend fun dumpToDatabase()
 }
 
-class PersistenceManager @Inject constructor(private var context: Context, val db: LocalDatabase) :
-    Persistent {
+class PersistenceManager @Inject constructor(val db: LocalDatabase) : Persistent {
 
     private var dataPoller: DataPoller
     private var model: ModelWrapper
@@ -44,12 +42,11 @@ class PersistenceManager @Inject constructor(private var context: Context, val d
                 loadFromDatabase(model)
             } catch (e: DatabaseEmptyWarning) {
                 // nothing saved yet
-                getEmptyModel()
             }
 
             // 2. load new data from web
             dataPoller.addDumpDBCallback {
-                GlobalScope.launch { dumpDatabase() }
+                GlobalScope.launch { dumpToDatabase() }
             }
             dataPoller.poll()
         }
@@ -110,14 +107,17 @@ class PersistenceManager @Inject constructor(private var context: Context, val d
                                 liga.getClubBy(matchEntity.homeTeamName),
                                 liga.getClubBy(matchEntity.awayTeamName),
                                 matchEntity.kickoff,
-                                MatchResult(
-                                    matchEntity.home_halftime,
-                                    matchEntity.away_halftime,
-                                    matchEntity.home_fulltime,
-                                    matchEntity.away_fulltime,
-                                    matchEntity.isFinished
-                                )
+                                FootballMatchResult(),
+                                SuspensionState.getState(matchEntity.rescheduled)
                             )
+                            val matchResult = FootballMatchResult(
+                                matchEntity.home_halftime,
+                                matchEntity.away_halftime,
+                                matchEntity.home_fulltime,
+                                matchEntity.away_fulltime,
+                                matchEntity.isFinished
+                            )
+                            match.setMatchResult(matchResult)
                             match.setHomeGoals(matchEntity.bet_home_goals ?: Match.NO_BET)
                             match.setAwayGoals(matchEntity.bet_away_goals ?: Match.NO_BET)
 
@@ -155,7 +155,7 @@ class PersistenceManager @Inject constructor(private var context: Context, val d
     /**
      * dumps whole model to room db
      */
-    override suspend fun dumpDatabase() {
+    override suspend fun dumpToDatabase() {
 
         val clubRepo = ClubRepository(db)
         val seasonRepo = SeasonRepository(db)
@@ -190,10 +190,11 @@ class PersistenceManager @Inject constructor(private var context: Context, val d
                         match.home_team.clubName,
                         match.away_team.clubName,
                         match.getKickoff(),
-                        match.getMatchResult().getHalftimeHome(),
-                        match.getMatchResult().getHalftimeAway(),
-                        match.getMatchResult().getFulltimeHome(),
-                        match.getMatchResult().getFulltimeAway(),
+                        match.getSuspendionState().ordinal,
+                        match.getHalftimeHome(),
+                        match.getHalftimeAway(),
+                        match.getFulltimeHome(),
+                        match.getFulltimeAway(),
                         match.isFinished(),
                         match.getBetHomeGoals(),
                         match.getBetAwayGoals(),
@@ -232,8 +233,8 @@ class PersistenceManager @Inject constructor(private var context: Context, val d
         dataPoller.setFavClubCallback(callback)
     }
 
-    fun internetWarningDialog(openDialog: () -> Unit) {
-        dataPoller.internetWarningDialog(openDialog)
+    fun setInternetWarningDialogCallback(openDialog: () -> Unit) {
+        dataPoller.setInternetWarningDialogCallback(openDialog)
     }
 
     fun addBetFragmentCallback(callback: () -> Unit) {

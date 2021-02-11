@@ -2,6 +2,9 @@ package com.jgeig001.kigga
 
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -23,6 +26,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * This MainActivity handles displaying all fragments.
+ * Moreover it handles the splashscreen and the darkmode.
+ */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
@@ -51,7 +58,8 @@ class MainActivity : AppCompatActivity() {
             if (startCounter == 0) {
                 // open alert dialog
                 GlobalScope.launch {
-                    delay(6000) // wait 6 seconds
+                    delay(8000) // wait 6 seconds
+                    liga.anyClubsLoaded()
                     runOnUiThread {
                         val dialog = FavClubChooser.getClubChooserDialog(this@MainActivity, liga)
                         dialog.show()
@@ -60,10 +68,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        persistenceManager.setInternetWarningDialogCallback { pingInternet() }
+
         // inc start counter
         SharedPreferencesManager.writeInt(this, APP_START_COUNTER, startCounter + 1)
-
-        persistenceManager.internetWarningDialog { showWarning() }
 
         setUpDisplayMode()
 
@@ -76,6 +84,7 @@ class MainActivity : AppCompatActivity() {
             showSplash()
             stopSplash(SPLASH_SCREEN_TIME_MS)
         }
+
     }
 
     private fun setUpDisplayMode() {
@@ -123,7 +132,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showWarning() {
+    fun pingInternet() {
+        GlobalScope.launch {
+            val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
+            val isConnected: Boolean = activeNetwork?.isConnectedOrConnecting == true
+            if (!isConnected)
+                showInternetWarningDialog()
+        }
+    }
+
+    private fun showInternetWarningDialog() {
         this.runOnUiThread {
             AlertDialog.Builder(this)
                 .setTitle(R.string.no_internet_title)
@@ -137,7 +156,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        GlobalScope.launch { persistenceManager.dumpDatabase() }
+        GlobalScope.launch { persistenceManager.dumpToDatabase() }
     }
 
     public override fun onDestroy() {

@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jgeig001.kigga.R
@@ -89,7 +88,7 @@ class BetFragment : Fragment() {
         for (livedata in viewModel.liveDataList) {
             livedata.observe(
                 viewLifecycleOwner,
-                Observer {
+                {
                     if (it != null)
                         betAdapter.refreshData(it)
                 }
@@ -97,6 +96,9 @@ class BetFragment : Fragment() {
         }
     }
 
+    /**
+     * callback doing some UI stuff
+     */
     private fun setCallback() {
         persistenceManager.addBetFragmentCallback {
             viewModel.updateLiveDataList(0)

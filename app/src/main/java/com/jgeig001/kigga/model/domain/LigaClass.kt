@@ -39,4 +39,8 @@ class LigaClass : Serializable, BaseObservable() {
         return this.listOfClubs.containsKey(name)
     }
 
+    fun anyClubsLoaded() {
+        listOfClubs.size > 0
+    }
+
 }

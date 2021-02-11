@@ -37,7 +37,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/result_layout"
-                android:layout_width="28dp"
+                android:layout_width="29dp"
                 android:layout_height="match_parent"
                 android:paddingBottom="3dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -49,14 +49,13 @@
                     android:id="@+id/result_home"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="x"
-                    app:layout_constraintEnd_toStartOf="@+id/result_part2" />
+                    app:layout_constraintEnd_toStartOf="@+id/result_seperator" />
 
                 <TextView
-                    android:id="@+id/result_part2"
+                    android:id="@+id/result_seperator"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text=":"
+                    android:text="@string/double_dot"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
@@ -64,8 +63,7 @@
                     android:id="@+id/result_away"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="y"
-                    app:layout_constraintStart_toEndOf="@+id/result_part2" />
+                    app:layout_constraintStart_toEndOf="@+id/result_seperator" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

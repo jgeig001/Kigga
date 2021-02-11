@@ -14,7 +14,7 @@ import com.jgeig001.kigga.model.database.entites.*
         MatchdayEntity::class,
         SeasonEntity::class
     ],
-    version = 1
+    version = 2
 )
 abstract class LocalDatabase : RoomDatabase() {
 
