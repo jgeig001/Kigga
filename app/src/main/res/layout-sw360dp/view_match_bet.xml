@@ -9,9 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="44dp"
         android:layout_margin="4dp"
-        android:layout_marginStart="0dp"
         android:layout_marginTop="4dp"
-        android:layout_marginEnd="0dp"
         android:layout_marginBottom="4dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
@@ -27,7 +25,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/box2"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -112,7 +109,7 @@
 
         <LinearLayout
             android:id="@+id/box2"
-            android:layout_width="88dp"
+            android:layout_width="84dp"
             android:layout_height="40dp"
             android:layout_marginStart="4dp"
             android:orientation="vertical"
@@ -227,7 +224,7 @@
 
         <LinearLayout
             android:id="@+id/box6"
-            android:layout_width="67dp"
+            android:layout_width="68dp"
             android:layout_height="40dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
