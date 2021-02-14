@@ -1,6 +1,5 @@
 package com.jgeig001.kigga.model.persitence
 
-import android.util.Log
 import com.jgeig001.kigga.model.domain.*
 import com.jgeig001.kigga.model.domain.Matchday.Companion.MAX_MATCHDAYS
 import com.jgeig001.kigga.model.domain.Matchday.Companion.MAX_MATCHES
@@ -406,7 +405,6 @@ class DataLoader(
         } catch (e: UnknownHostException) {
             throw ServerConnectionException("unable to reach backend server")
         } catch (e: ParseException) {
-            Log.e("123", "ParseException")
             return Date(Long.MIN_VALUE)
         } finally {
             inputStream?.close()

@@ -14,3 +14,4 @@ Future Features:
 * torschützen inkl. Zeitpunkt <= goals data
 * Speicheroptimierungen
 * customize background image
+* notifications: tor, noch nicht gewettet, Anstoß
