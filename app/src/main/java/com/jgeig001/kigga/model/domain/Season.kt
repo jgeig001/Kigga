@@ -158,8 +158,37 @@ data class Season(private var matchdays: List<Matchday>, private val year: Int) 
         return matchdays.map { md -> md.matchWith(club) }
     }
 
-    fun checkRescheduled() {
-        // try to mark SUSPENDED matches as RESCHEDULED
+    /**
+     * try to find matches which seems to be RESCHEDULED and mark them as it
+     */
+    fun findRescheduledMatches() {
+        for (i in 0 until Matchday.MAX_MATCHDAYS) {
+            val curMatchday = matchdays[i]
+            if (curMatchday.isFinished())
+                continue // because finished matchday has no suspended matches
+            for (j in 0 until Matchday.MAX_MATCHES) {
+                val curMatch = curMatchday.matches[j]
+                if (curMatch.isFinished())
+                    continue // because finished matches can not be suspended
+                val afterNextMatchday = try {
+                    val nextMatchday = matchdays[i + 1]
+                    val nextMatchdayStart = nextMatchday.earliestKickoff()
+                    nextMatchdayStart < curMatch.getKickoff()
+                } catch (ex: IndexOutOfBoundsException) {
+                    // suspended matches of last matchday do not matter
+                    null
+                }
+                if (afterNextMatchday == true) {
+                    curMatch.markAsRescheduled()
+                }
+            }
+        }
+    }
+
+    /**
+     * try to mark SUSPENDED matches as RESCHEDULED
+     */
+    fun checkSuspendedMatches() {
         matchdays.forEachIndexed { index, matchday ->
             for (match in matchday.matches) {
                 if (match.wasSuspended()) {
@@ -177,6 +206,5 @@ data class Season(private var matchdays: List<Matchday>, private val year: Int) 
             }
         }
     }
-
 
 }

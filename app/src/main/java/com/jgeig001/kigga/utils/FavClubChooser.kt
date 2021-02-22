@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.MutableLiveData
 import com.jgeig001.kigga.R
 import com.jgeig001.kigga.model.domain.Club
@@ -14,6 +15,7 @@ import com.jgeig001.kigga.model.exceptions.ClubExistenceException
 
 object FavClubChooser {
 
+    val AUTO_CHOOSER_DIALOG_SEC: Long = 10000L // ^= 10 seconds
     private const val FAV_CLUB_KEY = "FAV_CLUB_KEY"
 
     fun getClubChooserDialog(
@@ -37,7 +39,7 @@ object FavClubChooser {
         liga: LigaClass,
         livedata: MutableLiveData<String>?
     ): AlertDialog {
-        var allClubs: MutableCollection<Club> = liga.getAllClubs()
+        val allClubs: MutableCollection<Club> = liga.getAllClubs()
 
         val builder = AlertDialog.Builder(context)
         builder.setTitle(R.string.dialog_title_club_chooser)
@@ -81,7 +83,12 @@ object FavClubChooser {
         }
 
         val dialog = builder.create()
-        dialog.window?.setBackgroundDrawable(context.getDrawable(R.drawable.corners_stroke))
+        dialog.window?.setBackgroundDrawable(
+            AppCompatResources.getDrawable(
+                context,
+                R.drawable.corners_stroke
+            )
+        )
 
         return dialog
     }

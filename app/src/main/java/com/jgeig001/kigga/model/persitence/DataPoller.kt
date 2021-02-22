@@ -24,9 +24,9 @@ class DataPoller(
 ) {
     // constants
     private val POLLING_DELAY = 15L
+    private val SEC = 1000L // ^= 1 second
 
     private var inetConnectionWorked = false
-    private var firstLoadDone: Boolean = false
 
     private var dataLoader: DataLoader = DataLoader(history, liga, OpenLigaDB_API())
 
@@ -36,7 +36,6 @@ class DataPoller(
     private lateinit var checkInetConnectionCallback: () -> Unit
 
     fun firstLoadDone() {
-        firstLoadDone = true
         dumpDBCallback?.let { cb -> cb() }
         betFragmentCallback?.let { cb -> cb() }
         favClubCallBack?.let { callbackFun ->
@@ -75,17 +74,20 @@ class DataPoller(
             // load data at start
             dataLoader.loadNewClubs()
             dataLoader.updateData()
+
             dataLoader.updateSuspendedMatches()
-            history.getRunningSeason()?.checkRescheduled()
-            if (!firstLoadDone) {
-                while (callbacksNOTset()) {
-                    // wait until fragment(VIEW) set callback
-                    delay(25)
-                }
-                firstLoadDone()
+
+            history.getRunningSeason()?.checkSuspendedMatches()
+            history.getRunningSeason()?.findRescheduledMatches()
+
+            while (callbacksNOTset()) {
+                // wait until fragment(VIEW) set callback
+                delay(25)
             }
+            firstLoadDone()
+
             dataLoader.loadTable()
-            delay(POLLING_DELAY * 1000)
+            delay(POLLING_DELAY * SEC)
 
             /* ------------------------------ LOOP ------------------------------ */
             // constantly check for updates
@@ -113,7 +115,7 @@ class DataPoller(
                     dataLoader.updateData()
                     dataLoader.loadTable()
                 }
-                delay(POLLING_DELAY * 1000)
+                delay(POLLING_DELAY * SEC)
             }
             /* ------------------------------ LOOP ------------------------------ */
 

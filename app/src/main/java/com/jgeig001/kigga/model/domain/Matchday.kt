@@ -39,6 +39,9 @@ data class Matchday(
         return null
     }
 
+    /**
+     * all matches were played and finished
+     */
     fun isFinished(): Boolean {
         return this.matches.all { match -> match.isFinished() }
     }
@@ -132,6 +135,9 @@ data class Matchday(
         return listOfLists
     }
 
+    /**
+     * generates the PrimaryKey for the database for this matchday
+     */
     fun get_DB_ID(): Int {
         return "${matches.first().matchID}${matchdayIndex}".toInt()
     }
@@ -180,6 +186,10 @@ data class Matchday(
 
     fun getMatchdayNumber(): Int {
         return matchdayIndex + 1
+    }
+
+    fun earliestKickoff(): Long {
+        return matches.minOf { match -> match.getKickoff() }
     }
 
     override fun equals(other: Any?): Boolean {

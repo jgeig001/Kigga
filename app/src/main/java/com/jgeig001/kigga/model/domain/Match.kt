@@ -205,13 +205,13 @@ class Match(
 
     override fun toString(): String {
         return String.format(
-            "[%d] %s : %s; [%s] => %s, %d Uhr",
+            "[%d] %s : %s; [%s] => %s, %d Uhr: %s",
             matchID,
             home_team.shortName,
             away_team.shortName,
             this.getKickoffClock(),
             this.matchResult.getReprWithHalfTime(),
-            this.kickoff
+            this.kickoff, this.suspensionState
         )
     }
 

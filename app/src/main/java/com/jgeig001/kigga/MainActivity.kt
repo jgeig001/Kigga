@@ -51,14 +51,14 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         navView.setupWithNavController(navController)
 
-        val startCounter = SharedPreferencesManager.getInt(this, APP_START_COUNTER)
+        val appStartCounter = SharedPreferencesManager.getInt(this, APP_START_COUNTER)
 
-        // only on first app start
         persistenceManager.setFavClubCallback { liga: LigaClass ->
-            if (startCounter == 0) {
-                // open alert dialog
+            //  open a dialog to let user choose fav club
+            if (appStartCounter <= 2 && FavClubChooser.hasNoFavouriteClub(this)) {
+                // only at the beginning to not annoy user
                 GlobalScope.launch {
-                    delay(8000) // wait 6 seconds
+                    delay(FavClubChooser.AUTO_CHOOSER_DIALOG_SEC) // wait [AUTO_CHOOSER_DIALOG_SEC] seconds
                     liga.anyClubsLoaded()
                     runOnUiThread {
                         val dialog = FavClubChooser.getClubChooserDialog(this@MainActivity, liga)
@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
         persistenceManager.setInternetWarningDialogCallback { pingInternet() }
 
         // inc start counter
-        SharedPreferencesManager.writeInt(this, APP_START_COUNTER, startCounter + 1)
+        SharedPreferencesManager.writeInt(this, APP_START_COUNTER, appStartCounter + 1)
 
         setUpDisplayMode()
 
