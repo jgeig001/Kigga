@@ -51,6 +51,10 @@ class Match(
         return suspensionState
     }
 
+    fun isRegular(): Boolean {
+        return suspensionState == SuspensionState.REGULAR
+    }
+
     fun regularKickoff(): Boolean {
         return suspensionState == SuspensionState.REGULAR
     }

@@ -118,7 +118,8 @@ data class Season(private var matchdays: List<Matchday>, private val year: Int) 
             if (match.isFinished()) {
                 lis.add(match)
             } else {
-                break
+                if (match.isRegular())
+                    break
             }
         }
         return lis
