@@ -15,3 +15,8 @@ Future Features:
 * Speicheroptimierungen
 * customize background image
 * notifications: tor, noch nicht gewettet, Anstoß
+* scrollview soll bouncen
+* (+) (-) zu klein -> vergrößerter dialog als option
+* Performance Wert unklar => erklärung in anleitung/onboarding
+* Leiblingsverein überall hervorheben
+* alle Tabnamen immer anzeigen
